@@ -1,3 +1,0 @@
-Se você está lendo este arquivo, então provavelmente sua chave SSH está configurada
-
-Parabéns!!!
