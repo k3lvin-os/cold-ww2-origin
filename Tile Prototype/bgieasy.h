@@ -5,6 +5,6 @@ void GraphicInit();
 void GetKey(int *key);
 
 // Passa ,por referência,o endereço de uma imagem
-void GetImage(char name[], int width, int height, void *image);
+//void GetImage(char name[], int width, int height, void *image); Using this function on struct
 
 
