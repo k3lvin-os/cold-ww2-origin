@@ -24,7 +24,7 @@ HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
 CommandLine=
-Folders=
+Folders=Sprites
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=3
@@ -81,15 +81,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit4]
-FileName=Sprites\mario_kart.gif
-Folder=
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit5]
 FileName=..\..\header\td_functions.cpp
 CompileCpp=1
 Folder=
@@ -100,8 +91,17 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit6]
-FileName=mario_kart.gif
-Folder=
+FileName=Sprites\cursor.gif
+Folder=Sprites
+Compile=0
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit5]
+FileName=Sprites\mario_kart.gif
+Folder=Sprites
 Compile=0
 Link=0
 Priority=1000
