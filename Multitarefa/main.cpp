@@ -4,6 +4,11 @@
 #include "..\..\header\sprite.h"
 using namespace std;
 
+Sprite *cursor;
+void MouseMove(int x, int y){
+	cursor->GoTo(x,y);
+}
+
 int main(){
 	
 	// Start a graphic window
@@ -11,15 +16,19 @@ int main(){
 		
 	//Receive the mid screen X coordinate
 	int midX = getmaxx() / 2;
+	int midY = getmaxy() / 2;
 	
 	// tiles fixed size
 	int const TILE_SIZE = 32; 
 	
 	// Constant velocity of the game
-	int const SPEED = 1;
+	int const SPEED = 5;
 	
 	// Create a sprite of MarioKart
-	Sprite *marioKart = new Sprite("\mario_kart.gif",TILE_SIZE,TILE_SIZE,midX,0);
+	Sprite *marioKart = new Sprite("Sprites/mario_kart.gif",TILE_SIZE,TILE_SIZE,midX,0);
+	
+	// Create a sprite of a mouse cursor
+	cursor = new Sprite("Sprites/cursor.gif",TILE_SIZE,TILE_SIZE,midX,midY);
 	
 	//End of sprite store. So, clean the screen
 	cleardevice();
@@ -31,23 +40,28 @@ int main(){
 	int tecla = 0;
 	GetKey(&tecla);
 	
-	// O Mario Kart sairá de uma posição até o final da tela
+	// Mario Kart will start in begin of screen Y axis and go to end Y axis
 	for (int y = 0; y < getmaxy(); y+= SPEED){
 		
-		// Limpa a tela
+		// Clean screen
 		cleardevice();
 		
-		// Mostra o MarioKart
+		// Show Mario Kart
 		marioKart->Show();
 		
-		// Movimenta o Mario Kart
+		// Show cursor
+		cursor->Show();
+
+		// Check mouse move
+		registermousehandler(WM_MOUSEMOVE,MouseMove);
+		
+		// Move Mario Kart
 		marioKart->Move(0,SPEED);
 		
-		// Coloque um delay a fim de permitir a visualização
-		delay(1);
+		// Put's a dealy in the reason of player sight
+		delay(30);
 	}
 	
-	// Limpa a memória
-	delete marioKart;
+	
 	return 0;
 }
