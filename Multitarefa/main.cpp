@@ -46,7 +46,12 @@ int main(){
 		// Clean screen
 		cleardevice();
 		
-		// Show Mario Kart
+
+		
+		setcolor(15);
+		bar(getmaxx(),0,0,getmaxy());
+		
+				// Show Mario Kart
 		marioKart->Show();
 		
 		// Show cursor
