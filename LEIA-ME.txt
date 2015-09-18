@@ -1,3 +1,18 @@
-Se você está lendo este arquivo, então provavelmente sua chave SSH está configurada
+//=================================================
+/*Inclua os arquivos da seguinte forma:*/
 
-Parabéns!!!
+#include <iostream>
+#include <fstream> // E / S de arquivos
+#include <iomanip> // Para ler em caracter a caracter
+#include <graphics.h>
+
+/*Bibliotecas do projeto TowerDefense*/
+#include "..\..\header\td_functions.h"
+#include "..\..\header\td_defines.h"
+#include "..\..\header\sprite.h"
+#include "..\..\header\campojogo.h"
+#include "..\..\header\grade.h"
+
+// Última atualização: 18 de set. 2015
+
+//===============================================
