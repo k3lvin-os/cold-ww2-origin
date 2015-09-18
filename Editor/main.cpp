@@ -24,6 +24,12 @@ void GUI();
 // Procedimento de carregar um arquivo de coordenadas
 void Carrega(CampoJogo *meuCampo, Grade *minhaGrd);
 
+// Opcção de sair do programa
+void Sair(int &opcao, bool &editLoop);
+
+// Menu principal no console
+void MainMenu(int &opcao);
+
 
 int main(){
 	
@@ -64,25 +70,23 @@ int main(){
 
 	// Loop do programa
 	while(editLoop == true){
-		
-			std::cout << "EDITOR DE CAMPO DE JOGO\nSelecione uma das opções disponíveis\n";
-			std::cout << "1 - Carregar campo de jogo\n2 - Editar campo de jogo\n3 - Sair\n";
-			std::cin >> opcao;
+			
+			// Menu principal no console
+			MainMenu(opcao);
 			
 			switch(opcao){
 				case 1:
 					
+					// Carrega um arquivo de coordenadas
 					Carrega(meuCampo, minhaGrd);
 					break;
-				case 3:
-					do{
-						std::cout << "\nDeseja realmente sair do programa?";
-						std::cout << "\n1- Sim \n2- Nao\n";
-						std::cin >> opcao;
-						if (opcao == 1)
-							editLoop = false; // Faz o programa sair do laço e encerrar
+				
+				case 2:
 					
-					} while(opcao != 1 && opcao != 2);
+					break;
+				case 3:
+					// Procedimento de sáida do programa
+					Sair(opcao,editLoop);
 					break;
 				default:	
 					std::cout <<"\n Digite apenas nº de opções válidas (1-3)\n";
@@ -121,7 +125,27 @@ void Carrega(CampoJogo *meuCampo, Grade *minhaGrd){
 	
 }
 
+// Menu principal no console
+void MainMenu(int &opcao){
+	std::cout << "EDITOR DE CAMPO DE JOGO\nSelecione uma das opções disponíveis\n";
+	std::cout << "1 - Carregar campo de jogo\n2 - Editar campo de jogo\n3 - Sair\n";
+	std::cin >> opcao;
+}
 
+// Opcção de sair do programa
+void Sair(int &opcao, bool &editLoop){
+
+	
+	do{
+		std::cout << "\nDeseja realmente sair do programa?";
+		std::cout << "\n1- Sim \n2- Nao\n";
+		std::cin >> opcao;
+		if (opcao == 1)
+			editLoop = false; // Faz o programa sair do laço e encerrar
+	
+	} while(opcao != 1 && opcao != 2);
+	
+}
 
 
 // Interface com o usuário (texto)
