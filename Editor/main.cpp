@@ -17,8 +17,7 @@
 
 //===============================================
 
-//Funções
-void GUI();
+#include "editor.h" // Arquivo auxiliar ao editor de níveis
 
 int main(){
 	
@@ -60,9 +59,8 @@ int main(){
 	// Loop do programa
 	while(editLoop == true){
 		
-		while(opcao < 1 || opcao > 3){
-			std::cout << "\nSelecione uma das opções disponíveis\n";
-			std::cout << "1 - Carregar campo de jogo\n 2 - Editar campo de jogo\n3 - Sair\n";
+			std::cout << "EDITOR DE CAMPO DE JOGO\nSelecione uma das opções disponíveis\n";
+			std::cout << "1 - Carregar campo de jogo\n2 - Editar campo de jogo\n3 - Sair\n";
 			std::cin >> opcao;
 			
 			switch(opcao){
@@ -83,13 +81,24 @@ int main(){
 						meuCampo->Mostrar();
 						minhaGrd->Colocar();
 					}
+					break;
+				case 3:
+					do{
+						std::cout << "\nDeseja realmente sair do programa?";
+						std::cout << "\n1- Sim \n2- Nao\n";
+						std::cin >> opcao;
+						if (opcao == 1)
+							editLoop = false; // Faz o programa sair do laço e encerrar
 					
+					} while(opcao != 1 && opcao != 2);
+					break;
+				default:	
+					std::cout <<"\n Digite apenas nº de opções válidas (1-3)\n";
+					break;
 					
-			}
-			
-		}
-	
-			
+				}
+
+		
 		delay(FPS);
 	}
 	
@@ -97,15 +106,4 @@ int main(){
 	return 0;
 }
 
-// Interface com o usuário (texto)
-void GUI(){
-	
-	int x, y;
-		
-	// GUI
-	setcolor(WHITE);
-	x =getmaxx() / 2 - 60;
-	y = getmaxy() - 30;
-	moveto( x,y);
-	outtext("Use o console para gerenciar a janela gráfica");
-}
+
