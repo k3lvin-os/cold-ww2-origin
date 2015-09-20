@@ -364,7 +364,7 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 							for(j = tMouseX0 ; j!= (tMouseX + alteraJ) ; j+= alteraJ){
 								
 								// Calcula a coordenada x do tile
-								x = x * TILE_W;
+								x = j * TILE_W;
 
 								// Coloca os tiles na tela
 								putimage(x,y,meuCampo->tipoTile[pincel].image,0);
