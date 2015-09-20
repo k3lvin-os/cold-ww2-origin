@@ -12,14 +12,12 @@
 #include "..\..\header\sprite.h"
 #include "..\..\header\campojogo.h"
 #include "..\..\header\grade.h"
-
 // Última atualização: 18 de set. 2015
 
 //===============================================
 
-
-//Funções
-void GUI();
+/*Estrutura exclusiva do programa editor (GUI para o editor)*/
+#include "gui.h"
 
 // Menu de escolha do pincel
 void Pincel(CampoJogo *meuCampo);
@@ -44,6 +42,9 @@ int main(){
 	
 	// Recebe nome do arquivo 
 	char nomeArq[8];
+	
+	// Interface com o usuário
+	GUI *minhaGUI;
 	
 	// Contadores 
 	int i, j;
@@ -75,7 +76,7 @@ int main(){
 	CampoGrad(meuCampo,minhaGrd);
 	
 	// Faz interface com o usuário
-	GUI();
+	minhaGUI = new GUI("Console");
 
 	// Loop do programa
 	while(editLoop == true){
@@ -154,34 +155,43 @@ void Sair(int &opcao, bool &editLoop){
 }
 
 
-// Interface com o usuário (texto)
-void GUI(){
-	
-	int x, y;
-		
-	// GUI
-	setcolor(WHITE);
-	x =getmaxx() / 2 - 60;
-	y = getmaxy() - 30;
-	moveto( x,y);
-	outtext("Use o console para gerenciar a janela gráfica");
-}
 
-void Pincel(CampoJogo *meuCampo){
+
+
+void Pincel(CampoJogo *meuCampo, int *pincel){
 	
 	// Contador
 	int i;
 	
+	// Variável temporária para indíces mais compreensíveis
+	int tempI;
+	
 	// Lista os pinceis disponíveis
 	std::cout << "\nSelecione um dos pinceis disponíveis:\n\n";
 	for(i = 0; i < meuCampo->QTD_TILE; i++){
-		std::cout << i + 1 << " - " << meuCampo->tipoTile[i].nome << "\n";
+		
+		// Calcula o indice compreensivel
+		tempI = i + 1;
+		
+		std::cout << tempI << " - " << meuCampo->tipoTile[i].nome << "\n\n";
 	}
+	
+	// Recebe a escolha do usuário
+	std::cin >> tempI;
+	
+	// Calcula o indice usado pelo computador
+	*pincel = tempI - 1; 
+	
+	// Confirma o pincel escolhido
+	std::cout << "\n\nVocê escolheu o pincel \"" << meuCampo->tipoTile[*pincel].nome <<"\"\nUse-o no modo Desenho\n";
 
 }
 
 // Menu de edição no console
 void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
+	
+	// Interface com o usuário
+	GUI *minhaGUI;
 	
 	// Para trabalhar com coordenadas...
 	int x, y;
@@ -226,9 +236,11 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 		std::cin >> opcao;
 		switch(opcao){
 			case 1: 
-				Pincel(meuCampo);
+				Pincel(meuCampo, &pincel);
 				break;
 			case 2:
+				
+				// Confirma a entrada no modo desenho
 				desenho = true;
 				std::cout << "MODO DESENHO\n";
 				
@@ -239,6 +251,14 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 					/*
 								Comandos que NÃO geram mudanças gráficas diretas
 					*/
+					
+					// Verifica se o usuário deseja sair do modo editor
+					if(GetKeyState(VK_F5)& 0x80){
+						
+						// Confirma a saída do modo desenho
+						desenho = false;
+					}
+					
 					
 					// Calcula o tile aonde está o mouse 
 					tMouseX = mousex() / TILE_W;
@@ -321,14 +341,11 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 								Comandos que GERAM mudanças gráficas diretas
 					*/
 					
-					// Limpa a tela
-					cleardevice();
-					
-					// Mostra a tela em sua estrutura definida
+					// Apaga a tela e mostra o campo e a grade
 					CampoGrad(meuCampo, minhaGrd);
 					
 					// Mostra GUI
-					GUI();
+					minhaGUI = new GUI("Desenho");
 					
 					// Verifica o pressionamento e age conforme isso
 					if(!pressing){
@@ -380,13 +397,23 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 
 					// Atualize os gráficos com uma boa taxa de FPS
 					delay(FPS);
-				} 
+				}
+				
+				// Limpa a tela mostra o campo novamente
+				// (para retirar os tiles temporários)
+				CampoGrad(meuCampo, minhaGrd);
+				
+				// Mostra a GUI no modo console
+				GUI("Console");
+				 
 				break;
+			case 3:
+				std::cout << "\nVoltando para o menu principal...\n\n";
+				break;	
+				
 			default:
 				std::cout << "\nDigite apenas opcoes validas (1-3)\n";
-				break; 
-				
-		
+				break; 		
 		}
 	}
 
@@ -395,6 +422,9 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 // Mostra o campo e a grade na tela
 void CampoGrad(CampoJogo *meuCampo, Grade *minhaGrd){
 	
+	// Limpa a tela
+	cleardevice();
+	
 	// Mostra o campo de jogo
 	meuCampo->Mostrar();
 		
@@ -402,6 +432,8 @@ void CampoGrad(CampoJogo *meuCampo, Grade *minhaGrd){
 	minhaGrd->Colocar();
 	
 }
+
+
 
 
 
