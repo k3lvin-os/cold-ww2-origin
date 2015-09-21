@@ -3,13 +3,13 @@ struct GUI{
 	
 	int x, y;
 	
-	// Construtor que recebe o tipo de gui e constói baseado nele
-	GUI(char *nomeGUI);
+	// "Construtor" que recebe o tipo de gui e constói baseado nele
+	void Init(char *nomeGUI);
 		
 };
 
 // Constroi a GUI
-GUI::GUI(char *nomeGUI){
+void GUI::Init(char *nomeGUI){
 		
 		if(nomeGUI == "Console"){
 			// GUI

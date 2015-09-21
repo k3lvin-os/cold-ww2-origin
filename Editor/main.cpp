@@ -22,29 +22,32 @@
 // Menu de escolha do pincel
 void Pincel(CampoJogo *meuCampo);
 
+// Menu de salvar campo de jogo
+void Salva(CampoJogo meuCampo);
+
 // Procedimento de carregar um arquivo de coordenadas
-void Carrega(CampoJogo *meuCampo, Grade *minhaGrd);
+void Carrega(CampoJogo *meuCampo, Grade minhaGrd);
 
 // Opcção de sair do programa
-void Sair(int &opcao, bool &editLoop);
+void Sair(int opcao, bool *editLoop);
 
 // Menu principal no console
 void MainMenu(int &opcao);
 
 // Menu de edição no console
-void Edita(CampoJogo *meuCampo, Grade *minhaGrd);
+void Edita(CampoJogo *meuCampo, Grade minhaGrd);
 
 // Mostra campo e grade na tela
-void CampoGrad(CampoJogo *meuCampo, Grade *minhaGrd);
+void CampoGrad(CampoJogo *meuCampo, Grade minhaGrd);
 
 
 int main(){
 	
 	// Recebe nome do arquivo 
-	char nomeArq[8];
+	char *nomeArq;
 	
 	// Interface com o usuário
-	GUI *minhaGUI;
+	GUI minhaGUI;
 	
 	// Contadores 
 	int i, j;
@@ -59,8 +62,8 @@ int main(){
 	int opcao = -1;
 		
 	// Declaração de variáveis
-	Grade *minhaGrd;
- 	CampoJogo *meuCampo;
+	Grade minhaGrd;
+ 	CampoJogo meuCampo;
 	
 	// Define se o programa continua em execução ou nõa
 	bool editLoop = true;
@@ -68,15 +71,14 @@ int main(){
 	// Inicialize a janela do editor (maior em altura do que a janela do jogo)
 	initwindow(EDIT_W,EDIT_H);
 	
-	// Inicialização de estruturas
-	meuCampo = new CampoJogo();
-	minhaGrd = new Grade();
-
+	// Inicializa o campo de jogo
+	meuCampo.Init();
+	
 	// Mostra o campo e a grade na tela
-	CampoGrad(meuCampo,minhaGrd);
+	CampoGrad(&meuCampo,minhaGrd);
 	
 	// Faz interface com o usuário
-	minhaGUI = new GUI("Console");
+	minhaGUI.Init("Console");
 
 	// Loop do programa
 	while(editLoop == true){
@@ -87,19 +89,25 @@ int main(){
 			switch(opcao){
 				case 1:
 					
-					// Carrega um arquivo de coordenadas
-					Carrega(meuCampo, minhaGrd);
+					//Funcionalidade de carregar um arquivo o campo de jogo
+					Carrega(&meuCampo, minhaGrd);
 					break;
-				
 				case 2:
-					Edita(meuCampo, minhaGrd);
+					
+					//Funcionalidade de editar o campo de jogo
+					Edita(&meuCampo, minhaGrd);
 					break;
-				case 3:					
+				case 3:
+					
+					// Funcionaidade de salvar o campo de jogo em um arquivo
+					Salva(meuCampo);
+					break;
+				case 4:			
 					// Procedimento de sáida do programa
-					Sair(opcao,editLoop);
+					Sair(opcao,&editLoop);
 					break;
 				default:	
-					std::cout <<"\n Digite apenas nº de opções válidas (1-3)\n";
+					std::cout <<"\n Digite apenas nº de opções válidas (1-4)\n";
 					break;
 					
 				}
@@ -109,13 +117,39 @@ int main(){
 	return 0;
 }
 
-void Carrega(CampoJogo *meuCampo, Grade *minhaGrd){
+
+// Funcionalidade de salvar o campo de jogo em um arquivo de coordenadas
+void Salva(CampoJogo meuCampo){
+	
+	char nomeArq[20];
+	
+	std::cout <<"\nSalvar como:\n";
+
+	// Limpa o fluxo de dados
+	fflush(stdin);
+
+	// Recebe o nome do arquivo
+	std::cin >> nomeArq;
+	
+	std::cout << nomeArq;
+
+	// Arquiva a matriz 
+	meuCampo.Arquiva((char *)nomeArq);
+}
+
+void Carrega(CampoJogo *meuCampo, Grade minhaGrd){
+
 	bool sucesso;
 	char nomeArq[8];
 	
 	// Requere o nome do arquivo com as coord. do campo de jogo e carrega-o
 	std::cout << "Digite o nome do arquivo com as coord. do campo de jogo\n";
+	
+	// Limpa o buffer e recebe o nome do arquivo
+	fflush(stdin);
 	std::cin >> nomeArq;
+	
+	// Carrega o arquivo de cooredenadas
 	sucesso = meuCampo->PosLoad(nomeArq);
 	
 	// Verifica se o processo ocorreu corretamente
@@ -127,37 +161,44 @@ void Carrega(CampoJogo *meuCampo, Grade *minhaGrd){
 		// Se tudo ocorreu corretamente, atualize o campo de jogo
 		std::cout << "Arquivo carregado com sucesso!";
 		meuCampo->Mostrar();
-		minhaGrd->Colocar();
+		minhaGrd.Colocar();
 	}
 	
 }
 
 // Menu principal no console
 void MainMenu(int &opcao){
-	std::cout << "EDITOR DE CAMPO DE JOGO\nSelecione uma das opções disponíveis\n";
-	std::cout << "1 - Carregar campo de jogo\n2 - Editar campo de jogo\n3 - Sair\n";
+	std::cout << "\nEDITOR DE CAMPO DE JOGO\n\nSelecione uma das opções disponíveis\n";
+	std::cout << "\n1 - Carregar campo de jogo\n2 - Editar campo de jogo\n";
+	std::cout << "3 - Salvar arquivo\n4 - Sair\n\nOpcao: ";	
+	
+	// Limpa o buffer e recebe a opcao
+	fflush(stdin);
 	std::cin >> opcao;
 }
 
 // Opcção de sair do programa
-void Sair(int &opcao, bool &editLoop){
+void Sair(int opcao, bool *editLoop){
 
-	
+		
 	do{
 		std::cout << "\nDeseja realmente sair do programa?";
 		std::cout << "\n1- Sim \n2- Nao\n";
+		
+		// Limpa o buffer e recebe a opcão 
+		fflush(stdin);
 		std::cin >> opcao;
+		
+		// Se o usuário confirmar a saída
 		if (opcao == 1)
-			editLoop = false; // Faz o programa sair do laço e encerrar
+			*editLoop = false; // Faz o programa sair do laço e encerrar
 	
 	} while(opcao != 1 && opcao != 2);
 	
 }
 
 
-
-
-
+// Funcionalidade de escolha o pincel de tiles
 void Pincel(CampoJogo *meuCampo, int *pincel){
 	
 	// Contador
@@ -176,7 +217,8 @@ void Pincel(CampoJogo *meuCampo, int *pincel){
 		std::cout << tempI << " - " << meuCampo->tipoTile[i].nome << "\n\n";
 	}
 	
-	// Recebe a escolha do usuário
+	// Limpa o buffer e recebe o pincel escolhido
+	fflush(stdin);
 	std::cin >> tempI;
 	
 	// Calcula o indice usado pelo computador
@@ -188,10 +230,13 @@ void Pincel(CampoJogo *meuCampo, int *pincel){
 }
 
 // Menu de edição no console
-void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
+void Edita(CampoJogo *meuCampo, Grade minhaGrd){
+	
+	// Primeira "cor" do pincel de tiles
+	const int TILE_EUA = 5;
 	
 	// Interface com o usuário
-	GUI *minhaGUI;
+	GUI minhaGUI;
 	
 	// Para trabalhar com coordenadas...
 	int x, y;
@@ -224,21 +269,29 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 	int tMouseX = 0, tMouseY = 0;
 	
 	// Pincel de tile
-	int pincel = 0;
+	int pincel = TILE_EUA;
 	
 	// Armazena a escolha feita 
  	int opcao = -1;
 	
 	while(opcao != 3){
-		// Pergunte e verifique a escolha feita
-		std::cout << "Selecione uma das opcoes disponiveis:\n\n";
-		std::cout << "1-Escolher pincel de desenho\n2-Desenhar n3-Sair do menu Edicao\n";
+		// Mostre as opções disponíveis
+		std::cout << "\n\nSelecione uma das opcoes disponiveis:\n\n";
+		std::cout << "1-Escolher pincel de desenho\n2-Desenhar\n3-Sair do menu Edicao\n\nOpcao: ";
+		
+		// Limpa o buffer e recebe a escolha
+		fflush(stdin);
 		std::cin >> opcao;
+		
 		switch(opcao){
 			case 1: 
+			
+				// Funcionalidade de escolher o pincel
 				Pincel(meuCampo, &pincel);
 				break;
 			case 2:
+				
+				// Funcionalidade de desenhar (editar) campo de jogo
 				
 				// Confirma a entrada no modo desenho
 				desenho = true;
@@ -282,7 +335,7 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 						pressing = true;
 						
 						// Teste
-						std::cout << "\npressing =" << pressing << "\n";
+						//std::cout << "\npressing =" << pressing << "\n";
 					}
 					
 					// Verifica se o usuário soltou o botão esquerdo
@@ -295,7 +348,7 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 						pressing = false;
 						
 						// Teste
-						std::cout << "\npressing =" << pressing << "\n";
+						//std::cout << "\npressing =" << pressing << "\n";
 						
 						// Calcula o indice do tile no fim do click
 						tMouseXF = tMouseX;
@@ -324,7 +377,7 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 								meuCampo->posTile[j][i] = pincel;
 								
 								//TESTE
-								std::cout << "Trocando posTile[" << j << "][" << i << "]\n";
+								//std::cout << "Trocando posTile[" << j << "][" << i << "]\n";
 							}
 						}
 					}
@@ -345,7 +398,7 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 					CampoGrad(meuCampo, minhaGrd);
 					
 					// Mostra GUI
-					minhaGUI = new GUI("Desenho");
+					minhaGUI.Init("Desenho");
 					
 					// Verifica o pressionamento e age conforme isso
 					if(!pressing){
@@ -354,7 +407,7 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 						putimage(x,y,meuCampo->tipoTile[pincel].image,0);
 						
 						/*TESTE*/
-						std::cout<< "\nTile temporário\n";
+						//std::cout<< "\nTile temporário\n";
 							
 					} else{
 						
@@ -387,7 +440,7 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 								putimage(x,y,meuCampo->tipoTile[pincel].image,0);
 								
 								/*TESTE*/
-								std::cout<< "\nColocando tile| pos[ " << j << "][" <<i <<"]\n"; 							
+								//std::cout<< "\nColocando tile| pos[ " << j << "][" <<i <<"]\n"; 							
 									
 							}
 						}						
@@ -404,7 +457,7 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 				CampoGrad(meuCampo, minhaGrd);
 				
 				// Mostra a GUI no modo console
-				GUI("Console");
+				minhaGUI.Init("Console");
 				 
 				break;
 			case 3:
@@ -420,7 +473,7 @@ void Edita(CampoJogo *meuCampo, Grade *minhaGrd){
 }
 
 // Mostra o campo e a grade na tela
-void CampoGrad(CampoJogo *meuCampo, Grade *minhaGrd){
+void CampoGrad(CampoJogo *meuCampo, Grade minhaGrd){
 	
 	// Limpa a tela
 	cleardevice();
@@ -429,7 +482,7 @@ void CampoGrad(CampoJogo *meuCampo, Grade *minhaGrd){
 	meuCampo->Mostrar();
 		
 	// Coloca a grade
-	minhaGrd->Colocar();
+	minhaGrd.Colocar();
 	
 }
 
