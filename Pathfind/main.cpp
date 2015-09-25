@@ -1,19 +1,15 @@
-//=================================================
-/*Inclua os arquivos da seguinte forma:*/
-
 #include <iostream>
 #include <fstream> // E / S de arquivos
 #include <iomanip> // Para ler em caracter a caracter
 #include <graphics.h>
 
-/*Bibliotecas do projeto TowerDefense*/
+// Bibliotecas criados pela equipe de desenvolvimento
 #include "..\..\header\td_functions.h"
 #include "..\..\header\td_defines.h"
 #include "..\..\header\sprite.h"
 #include "..\..\header\campojogo.h"
 #include "..\..\header\grade.h"
-
-// Estrutura básica de um programa
+#include "..\..\header\soldado.h"
 
 using namespace std;
 
@@ -22,13 +18,10 @@ int main(){
 	
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H);
-	
+	CampoJogo meuCampo;
+	meuCampo.Init("mapa01.txt");
+	meuCampo.Mostrar();
 	while(!kbhit());
 	closegraph();
 	return 0;	
 }
-
-
-// Última atualização: 25 de set. 2015
-
-//===============================================
