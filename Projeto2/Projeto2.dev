@@ -1,6 +1,6 @@
 [Project]
-FileName=Animacao.dev
-Name=Animacao
+FileName=Projeto2.dev
+Name=Projeto2
 Type=1
 Ver=2
 ObjFiles=
@@ -19,7 +19,7 @@ ObjectOutput=
 LogOutput=
 LogOutputEnabled=0
 OverrideOutput=0
-OverrideOutputName=Animacao.exe
+OverrideOutputName=Projeto2.exe
 HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
