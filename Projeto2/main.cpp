@@ -6,10 +6,10 @@
 #include "graphics.h" // para usar a BGI
 #include <stdlib.h>     // para usar o rand
 #include <time.h>     // para usar o time 
-#include <iostream>
-#include <tgmath.h>
+#include <iostream>   // Diversas funções
+#include <tgmath.h>   // para usar o sqrt
 
-// Indica a utilização do namespace
+// Indica a utilização do namespace std
 using namespace std;
 
 typedef struct TEstrelas{
@@ -21,17 +21,14 @@ TEstrelas Estrelas[2000]; /*Vetor de 2000 elementos do tipo TEstrelas*/
 // Estrutura de dado Nave
 typedef struct TNave{
 	
-	// Medida de lado da nave (padrão)
-	static const int LADO = 50;
-	
-	// Cores internas e externas da nave
+	// Cores interna e externa da nave
 	int corInter, corExter;
-	
-	// Coordenada da nave (baricentro da nave)
-	int x, y; 
 	
 	// Veritices da nave
 	int vertices[6];
+	
+	// Deslocamento da nave
+	int passo;
 	
 };
 
@@ -79,30 +76,21 @@ int main(){
 		//cout << "\nEstrela[ " << i << "] --> x = " << Estrelas[i].x << " | y = " << Estrelas[i].y << " | cor = " << Estrelas[i].cor;
 	}
 	
-	// Configuração inicial da nave do jogador
-	Nave.x = getmaxx() / 2;
-	Nave.y = getmaxy() / 2;
 	
-	// Condição de incio do loop 
-	Nave.corInter = 0;
-	Nave.corExter = 0;
+	// Posição inicial da nave
+	Nave.vertices[0] = 400;
+	Nave.vertices[1] = 300; 
+	Nave.vertices[2] = 450; 
+	Nave.vertices[3] = 300;
+	Nave.vertices[4] = 425;
+	Nave.vertices[5] = 250;
 	
-	// Enquanto a cor interna e a cor externa forem iguais
-	while(Nave.corExter != Nave.corInter){
-		
-		// Gera uma cor interna
-		red = rand() % 256;
-		green = rand() % 256;
-		blue = rand() % 256;
-		Nave.corExter = COLOR(red,green,blue);
-		
-		// Gera uma cor externa
-		red = rand() % 256;
-		green = rand() % 256;
-		blue = rand() % 256;
-		Nave.corInter = COLOR(red,green,blue);
-		
-	}
+	// Cor interna e externa
+	Nave.corExter = COLOR(255,255,255);
+	Nave.corInter = COLOR(0,0,0);
+	
+	// Define a velocidade da nave
+	Nave.passo = 5;
 	
 	// Enquanto estiver na jogatina ou loop do jogo
 	//(não foi solicitado um comando para sair do loop, logo
@@ -132,18 +120,60 @@ int main(){
 			// Coloque-as no céu
 			putpixel(Estrelas[i].x, Estrelas[i].y, Estrelas[i].cor);
 		}
+
+		// Configura a cor de desenho da nave
+		setfillstyle(1, Nave.corInter);
+		setcolor(Nave.corExter);
 		
-		// Calcule a posição dos pontos da nave
-		Nave.vertices[0] = Nave.x;
-		Nave.vertices[1] = Nave.y + Nave.LADO;
-		Nave.vertices[2] = Nave.x + sqrt(2 * (Nave.LADO ^2));
-		Nave.vertices[3] = Nave.y - sqrt(2 * (Nave.LADO ^2));
-		Nave.vertices[4] = Nave.x - sqrt(2 * (Nave.LADO ^2));
-		Nave.vertices[5] = Nave.y - sqrt(2 * (Nave.LADO ^2));
+		// Texto bônus
+		outtextxy(getmaxx() / 2 - 50,getmaxy() - 100, "The Dark Side Of the Moon");
+				
+		
+		// Se apertar a tecla para cima
+		if(GetKeyState(VK_LEFT) & 0x80){
+			for(i = 0; i < 6; i+= 2)
+				Nave.vertices[i] -= Nave.passo;
+			
+		}
+		
+		
+		// Se apertar  a tecla para cima
+		if(GetKeyState(VK_UP)& 0x80 ){
+			for(i = 1; i < 6; i+= 2)
+				Nave.vertices[i] -= Nave.passo;
+			
+		}
+		
+		// Se apertar a tecla direita
+		if(GetKeyState(VK_RIGHT)& 0x80){
+			for(i = 0; i < 6; i+= 2)
+				Nave.vertices[i] += Nave.passo;
+			
+		}
+		
+		// Se apertar a tecla para baixo
+		if(GetKeyState(VK_DOWN)& 0x80){
+			for(i = 1; i < 6; i+= 2)
+				Nave.vertices[i] += Nave.passo;
+		}
+		
+		// Se apertar a tecla HOME...
+		if(GetKeyState(VK_HOME) & 0x80){
+			// Gere coordenadas aleatórias para uma vertice
+			Nave.vertices[0] = rand() % 700 + 50;
+			Nave.vertices[1] = rand() % 500 + 50;
+			
+			// Calcula a posição das outras vertices em 
+			// relação a primeira coordenada
+			Nave.vertices[2] = Nave.vertices[0] + 50;
+			Nave.vertices[3] = Nave.vertices[1];
+			Nave.vertices[4] = Nave.vertices[0] + 25;
+			Nave.vertices[5] = Nave.vertices[1] - 50;
+			
+		}
 		
 		// Desenha a nave
 		fillpoly(3,Nave.vertices);
-		
 		
 		// Deixe a página que foi alterada em modo de visualização
 		setvisualpage(pg);
