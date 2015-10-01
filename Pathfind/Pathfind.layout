@@ -1,9 +1,9 @@
 [Editors]
 Order=0,3
-Focused=3
+Focused=0
 [Editor_0]
-CursorCol=12
-CursorRow=17
+CursorCol=10
+CursorRow=19
 TopLine=2
 LeftChar=1
 [Editor_3]
