@@ -12,6 +12,8 @@
 #include "..\..\header\sprite.h"
 #include "..\..\header\campojogo.h"
 #include "..\..\header\grade.h"
+#include "..\..\header\pagina.h"
+
 
 // Estrutura básica de um programa
 
@@ -29,6 +31,6 @@ int main(){
 }
 
 
-// Última atualização: 25 de set. 2015
+// Última atualização: 01 de out. 2015
 
 //===============================================
