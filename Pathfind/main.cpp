@@ -23,6 +23,7 @@ int main(){
 	bool gameLoop = true;
 	Soldado meuSold; 
 	int x, y; // Opção do jogador para movimentação
+	bool posCego; // Indica se o soldado chegou ao ponto não vísível
 	
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H);
@@ -68,11 +69,21 @@ int main(){
 	
 		/// Teste - Move-se até o destino especificado
 		cout << endl << "x = " << meuSold.x << " | y = " << meuSold.y;
-	if (meuSold.MovUntil(meuSold.X + (TILE_W * 1) , meuSold.Y - (TILE_H * 2))){
-	/*	if(meuSold.MovUntil(120,800)){*/
 		
-			meuSold.MovUntil(meuSold.x, 64 );
+		// Se o soldado não estiver no "ponto cego"
+		if(posCego == false){
+			
+			// Movimenta-se até o ponto cego
+			posCego = meuSold.MovUntil(meuSold.X + (TILE_W * 21) , meuSold.Y - (TILE_H * 3));
+		} 
+		// Se o soldado estiver no "ponto cego"
+		else{
+			// Vai até a área visível
+			meuSold.MovUntil(meuSold.x, 64);
 		}
+		
+		
+		
 		
 		// Mostra soldado
 		meuSold.Show();
