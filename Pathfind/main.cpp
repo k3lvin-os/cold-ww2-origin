@@ -23,7 +23,9 @@ int main(){
 	bool gameLoop = true;
 	Soldado meuSold; 
 	int x, y; // Opção do jogador para movimentação
-	bool posCego; // Indica se o soldado chegou ao ponto não vísível
+	bool posCego = false; // Indica se o soldado chegou ao ponto não vísível
+	bool visivel = false; // Indica se o soldado chegou ao ponto visivel (hora da pathfind)
+	bool dest = false; // Indica se o soldado chegou ao destino
 	
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H);
@@ -42,6 +44,9 @@ int main(){
 	
 	// Mostra campo de jogo
 	meuCampo.Mostrar();
+	
+	// Teste
+	meuCampo.Console();
 	
 	// Inicializa o soldado
 	meuSold.Init("Chara");
@@ -66,9 +71,6 @@ int main(){
 		
 		// Mostra campo de jogo
 		meuCampo.Mostrar();
-	
-		/// Teste - Move-se até o destino especificado
-		cout << endl << "x = " << meuSold.x << " | y = " << meuSold.y;
 		
 		// Se o soldado não estiver no "ponto cego"
 		if(posCego == false){
@@ -78,11 +80,31 @@ int main(){
 		} 
 		// Se o soldado estiver no "ponto cego"
 		else{
-			// Vai até a área visível
-			meuSold.MovUntil(meuSold.x, 64);
+			
+			// Se o soldado não estiver no ponto visível
+			if(visivel == false){
+					
+					// Vai até a área visível
+					visivel = meuSold.MovUntil(meuSold.x, 64);
+			} 
+			// Se  o soldado chegou a área visível
+			else{
+				
+				// Se o soldado não chegou ao destino
+				if(dest == false){
+					
+					// Vai ao destino pathfind
+					dest = meuSold.MoveDest(meuCampo,35,2);
+				}
+				
+			}
+			
+
+			
+		
 		}
 		
-		
+	
 		
 		
 		// Mostra soldado
