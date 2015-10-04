@@ -62,7 +62,7 @@ int main(){
 	//Loop do jogo
 	while(gameLoop == true){
 		
-		// Troca e ativa uma nova página para modifcações nos gráficos
+		// Troca e ativa uma nova página para modificações nos gráficos
 		minhaPg.Troca();
 		minhaPg.Ativa();
 		
@@ -75,8 +75,19 @@ int main(){
 		// Se o soldado não estiver no "ponto cego"
 		if(posCego == false){
 			
+			// Se o soldado não souber para onde ir
+			if(meuSold.movNUntil == false){
+				
+				// Coordenadas do ponto cego
+				x = meuSold.X + (TILE_W * 21);
+				y = meuSold.Y - (TILE_H * 3);
+				
+				// Define o ponto cego como destino
+				meuSold.MovUntil(x,y);
+			}
+			
 			// Movimenta-se até o ponto cego
-			posCego = meuSold.MovUntil(meuSold.X + (TILE_W * 21) , meuSold.Y - (TILE_H * 3));
+			posCego = meuSold.MovUntil();
 		} 
 		// Se o soldado estiver no "ponto cego"
 		else{
@@ -84,17 +95,35 @@ int main(){
 			// Se o soldado não estiver no ponto visível
 			if(visivel == false){
 					
-					// Vai até a área visível
-					visivel = meuSold.MovUntil(meuSold.x, 64);
+					// Se o soldado não souber para onde ir
+					if(meuSold.movNUntil == false){
+						
+						// Define a coordenada do ponto visível
+						meuSold.MovUntil(meuSold.x, 64);
+					} 
+					
+					// Movimente o soldado até o destino
+					visivel = meuSold.MovUntil();
 			} 
-			// Se  o soldado chegou a área visível
+			
+			// Se o soldado chegou a área visível
 			else{
 				
 				// Se o soldado não chegou ao destino
 				if(dest == false){
 					
-					// Vai ao destino pathfind
-					dest = meuSold.MoveDest(meuCampo,35,2);
+					// Se o soldado não souber para onde ir
+					if(meuSold.movNUntil == false){
+						
+						// Usa Pathfind
+						dest = meuSold.MoveDest(meuCampo,35,2);
+					} 
+					
+					// Movimenta-se até o ponto definido
+					meuSold.MovUntil();
+					
+					
+					
 				}
 				
 			}
