@@ -22,7 +22,6 @@ int main(){
 	Pagina minhaPg;
 	bool gameLoop = true;
 	Soldado meuSold; 
-	int x, y; // Opção do jogador para movimentação
 	
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H);
@@ -54,7 +53,7 @@ int main(){
 	//Loop do jogo
 	while(gameLoop == true){
 		
-		// Troca e ativa uma nova página para modificações nos gráficos
+		// Troca e ativa uma nova página para modificações
 		minhaPg.Troca();
 		minhaPg.Ativa();
 		
