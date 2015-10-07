@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream> // E / S de arquivos
 #include <iomanip> // Para ler em caracter a caracter
+#include <time.h> // Para trabalhar com o tempo
 #include <graphics.h>
 
 // Bibliotecas criados pela equipe de desenvolvimento
@@ -11,13 +12,13 @@
 #include "..\..\header\grade.h"
 #include "..\..\header\soldado.h"
 #include "..\..\header\pagina.h"
-#include "..\..\header\tropa.h"
 
 using namespace std;
 
 
 int main(){
 	
+	// GUI 
 	const int GUISoldX = 1000;
 	const int GUISoldY = TELA_H - (TILE_H * 3);
 	
@@ -27,20 +28,25 @@ int main(){
 	Pagina minhaPg;
 	bool gameLoop = true;
 	Soldado meuSold;
+	time_t marcador = NULL;
+	time_t agora = NULL;
+	double diferenca;
+
 	
 	// Cabeça da lista encadeada de tropas
-	Tropa *tropa0;
+	Soldado *soldado0;
 	
 	// Ponteiro para trabalhar com a lista de tropas
-	Tropa *pTropa;
-	
-	 
+	Soldado *pSold;
 	
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H);
 	
 	// Inicializa a estrutura página
 	minhaPg.Init();
+	
+	// Inicializa o marcador
+	time(&marcador);
 	
 	// Troca a página atual
 	minhaPg.Troca();
@@ -59,8 +65,8 @@ int main(){
 	meuSold.GoTo(GUISoldX,GUISoldY);
 
 	// Inicializa a cabeça da lista encadeada de soldados
-	tropa0 = (Tropa *) malloc(sizeof(Tropa));
-	tropa0->prox = NULL;
+	soldado0 = (Soldado *) malloc(sizeof(Soldado));
+	soldado0->prox = NULL;
 		
 	// Deixa a página visual
 	minhaPg.Visual();
@@ -78,6 +84,8 @@ int main(){
 		// Mostra campo de jogo
 		meuCampo.Mostrar();
 		
+
+		
 		// Verifica o click do mouse
 		if(GetKeyState(VK_LBUTTON) & 0x80){
 			mouseX = mousex();
@@ -85,14 +93,32 @@ int main(){
 			if(mouseX >= GUISoldX && mouseX <= GUISoldX + TILE_W
 				&& mouseY >= GUISoldY && mouseY <= GUISoldY + TILE_H ){
 					
-					// Hora de enviar uma tropa
-					pTropa = tropa0->Insere("Chara");
-					pTropa->Enviar();
+					time(&agora); // Recebe hora atual
+					
+					// Se se o tempo de delay passou
+					if(difftime(agora,marcador) >= S_DELAY){
+						
+						cout << "Você  atingiu o delay necessário\n";
+						
+						//Insere uma nova tropa na lista encadeada
+						pSold = soldado0->Insere(soldado0,"Chara");
+						
+						// Atribui a hora atual ao marcador
+						time(&marcador);
+					} else{
+						diferenca = difftime(agora,marcador);
+						cout << "Diferenca = " << diferenca << endl;
+					}
+					
+
 				}				
 		}
 		
 		// Limpa campo de carregamento de imagens
 		meuCampo.LimpaD();
+		
+		// Envia os soldados
+		soldado0->Enviar(soldado0, meuCampo);
 		
 		// Mostra soldado (Interface gráfica)
 		meuSold.Show();
