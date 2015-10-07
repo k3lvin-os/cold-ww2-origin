@@ -11,17 +11,30 @@
 #include "..\..\header\grade.h"
 #include "..\..\header\soldado.h"
 #include "..\..\header\pagina.h"
+#include "..\..\header\tropa.h"
 
 using namespace std;
 
 
 int main(){
 	
+	const int GUISoldX = 1000;
+	const int GUISoldY = TELA_H - (TILE_H * 3);
+	
 	// Declaração de variáveis
+	int mouseX, mouseY;
 	CampoJogo meuCampo;
 	Pagina minhaPg;
 	bool gameLoop = true;
-	Soldado meuSold; 
+	Soldado meuSold;
+	
+	// Cabeça da lista encadeada de tropas
+	Tropa *tropa0;
+	
+	// Ponteiro para trabalhar com a lista de tropas
+	Tropa *pTropa;
+	
+	 
 	
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H);
@@ -41,12 +54,14 @@ int main(){
 	// Mostra campo de jogo
 	meuCampo.Mostrar();
 	
-	// Inicializa o soldado
+	// Inicializa o "soldado" (GUI) 
 	meuSold.Init("Chara");
-	
-	// Mostra soldado
-	meuSold.Show();	
-	
+	meuSold.GoTo(GUISoldX,GUISoldY);
+
+	// Inicializa a cabeça da lista encadeada de soldados
+	tropa0 = (Tropa *) malloc(sizeof(Tropa));
+	tropa0->prox = NULL;
+		
 	// Deixa a página visual
 	minhaPg.Visual();
 	
@@ -63,15 +78,28 @@ int main(){
 		// Mostra campo de jogo
 		meuCampo.Mostrar();
 		
-		// Utiliza a IA do soldado
-		meuSold.IA(meuCampo);
+		// Verifica o click do mouse
+		if(GetKeyState(VK_LBUTTON) & 0x80){
+			mouseX = mousex();
+			mouseY = mousey();
+			if(mouseX >= GUISoldX && mouseX <= GUISoldX + TILE_W
+				&& mouseY >= GUISoldY && mouseY <= GUISoldY + TILE_H ){
+					
+					// Hora de enviar uma tropa
+					pTropa = tropa0->Insere("Chara");
+					pTropa->Enviar();
+				}				
+		}
 		
-		// Mostra soldado
+		// Limpa campo de carregamento de imagens
+		meuCampo.LimpaD();
+		
+		// Mostra soldado (Interface gráfica)
 		meuSold.Show();
 		
 		//Deixa a página visual
 		minhaPg.Visual();
-				
+						
 		// Delay de FPS
 		delay(FPS);
 		
