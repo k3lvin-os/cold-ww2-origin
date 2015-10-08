@@ -4,8 +4,8 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = main.o ../../header/td_functions.o ../../header/tropa.o
-LINKOBJ  = main.o ../../header/td_functions.o ../../header/tropa.o
+OBJ      = main.o
+LINKOBJ  = main.o
 LIBS     = -L"C:/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -lbgi -lgdi32 -lcomdlg32 -luuid -loleaut32 -lole32 -m32 -g3
 INCS     = -I"C:/Dev-Cpp/MinGW64/include" -I"C:/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"C:/Dev-Cpp/MinGW64/include" -I"C:/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
@@ -26,9 +26,3 @@ $(BIN): $(OBJ)
 
 main.o: main.cpp
 	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
-
-../../header/td_functions.o: ../../header/td_functions.cpp
-	$(CPP) -c ../../header/td_functions.cpp -o ../../header/td_functions.o $(CXXFLAGS)
-
-../../header/tropa.o: ../../header/tropa.cpp
-	$(CPP) -c ../../header/tropa.cpp -o ../../header/tropa.o $(CXXFLAGS)

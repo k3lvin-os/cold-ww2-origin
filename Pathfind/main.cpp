@@ -5,13 +5,13 @@
 #include <graphics.h>
 
 // Bibliotecas criados pela equipe de desenvolvimento
-#include "..\..\header\td_functions.h"
 #include "..\..\header\td_defines.h"
 #include "..\..\header\sprite.h"
 #include "..\..\header\campojogo.h"
 #include "..\..\header\grade.h"
 #include "..\..\header\soldado.h"
 #include "..\..\header\pagina.h"
+#include "..\..\header\inimigo.h"
 
 using namespace std;
 
