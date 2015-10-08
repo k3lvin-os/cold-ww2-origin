@@ -34,10 +34,10 @@ int main(){
 
 	
 	// Cabeça da lista encadeada de tropas
-	Soldado *soldado0;
+	Soldado *soldado0 = NULL;
 	
 	// Ponteiro para trabalhar com a lista de tropas
-	Soldado *pSold;
+	Soldado *pSold = NULL;
 	
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H);
@@ -130,6 +130,11 @@ int main(){
 		delay(FPS);
 		
 	}
+	// Libera a memória
+	soldado0->LimpaNo(soldado0);
+	meuCampo.LimpaMem();
+	
+	
 	closegraph();
 	return 0;	
 }
