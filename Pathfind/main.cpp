@@ -12,17 +12,22 @@
 #include "..\..\header\soldado.h"
 #include "..\..\header\pagina.h"
 #include "..\..\header\inimigo.h"
+#include "..\..\header\jogador.h"
 
 using namespace std;
 
 
 int main(){
 	
+
+	
 	// GUI 
 	const int GUISoldX = 1000;
 	const int GUISoldY = TELA_H - (TILE_H * 3);
 	
 	// Declaração de variáveis
+	Jogador meuJog;
+	Jogador outroJog;
 	int mouseX, mouseY;
 	CampoJogo meuCampo;
 	Pagina minhaPg;
@@ -31,6 +36,10 @@ int main(){
 	time_t marcador = NULL;
 	time_t agora = NULL;
 	double diferenca;
+	
+	// Atribui times aos jogadores
+	meuJog.Init("Aliados Socialistas");
+	outroJog.Init("Aliados Capitalistas");
 
 	
 	// Cabeça da lista encadeada de tropas
