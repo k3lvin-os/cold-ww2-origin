@@ -16,6 +16,9 @@
 
 using namespace std;
 
+// Variáveis Globais
+Jogador meuJog;
+Jogador outroJog;
 
 int main(){
 	
@@ -25,9 +28,7 @@ int main(){
 	const int GUISoldX = 1000;
 	const int GUISoldY = TELA_H - (TILE_H * 3);
 	
-	// Declaração de variáveis
-	Jogador meuJog;
-	Jogador outroJog;
+
 	int mouseX, mouseY;
 	CampoJogo meuCampo;
 	Pagina minhaPg;
@@ -142,6 +143,8 @@ int main(){
 	// Libera a memória
 	soldado0->LimpaNo(soldado0);
 	meuCampo.LimpaMem();
+	meuJog.inimigo0->LimpaNo(meuJog.inimigo0);
+	outroJog.inimigo0->LimpaNo(outroJog.inimigo0);
 	
 	
 	closegraph();
