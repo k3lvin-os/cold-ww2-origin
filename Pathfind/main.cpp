@@ -13,53 +13,47 @@
 #include "..\..\header\pagina.h"
 #include "..\..\header\inimigo.h"
 #include "..\..\header\jogador.h"
+#include "..\..\header\gui.h"
+#include "..\..\header\mousetd.h"
+#include "..\..\header\t_envio.h"
 
 using namespace std;
 
 // Variáveis Globais
 Jogador meuJog;
 Jogador outroJog;
+T_Envio envioSold;
+MouseTd meuMouse;
+GUI minhaGUI;
 
 int main(){
-	
-
-	
-	// GUI 
-	const int GUISoldX = 1000;
-	const int GUISoldY = TELA_H - (TILE_H * 3);
 	
 
 	int mouseX, mouseY;
 	CampoJogo meuCampo;
 	Pagina minhaPg;
 	bool gameLoop = true;
-	Soldado meuSold;
 	time_t marcador = NULL;
 	time_t agora = NULL;
 	double diferenca;
-	
+	time_t countdown;
+		
 	// Atribui times aos jogadores
 	meuJog.Init("Aliados Socialistas");
 	outroJog.Init("Aliados Capitalistas");
 
 	
-	// Cabeça da lista encadeada de tropas
-	Soldado *soldado0 = NULL;
-	
-	// Ponteiro para trabalhar com a lista de tropas
-	Soldado *pSold = NULL;
+	Soldado *soldado0 = NULL;	// Cabeça da lista encadeada de tropas
+	Soldado *pSold = NULL;	// Ponteiro para trabalhar com lista de tropas
+
 	
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H);
 	
-	// Inicializa a estrutura página
-	minhaPg.Init();
 	
-	// Inicializa o marcador
-	time(&marcador);
-	
-	// Troca a página atual
-	minhaPg.Troca();
+	minhaPg.Init();	// Inicializa a estrutura página
+	minhaPg.Troca();	// Troca a página atual
+
 
 	// Trabalha com a página nos "bastidores"
 	minhaPg.Ativa();
@@ -69,10 +63,6 @@ int main(){
 	
 	// Mostra campo de jogo
 	meuCampo.Mostrar();
-	
-	// Inicializa o "soldado" (GUI) 
-	meuSold.Init("Eua");
-	meuSold.GoTo(GUISoldX,GUISoldY);
 
 	// Inicializa a cabeça da lista encadeada de soldados
 	soldado0 = (Soldado *) malloc(sizeof(Soldado));
@@ -80,6 +70,12 @@ int main(){
 		
 	// Deixa a página visual
 	minhaPg.Visual();
+	
+	// O cronômetro do jogo é iniciado
+	time(&countdown);
+	
+	// O marcador de envio de soldado é iniciado
+	envioSold.Init();	
 	
 	//Loop do jogo
 	while(gameLoop == true){
@@ -91,8 +87,8 @@ int main(){
 		// Limpa a tela
 		cleardevice();
 		
-		// Mostra campo de jogo
-		meuCampo.Mostrar();
+		meuCampo.Mostrar();		// Mostra campo de jogo
+		minhaGUI.Mostra("default"); // Mostra gui padrão
 		
 
 		
@@ -100,28 +96,10 @@ int main(){
 		if(GetKeyState(VK_LBUTTON) & 0x80){
 			mouseX = mousex();
 			mouseY = mousey();
-			if(mouseX >= GUISoldX && mouseX <= GUISoldX + TILE_W
-				&& mouseY >= GUISoldY && mouseY <= GUISoldY + TILE_H ){
-					
-					time(&agora); // Recebe hora atual
-					
-					// Se se o tempo de delay passou
-					if(difftime(agora,marcador) >= S_DELAY){
-						
-						cout << "Você  atingiu o delay necessário\n";
-						
-						//Insere uma nova tropa na lista encadeada
-						pSold = soldado0->Insere(soldado0,"Eua");
-						
-						// Atribui a hora atual ao marcador
-						time(&marcador);
-					} else{
-						diferenca = difftime(agora,marcador);
-						cout << "Diferenca = " << diferenca << endl;
-					}
-					
-
-				}				
+			
+			// Verifica o tipo de entrada de dados com o mouse
+			// e lida com ela
+			meuMouse.Check(mouseX,mouseY);			
 		}
 		
 		// Limpa campo de carregamento de imagens
@@ -129,9 +107,6 @@ int main(){
 		
 		// Envia os soldados
 		soldado0->Enviar(soldado0, meuCampo);
-		
-		// Mostra soldado (Interface gráfica)
-		meuSold.Show();
 		
 		//Deixa a página visual
 		minhaPg.Visual();
