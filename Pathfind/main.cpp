@@ -1,3 +1,5 @@
+
+
 #include <iostream>
 #include <fstream> // E / S de arquivos
 #include <iomanip> // Para ler em caracter a caracter
@@ -12,48 +14,36 @@
 #include "..\..\header\soldado.h"
 #include "..\..\header\pagina.h"
 #include "..\..\header\inimigo.h"
-#include "..\..\header\jogador.h"
-#include "..\..\header\gui.h"
-#include "..\..\header\mousetd.h"
 #include "..\..\header\t_envio.h"
+#include "..\..\header\jogador.h"
+
+
 
 using namespace std;
 
-// Variáveis Globais
-Jogador meuJog;
-Jogador outroJog;
-T_Envio envioSold;
-MouseTd meuMouse;
-GUI minhaGUI;
+
 
 int main(){
 	
-
+	// Declaração de variáveis
+	Jogador meuJog;
+	Jogador outroJog;
 	int mouseX, mouseY;
 	CampoJogo meuCampo;
 	Pagina minhaPg;
 	bool gameLoop = true;
-	time_t marcador = NULL;
 	time_t agora = NULL;
-	double diferenca;
 	time_t countdown;
 		
 	// Atribui times aos jogadores
-	meuJog.Init("Aliados Socialistas");
-	outroJog.Init("Aliados Capitalistas");
+	meuJog.Init(LADO1);
+	outroJog.Init(LADO2);
 
-	
-	Soldado *soldado0 = NULL;	// Cabeça da lista encadeada de tropas
-	Soldado *pSold = NULL;	// Ponteiro para trabalhar com lista de tropas
-
-	
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H);
 	
-	
 	minhaPg.Init();	// Inicializa a estrutura página
 	minhaPg.Troca();	// Troca a página atual
-
 
 	// Trabalha com a página nos "bastidores"
 	minhaPg.Ativa();
@@ -63,19 +53,12 @@ int main(){
 	
 	// Mostra campo de jogo
 	meuCampo.Mostrar();
-
-	// Inicializa a cabeça da lista encadeada de soldados
-	soldado0 = (Soldado *) malloc(sizeof(Soldado));
-	soldado0->prox = NULL;
-		
+	
 	// Deixa a página visual
 	minhaPg.Visual();
 	
 	// O cronômetro do jogo é iniciado
 	time(&countdown);
-	
-	// O marcador de envio de soldado é iniciado
-	envioSold.Init();	
 	
 	//Loop do jogo
 	while(gameLoop == true){
@@ -88,25 +71,16 @@ int main(){
 		cleardevice();
 		
 		meuCampo.Mostrar();		// Mostra campo de jogo
-		minhaGUI.Mostra("default"); // Mostra gui padrão
+		meuJog.MostraGUI(); // Mostra gui do jogador
 		
-
-		
-		// Verifica o click do mouse
-		if(GetKeyState(VK_LBUTTON) & 0x80){
-			mouseX = mousex();
-			mouseY = mousey();
-			
-			// Verifica o tipo de entrada de dados com o mouse
-			// e lida com ela
-			meuMouse.Check(mouseX,mouseY);			
-		}
+		// Verifica o input do usuário com a GUI
+		meuJog.InputGUI();
 		
 		// Limpa campo de carregamento de imagens
 		meuCampo.LimpaD();
 		
 		// Envia os soldados
-		soldado0->Enviar(soldado0, meuCampo);
+		meuJog.soldado0->Enviar(meuJog.soldado0, meuCampo);
 		
 		//Deixa a página visual
 		minhaPg.Visual();
@@ -116,10 +90,11 @@ int main(){
 		
 	}
 	// Libera a memória
-	soldado0->LimpaNo(soldado0);
+	meuJog.soldado0->LimpaNo(meuJog.soldado0);
 	meuCampo.LimpaMem();
 	meuJog.inimigo0->LimpaNo(meuJog.inimigo0);
 	outroJog.inimigo0->LimpaNo(outroJog.inimigo0);
+	outroJog.soldado0->LimpaNo(outroJog.soldado0);
 	
 	
 	closegraph();
