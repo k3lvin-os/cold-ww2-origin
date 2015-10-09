@@ -71,7 +71,7 @@ int main(){
 	meuCampo.Mostrar();
 	
 	// Inicializa o "soldado" (GUI) 
-	meuSold.Init("Chara");
+	meuSold.Init("Eua");
 	meuSold.GoTo(GUISoldX,GUISoldY);
 
 	// Inicializa a cabeça da lista encadeada de soldados
@@ -111,7 +111,7 @@ int main(){
 						cout << "Você  atingiu o delay necessário\n";
 						
 						//Insere uma nova tropa na lista encadeada
-						pSold = soldado0->Insere(soldado0,"Chara");
+						pSold = soldado0->Insere(soldado0,"Eua");
 						
 						// Atribui a hora atual ao marcador
 						time(&marcador);
