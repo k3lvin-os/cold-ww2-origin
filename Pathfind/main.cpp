@@ -1,5 +1,3 @@
-
-
 #include <iostream>
 #include <fstream> // E / S de arquivos
 #include <iomanip> // Para ler em caracter a caracter
@@ -16,12 +14,9 @@
 #include "..\..\header\inimigo.h"
 #include "..\..\header\t_envio.h"
 #include "..\..\header\jogador.h"
-
-
+#include "..\..\header\relogio.h"
 
 using namespace std;
-
-
 
 int main(){
 	
@@ -33,7 +28,7 @@ int main(){
 	Pagina minhaPg;
 	bool gameLoop = true;
 	time_t agora = NULL;
-	time_t countdown;
+	Relogio countdown;
 		
 	// Atribui times aos jogadores
 	meuJog.Init(LADO1);
@@ -58,7 +53,7 @@ int main(){
 	minhaPg.Visual();
 	
 	// O cronômetro do jogo é iniciado
-	time(&countdown);
+	countdown.Init();
 	
 	//Loop do jogo
 	while(gameLoop == true){
@@ -79,11 +74,14 @@ int main(){
 		// Limpa campo de carregamento de imagens
 		meuCampo.LimpaD();
 		
-		// Envia os soldados
+		// Rotina de envio de soldados 
 		meuJog.soldado0->Enviar(meuJog.soldado0, meuCampo);
 		
 		//Deixa a página visual
 		minhaPg.Visual();
+		
+		// Verifica o tempo de jogo
+		countdown.Verifica();
 						
 		// Delay de FPS
 		delay(FPS);
