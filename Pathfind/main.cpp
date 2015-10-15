@@ -14,6 +14,11 @@
 #include "..\..\header\jogador.h"
 #include "..\..\header\gametime.h"
 
+
+/*Protótipo de funções*/
+void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo);
+
+
 using namespace std;
 
 int main(){
@@ -74,7 +79,7 @@ int main(){
 		meuCampo.LimpaD();
 		
 		// Rotina de envio de soldados 
-		meuJog.soldado0->Envia(meuJog.soldado0, meuCampo);
+		EnviaSold(&meuJog,&outroJog,meuCampo);
 		
 		
 		//Deixa a página visual
@@ -96,3 +101,37 @@ int main(){
 	closegraph();
 	return 0;	
 }
+
+
+/*Funções*/
+
+
+void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
+
+	Soldado *novoIni;
+	Soldado *pSold, *anterior;
+	Soldado *soldado0;
+	
+	soldado0 = meuJog->soldado0;
+	
+	for(pSold = soldado0->prox; pSold != NULL; pSold = pSold->prox){
+	
+		if(pSold->vida > 0 && pSold->dest != true){
+			
+			pSold->Show();
+			pSold->IA(meuCampo);
+			
+		} 
+		
+		else{
+			
+			anterior = soldado0->Anterior(soldado0);
+			
+			if(pSold->dest == true)
+				pSold->Chegou(anterior);
+			else
+				pSold->Morre(anterior);		
+		}
+	}
+}
+
