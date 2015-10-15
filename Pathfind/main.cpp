@@ -10,9 +10,9 @@
 #include "..\..\header\campojogo.h"
 #include "..\..\header\soldado.h"
 #include "..\..\header\pagina.h"
-#include "..\..\header\t_envio.h"
+#include "..\..\header\tdelay.h"
 #include "..\..\header\jogador.h"
-#include "..\..\header\relogio.h"
+#include "..\..\header\gametime.h"
 
 using namespace std;
 
@@ -26,7 +26,7 @@ int main(){
 	Pagina minhaPg;
 	bool gameLoop = true;
 	time_t agora = NULL;
-	Relogio countdown;
+	GameTime countdown;
 	int teste = 2;
 		
 	// Atribui times aos jogadores
