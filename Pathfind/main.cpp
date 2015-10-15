@@ -74,10 +74,8 @@ int main(){
 		meuCampo.LimpaD();
 		
 		// Rotina de envio de soldados 
-		meuJog.soldado0->Enviar(meuJog.soldado0, outroJog.inimigo0, meuCampo);
+		meuJog.soldado0->Enviar(meuJog.soldado0, meuCampo);
 		
-		// Rotina de lista de inimigos
-		meuJog.soldado0->Liberar(outroJog.inimigo0,teste);
 		
 		//Deixa a página visual
 		minhaPg.Visual();
@@ -92,8 +90,6 @@ int main(){
 	// Libera a memória
 	meuCampo.LimpaMem();
 	meuJog.soldado0->LimpaNo(meuJog.soldado0);
-	meuJog.inimigo0->LimpaNo(meuJog.inimigo0);
-	outroJog.inimigo0->LimpaNo(outroJog.inimigo0);
 	outroJog.soldado0->LimpaNo(outroJog.soldado0);
 	
 	
