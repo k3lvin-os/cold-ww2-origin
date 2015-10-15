@@ -74,7 +74,7 @@ int main(){
 		meuCampo.LimpaD();
 		
 		// Rotina de envio de soldados 
-		meuJog.soldado0->Enviar(meuJog.soldado0, meuCampo);
+		meuJog.soldado0->Envia(meuJog.soldado0, meuCampo);
 		
 		
 		//Deixa a página visual
