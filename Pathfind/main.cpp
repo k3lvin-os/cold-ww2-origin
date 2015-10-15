@@ -8,9 +8,9 @@
 #include "..\..\header\td_defines.h"
 #include "..\..\header\sprite.h"
 #include "..\..\header\campojogo.h"
+#include "..\..\header\tdelay.h"
 #include "..\..\header\soldado.h"
 #include "..\..\header\pagina.h"
-#include "..\..\header\tdelay.h"
 #include "..\..\header\jogador.h"
 #include "..\..\header\gametime.h"
 
@@ -111,15 +111,18 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 	Soldado *novoIni;
 	Soldado *pSold, *anterior;
 	Soldado *soldado0;
+	TDelay *tempoEspera;
 	
 	soldado0 = meuJog->soldado0;
+	tempoEspera = &(outroJog->esperaIni);
 	
 	for(pSold = soldado0->prox; pSold != NULL; pSold = pSold->prox){
 	
 		if(pSold->vida > 0 && pSold->dest != true){
 			
 			pSold->Show();
-			pSold->IA(meuCampo);
+			
+			pSold->IA(meuCampo, tempoEspera);
 			
 		} 
 		
