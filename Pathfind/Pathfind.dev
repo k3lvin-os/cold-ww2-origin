@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=3
 CompilerSettings=0000000100000000001000000
-UnitCount=12
+UnitCount=11
 
 [VersionInfo]
 Major=1
@@ -111,7 +111,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit9]
-FileName=..\..\header\inimigo.h
+FileName=..\..\header\jogador.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -141,7 +141,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit10]
-FileName=..\..\header\jogador.h
+FileName=..\..\header\t_envio.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -160,18 +160,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit12]
-FileName=..\..\header\relogio.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit11]
-FileName=..\..\header\t_envio.h
+FileName=..\..\header\relogio.h
 CompileCpp=1
 Folder=
 Compile=1

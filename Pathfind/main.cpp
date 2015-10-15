@@ -27,6 +27,7 @@ int main(){
 	bool gameLoop = true;
 	time_t agora = NULL;
 	Relogio countdown;
+	int teste = 2;
 		
 	// Atribui times aos jogadores
 	meuJog.Init(LADO1);
@@ -73,7 +74,10 @@ int main(){
 		meuCampo.LimpaD();
 		
 		// Rotina de envio de soldados 
-		meuJog.soldado0->Enviar(meuJog.soldado0, meuCampo);
+		meuJog.soldado0->Enviar(meuJog.soldado0, outroJog.inimigo0, meuCampo);
+		
+		// Rotina de lista de inimigos
+		meuJog.soldado0->Liberar(meuJog.soldado0,teste);
 		
 		//Deixa a página visual
 		minhaPg.Visual();
