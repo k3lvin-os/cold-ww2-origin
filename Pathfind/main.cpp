@@ -36,12 +36,12 @@ int main(){
 	int teste = 2;
 		
 	// Atribui times aos jogadores
-	meuJog.Init(LADO1);
-	outroJog.Init(LADO2);
+	meuJog.Init(LADO2);
+	outroJog.Init(LADO1);
 	eixoIA.Init(LADO3);
 
 	// Inicialize a janela gráfica
-	initwindow(TELA_W,TELA_H);
+	initwindow(TELA_W,TELA_H, "Seek Of Peace: Cold WW2");
 	
 	minhaPg.Init();	// Inicializa a estrutura página
 	minhaPg.Troca();	// Troca a página atual
@@ -158,11 +158,11 @@ void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo){
 	
 	if(onda != SEM_ONDA){
 		
-		if(dest == "Urss"){
+		if(dest == LADO2){
 			soldX = EUACEGOX;
 			soldY = EUACEGOY;
 		} 
-		else if(dest == "Eua"){
+		else if(dest == LADO1){
 			soldX = URSSCEGOX;
 			soldY = URSSCEGOY;
 		}
@@ -183,6 +183,8 @@ void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo){
 				for(i = 0; i < qtdIni; i++){
 					pSold = soldado0->Insere(soldado0,"Nazi");
 					pSold->GoTo(soldX,soldY);
+					pSold->direcao = BAIXO;
+					pSold->posCego = true;
 				}
 				
 				break;
