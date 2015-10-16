@@ -17,6 +17,7 @@
 
 /*Protótipo de funções*/
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo);
+void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo);
 
 
 using namespace std;
@@ -24,19 +25,20 @@ using namespace std;
 int main(){
 	
 	// Declaração de variáveis
-	Jogador meuJog;
-	Jogador outroJog;
+	Jogador meuJog,  outroJog, eixoIA;
+	char onda;
 	int mouseX, mouseY;
 	CampoJogo meuCampo;
 	Pagina minhaPg;
 	bool gameLoop = true;
 	time_t agora = NULL;
-	GameTime countdown;
+	TDelay gameTime;
 	int teste = 2;
 		
 	// Atribui times aos jogadores
 	meuJog.Init(LADO1);
 	outroJog.Init(LADO2);
+	eixoIA.Init(LADO3);
 
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H);
@@ -56,8 +58,8 @@ int main(){
 	// Deixa a página visual
 	minhaPg.Visual();
 	
-	// O cronômetro do jogo é iniciado
-	countdown.Init();
+	// Começa a contar o tempo de jogo
+	gameTime.Init();
 	
 	//Loop do jogo
 	while(gameLoop == true){
@@ -81,13 +83,17 @@ int main(){
 		// Rotina de envio de soldados 
 		EnviaSold(&meuJog,&outroJog,meuCampo);
 		
-		
+		// Rotina de envio de soldados do Eixo (IA)
+		EnviaSold(&eixoIA,&outroJog,meuCampo);
+				
 		//Deixa a página visual
 		minhaPg.Visual();
 		
-		// Verifica o tempo de jogo
-		countdown.Verifica();
-						
+		// Verifica se hora de enviar uma onda da IA
+		onda = gameTime.SoldOnda();	
+		OndaSold(onda,outroJog.lado,&eixoIA,meuCampo);
+
+					
 		// Delay de FPS
 		delay(FPS);
 		
@@ -105,7 +111,7 @@ int main(){
 
 /*Funções*/
 
-
+// Rotina de envio de soldados para outro jogador 
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 
 	Soldado *novoIni;
@@ -128,7 +134,7 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 		
 		else{
 			
-			anterior = soldado0->Anterior(soldado0);
+			anterior = pSold->Anterior(soldado0);
 			
 			if(pSold->dest == true)
 				pSold->Chegou(anterior);
@@ -137,4 +143,53 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 		}
 	}
 }
+
+//=========================================================================
+
+// Rotina de envio de onda de soldados do Eixo
+void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo){
+	
+	int soldX,  soldY, qtdIni, i;
+	Soldado *pSold;
+	Soldado *soldado0;
+	
+	soldado0 = eixoIA->soldado0;
+
+	
+	if(onda != SEM_ONDA){
+		
+		if(dest == "Urss"){
+			soldX = EUACEGOX;
+			soldY = EUACEGOY;
+		} 
+		else if(dest == "Eua"){
+			soldX = URSSCEGOX;
+			soldY = URSSCEGOY;
+		}
+		
+		switch(onda){
+			
+			case '0':
+				outtextxy(590,10,"COMEÇAR");
+				delay(2000);
+				break;
+			case '1':
+				
+				
+				outtextxy(480,30,"Faltam 4 m para o ataque final do EIXO");
+				delay(2000);
+				
+				qtdIni = 10;
+				for(i = 0; i < qtdIni; i++){
+					pSold = soldado0->Insere(soldado0,"Nazi");
+					pSold->GoTo(soldX,soldY);
+				}
+				
+				break;
+		}
+		
+	}
+
+}
+
 
