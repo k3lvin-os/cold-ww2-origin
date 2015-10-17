@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=3
 CompilerSettings=0000000100000000001000000
-UnitCount=11
+UnitCount=10
 
 [VersionInfo]
 Major=1
@@ -110,16 +110,6 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit9]
-FileName=..\..\header\gametime.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit7]
 FileName=..\..\header\pagina.h
 CompileCpp=1
@@ -141,11 +131,11 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit10]
-FileName=..\..\header\tdelay.h
+FileName=..\..\Assets\Icone\icon.ico
 CompileCpp=1
 Folder=
-Compile=1
-Link=1
+Compile=0
+Link=0
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
@@ -166,6 +156,16 @@ CompileCpp=1
 Folder=
 Compile=0
 Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit9]
+FileName=..\..\header\tdelay.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=

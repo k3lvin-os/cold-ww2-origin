@@ -12,12 +12,12 @@
 #include "..\..\header\soldado.h"
 #include "..\..\header\pagina.h"
 #include "..\..\header\jogador.h"
-#include "..\..\header\gametime.h"
 
 
 /*Protótipo de funções*/
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo);
 void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo);
+void Avisa(TDelay gameTime);
 
 
 using namespace std;
@@ -77,21 +77,26 @@ int main(){
 		// Verifica o input do usuário com a GUI
 		meuJog.InputGUI();
 		
-		// Limpa campo de carregamento de imagens
-		meuCampo.LimpaD();
-		
 		// Rotina de envio de soldados 
 		EnviaSold(&meuJog,&outroJog,meuCampo);
 		
-		// Rotina de envio de soldados do Eixo (IA)
+		// Verifica se é hora de enviar uma onda de soldados do Eixo
+		onda = gameTime.SoldOnda();	
+		
+		// Verifica o tipo de envio de soldados do Eixo
+		OndaSold(onda,outroJog.lado,&eixoIA,meuCampo);
+		
+		// Envia soldados do Eixo
 		EnviaSold(&eixoIA,&outroJog,meuCampo);
+		
+		// Limpa campo de carregamento de imagens
+		meuCampo.LimpaD();
 				
 		//Deixa a página visual
 		minhaPg.Visual();
 		
-		// Verifica se hora de enviar uma onda da IA
-		onda = gameTime.SoldOnda();	
-		OndaSold(onda,outroJog.lado,&eixoIA,meuCampo);
+		// Avisa momentos importantes para o jogador
+		Avisa(gameTime);
 
 					
 		// Delay de FPS
@@ -102,6 +107,7 @@ int main(){
 	meuCampo.LimpaMem();
 	meuJog.soldado0->LimpaNo(meuJog.soldado0);
 	outroJog.soldado0->LimpaNo(outroJog.soldado0);
+	eixoIA.soldado0->LimpaNo(eixoIA.soldado0);
 	
 	
 	closegraph();
@@ -169,16 +175,8 @@ void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo){
 		
 		switch(onda){
 			
-			case '0':
-				outtextxy(590,10,"COMEÇAR");
-				delay(2000);
-				break;
-			case '1':
-				
-				
-				outtextxy(480,30,"Faltam 4 m para o ataque final do EIXO");
-				delay(2000);
-				
+
+			case '1':				
 				qtdIni = 10;
 				for(i = 0; i < qtdIni; i++){
 					pSold = soldado0->Insere(soldado0,"Nazi");
@@ -186,12 +184,52 @@ void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo){
 					pSold->direcao = BAIXO;
 					pSold->posCego = true;
 				}
-				
 				break;
 		}
 		
 	}
 
 }
+
+// Mostra uma mensagem conforme o tempo de jogo
+void Avisa(TDelay gameTime){
+	int gTimeInt;
+	gTimeInt = gameTime.GameTime();
+	
+	setcolor(YELLOW);
+	switch(gTimeInt){
+		case BEGIN:
+			outtextxy(590,10,"COMEÇAR");
+			delay(2000);
+			break;
+		case ONDA1:
+			outtextxy(480,30,"Faltam 4 m para o ataque final do EIXO");
+			delay(2000);
+			break;
+		case ONDA2:
+			outtextxy(480,30,"Faltam 3 m para o ataque final do EIXO");
+			delay(2000);
+			break;
+		case ONDA3:
+			outtextxy(480,30,"Faltam 2 m para o ataque final do EIXO");
+			delay(2000);
+			break;
+		case ONDA4:
+			outtextxy(480,30,"Falta 1 m para o ataque final do EIXO");
+			delay(2000);
+			break;
+		case ONDAF:
+			setcolor(RED);	
+			outtextxy(480,30,"É hora do ataque final do EIXO...");
+			delay(2000);
+			break;
+		case END:
+			outtextxy(590,10,"Fim de Jogo.");
+			delay(2000);
+			break;	
+	}
+
+}
+
 
 
