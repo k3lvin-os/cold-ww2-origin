@@ -50,7 +50,7 @@ int main(){
 	minhaPg.Ativa();
 	
 	// Inicialização do campo de jogo a partir de um arquivo de coordenadas
-	meuCampo.Init("mapa01.txt");
+	meuCampo.Init("mapa03.txt");
 	
 	// Mostra campo de jogo
 	meuCampo.Mostrar();
@@ -181,8 +181,7 @@ void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo){
 				for(i = 0; i < qtdIni; i++){
 					pSold = soldado0->Insere(soldado0,"Nazi");
 					pSold->GoTo(soldX,soldY);
-					pSold->direcao = BAIXO;
-					pSold->posCego = true;
+
 				}
 				break;
 		}
