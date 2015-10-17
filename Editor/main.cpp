@@ -7,7 +7,6 @@
 #include <graphics.h>
 
 /*Bibliotecas do projeto TowerDefense*/
-#include "..\..\header\td_functions.h"
 #include "..\..\header\td_defines.h"
 #include "..\..\header\sprite.h"
 #include "..\..\header\campojogo.h"

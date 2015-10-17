@@ -50,7 +50,7 @@ int main(){
 	minhaPg.Ativa();
 	
 	// Inicialização do campo de jogo a partir de um arquivo de coordenadas
-	meuCampo.Init("mapa03.txt");
+	meuCampo.Init("mapa04.txt");
 	
 	// Mostra campo de jogo
 	meuCampo.Mostrar();
