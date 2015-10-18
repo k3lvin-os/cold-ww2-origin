@@ -7,6 +7,8 @@
 // Funções que NÃO utilizam as estruturas dos arquivos header
 void Carrega(void *arrayImg, void *arrayMask, char *rPath);
 void GetImage(void** pImg, char path[], int width, int height);
+void* GetImage(char path[], int width, int height);
+
 
 
 // Bibliotecas criados pela equipe de desenvolvimento
@@ -23,7 +25,7 @@ void GetImage(void** pImg, char path[], int width, int height);
 /*Funções que utilizam as funções dos arquivos header*/
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo);
 void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo);
-void Avisa(TDelay gameTime);
+void Avisa(TDelay gameTime, Lider Hitler);
 void MostraLideres(Jogador meuJog, Jogador outroJog);
 
 
@@ -92,6 +94,9 @@ int main(){
 		// Verifica o tipo de envio de soldados do Eixo
 		OndaSold(onda,outroJog.lado,&eixoIA,meuCampo);
 		
+		// Mostra os lideres
+		MostraLideres(meuJog,outroJog);
+		
 		// Limpa campo de carregamento de imagens
 		meuCampo.LimpaD();
 		
@@ -100,15 +105,16 @@ int main(){
 		
 		// Rotina de envio de soldados do Eixo
 		EnviaSold(&eixoIA,&outroJog,meuCampo);
+		
+
 				
 		//Deixa a página visual
 		minhaPg.Visual();
 		
-		// Mostra os lideres
-		MostraLideres(meuJog,outroJog);
+
 		
 		// Avisa momentos importantes para o jogador
-		Avisa(gameTime);
+		Avisa(gameTime, eixoIA.meuLider);
 	
 		// Delay de FPS
 		delay(FPS);
@@ -202,7 +208,7 @@ void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo){
 }
 
 // Mostra uma mensagem conforme o tempo de jogo
-void Avisa(TDelay gameTime){
+void Avisa(TDelay gameTime, Lider Hitler){
 	int gTimeInt;
 	gTimeInt = gameTime.GameTime();
 	
@@ -210,30 +216,37 @@ void Avisa(TDelay gameTime){
 	switch(gTimeInt){
 		case BEGIN:
 			outtextxy(590,10,"COMEÇAR");
+			Hitler.Show();
 			delay(2000);
 			break;
 		case ONDA1:
 			outtextxy(480,30,"Faltam 4 m para o ataque final do EIXO");
+			Hitler.Show();
 			delay(2000);
 			break;
 		case ONDA2:
+			Hitler.Show();
 			outtextxy(480,30,"Faltam 3 m para o ataque final do EIXO");
 			delay(2000);
 			break;
 		case ONDA3:
+			Hitler.Show();
 			outtextxy(480,30,"Faltam 2 m para o ataque final do EIXO");
 			delay(2000);
 			break;
 		case ONDA4:
+			Hitler.Show();
 			outtextxy(480,30,"Falta 1 m para o ataque final do EIXO");
 			delay(2000);
 			break;
 		case ONDAF:
+			Hitler.Show();
 			setcolor(RED);	
 			outtextxy(480,30,"É hora do ataque final do EIXO...");
 			delay(2000);
 			break;
 		case END:
+			Hitler.Show();
 			outtextxy(590,10,"Fim de Jogo.");
 			delay(2000);
 			break;	
@@ -264,4 +277,15 @@ void MostraLideres(Jogador meuJog, Jogador outroJog){
 	meuJog.meuLider.Show();
 	outroJog.meuLider.Show();
 }
+
+/*Busca e retorna uma imagem com as informações passadas por parâmetro*/
+void* GetImage(char path[], int width, int height){
+		
+		void *pImg;
+		readimagefile(path,0,0,width,height); 
+		int size = imagesize(0,0,width,height);
+		pImg = malloc(size);
+		getimage(0,0,width,height,pImg); 
+		return pImg;
+}	
 
