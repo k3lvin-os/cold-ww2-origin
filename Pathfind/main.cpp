@@ -4,6 +4,11 @@
 #include <time.h> // Para trabalhar com o tempo
 #include <graphics.h>
 
+// Funções que NÃO utilizam as estruturas dos arquivos header
+void Carrega(void *arrayImg, void *arrayMask, char *rPath);
+void GetImage(void** pImg, char path[], int width, int height);
+
+
 // Bibliotecas criados pela equipe de desenvolvimento
 #include "..\..\header\td_defines.h"
 #include "..\..\header\sprite.h"
@@ -12,12 +17,14 @@
 #include "..\..\header\soldado.h"
 #include "..\..\header\pagina.h"
 #include "..\..\header\jogador.h"
+#include "..\..\header\lider.h"
 
 
-/*Protótipo de funções*/
+/*Funções que utilizam as funções dos arquivos header*/
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo);
 void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo);
 void Avisa(TDelay gameTime);
+void LideresJog();
 
 
 using namespace std;
@@ -230,5 +237,20 @@ void Avisa(TDelay gameTime){
 
 }
 
+/*Busca uma imagem com as informações passadas por parâmetro*/
+void GetImage(void** pImg, char path[], int width, int height){
+		
+		// Lê e coloca na tela uma imagem
+		readimagefile(path,0,0,width,height); 
+		
+		/// Calcula o tamanho da imagem com base na posição
+		int size = imagesize(0,0,width,height);
+		
+		// Aloca memória para a variável que vai recebe-la
+		*pImg = malloc(size);
+		
+		// Recebe a imagem
+		getimage(0,0,width,height,*pImg); 
+}
 
 
