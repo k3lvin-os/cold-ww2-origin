@@ -16,15 +16,15 @@ void GetImage(void** pImg, char path[], int width, int height);
 #include "..\..\header\tdelay.h"
 #include "..\..\header\soldado.h"
 #include "..\..\header\pagina.h"
-#include "..\..\header\jogador.h"
 #include "..\..\header\lider.h"
+#include "..\..\header\jogador.h"
 
 
 /*Funções que utilizam as funções dos arquivos header*/
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo);
 void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo);
 void Avisa(TDelay gameTime);
-void LideresJog();
+void MostraLideres(Jogador meuJog, Jogador outroJog);
 
 
 using namespace std;
@@ -42,10 +42,7 @@ int main(){
 	TDelay gameTime;
 	int teste = 2;
 		
-	// Atribui times aos jogadores
-	meuJog.Init(LADO2);
-	outroJog.Init(LADO1);
-	eixoIA.Init(LADO3);
+
 
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H, "Seek Of Peace: Cold WW2");
@@ -55,6 +52,11 @@ int main(){
 
 	// Trabalha com a página nos "bastidores"
 	minhaPg.Ativa();
+	
+	// Atribui times aos jogadores
+	meuJog.Init(LADO2);
+	outroJog.Init(LADO1);
+	eixoIA.Init(LADO3);
 	
 	// Inicialização do campo de jogo a partir de um arquivo de coordenadas
 	meuCampo.Init("mapa04.txt");
@@ -84,28 +86,30 @@ int main(){
 		// Verifica o input do usuário com a GUI
 		meuJog.InputGUI();
 		
-		// Rotina de envio de soldados 
-		EnviaSold(&meuJog,&outroJog,meuCampo);
-		
 		// Verifica se é hora de enviar uma onda de soldados do Eixo
 		onda = gameTime.SoldOnda();	
 		
 		// Verifica o tipo de envio de soldados do Eixo
 		OndaSold(onda,outroJog.lado,&eixoIA,meuCampo);
 		
-		// Envia soldados do Eixo
-		EnviaSold(&eixoIA,&outroJog,meuCampo);
-		
 		// Limpa campo de carregamento de imagens
 		meuCampo.LimpaD();
+		
+		// Rotina de envio de soldados do jogador
+		EnviaSold(&meuJog,&outroJog,meuCampo);
+		
+		// Rotina de envio de soldados do Eixo
+		EnviaSold(&eixoIA,&outroJog,meuCampo);
 				
 		//Deixa a página visual
 		minhaPg.Visual();
 		
+		// Mostra os lideres
+		MostraLideres(meuJog,outroJog);
+		
 		// Avisa momentos importantes para o jogador
 		Avisa(gameTime);
-
-					
+	
 		// Delay de FPS
 		delay(FPS);
 		
@@ -253,4 +257,11 @@ void GetImage(void** pImg, char path[], int width, int height){
 		getimage(0,0,width,height,*pImg); 
 }
 
+
+
+/*Mostra os líders/ avatares dos jogadores*/
+void MostraLideres(Jogador meuJog, Jogador outroJog){
+	meuJog.meuLider.Show();
+	outroJog.meuLider.Show();
+}
 
