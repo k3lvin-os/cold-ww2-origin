@@ -11,6 +11,8 @@ void* GetImage(char path[], int width, int height);
 
 
 
+
+
 // Bibliotecas criados pela equipe de desenvolvimento
 #include "..\..\header\td_defines.h"
 #include "..\..\header\sprite.h"
@@ -26,7 +28,9 @@ void* GetImage(char path[], int width, int height);
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo);
 void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo);
 void Avisa(TDelay gameTime, Lider Hitler);
-void MostraLideres(Jogador meuJog, Jogador outroJog);
+void MostraLideres(Jogador meuJog, Jogador outroJog, char onda);
+void Aviso(int posX, int posY, char * msg, int color, Lider hitler);
+
 
 
 using namespace std;
@@ -61,7 +65,7 @@ int main(){
 	eixoIA.Init(LADO3);
 	
 	// Inicialização do campo de jogo a partir de um arquivo de coordenadas
-	meuCampo.Init("mapa04.txt");
+	meuCampo.Init("mapa05.txt");
 	
 	// Mostra campo de jogo
 	meuCampo.Mostrar();
@@ -95,26 +99,24 @@ int main(){
 		OndaSold(onda,outroJog.lado,&eixoIA,meuCampo);
 		
 		// Mostra os lideres
-		MostraLideres(meuJog,outroJog);
+		MostraLideres(meuJog,outroJog,onda);
 		
 		// Limpa campo de carregamento de imagens
 		meuCampo.LimpaD();
+		
+		// Avisa momentos importantes para o jogador
+		Avisa(gameTime, eixoIA.meuLider);
 		
 		// Rotina de envio de soldados do jogador
 		EnviaSold(&meuJog,&outroJog,meuCampo);
 		
 		// Rotina de envio de soldados do Eixo
 		EnviaSold(&eixoIA,&outroJog,meuCampo);
-		
-
 				
 		//Deixa a página visual
 		minhaPg.Visual();
-		
+	
 
-		
-		// Avisa momentos importantes para o jogador
-		Avisa(gameTime, eixoIA.meuLider);
 	
 		// Delay de FPS
 		delay(FPS);
@@ -200,7 +202,7 @@ void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo){
 					pSold->GoTo(soldX,soldY);
 
 				}
-				break;
+				break;		
 		}
 		
 	}
@@ -213,45 +215,26 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	gTimeInt = gameTime.GameTime();
 	
 	setcolor(YELLOW);
-	switch(gTimeInt){
-		case BEGIN:
-			outtextxy(590,10,"COMEÇAR");
-			Hitler.Show();
-			delay(2000);
-			break;
-		case ONDA1:
-			outtextxy(480,30,"Faltam 4 m para o ataque final do EIXO");
-			Hitler.Show();
-			delay(2000);
-			break;
-		case ONDA2:
-			Hitler.Show();
-			outtextxy(480,30,"Faltam 3 m para o ataque final do EIXO");
-			delay(2000);
-			break;
-		case ONDA3:
-			Hitler.Show();
-			outtextxy(480,30,"Faltam 2 m para o ataque final do EIXO");
-			delay(2000);
-			break;
-		case ONDA4:
-			Hitler.Show();
-			outtextxy(480,30,"Falta 1 m para o ataque final do EIXO");
-			delay(2000);
-			break;
-		case ONDAF:
-			Hitler.Show();
-			setcolor(RED);	
-			outtextxy(480,30,"É hora do ataque final do EIXO...");
-			delay(2000);
-			break;
-		case END:
-			Hitler.Show();
-			outtextxy(590,10,"Fim de Jogo.");
-			delay(2000);
-			break;	
-	}
+	if(gTimeInt >= BEGIN && gTimeInt <= BEGIN + 2)
+		Aviso(590,10,"COMEÇAR",YELLOW,Hitler);
+			
+	else if(gTimeInt >= ONDA1 && gTimeInt <= ONDA1 + 2)
+		Aviso(480,30,"Faltam 4 m para o ataque final do EIXO",YELLOW, Hitler);
+	
+	else if(gTimeInt >= ONDA2 && gTimeInt <= ONDA2 + 2)
+		Aviso(480,30,"Faltam 3 m para o ataque final do EIXO",YELLOW,Hitler);
+	
+	else if(gTimeInt >= ONDA3 && gTimeInt <= ONDA3 + 2)
+		Aviso(480,30,"Faltam 2 m para o ataque final do EIXO",YELLOW,Hitler);
 
+	else if(gTimeInt >= ONDA4 && gTimeInt <= ONDAF + 2)
+		Aviso(480,30,"Falta 1 m para o ataque final do EIXO",YELLOW,Hitler);
+
+	else if(gTimeInt >= ONDAF && gTimeInt <= ONDAF + 2)
+		Aviso(480,30,"É hora do ataque final do EIXO...",YELLOW,Hitler);
+
+	else if(gTimeInt >= END && gTimeInt <= END + 2)
+		Aviso(590,10,"Fim de Jogo.", YELLOW, Hitler);
 }
 
 /*Busca uma imagem com as informações passadas por parâmetro*/
@@ -273,7 +256,16 @@ void GetImage(void** pImg, char path[], int width, int height){
 
 
 /*Mostra os líders/ avatares dos jogadores*/
-void MostraLideres(Jogador meuJog, Jogador outroJog){
+void MostraLideres(Jogador meuJog, Jogador outroJog, char onda){
+	
+	if(onda != SEM_ONDA){
+		meuJog.meuLider.Furia();
+		outroJog.meuLider.Furia();
+	}
+	meuJog.meuLider.VerificaFuria();
+	outroJog.meuLider.VerificaFuria();
+	meuJog.meuLider.VerificaImg(meuJog.vida);
+	outroJog.meuLider.VerificaImg(outroJog.vida);
 	meuJog.meuLider.Show();
 	outroJog.meuLider.Show();
 }
@@ -288,4 +280,13 @@ void* GetImage(char path[], int width, int height){
 		getimage(0,0,width,height,pImg); 
 		return pImg;
 }	
+
+
+/*Texto e outros recursos gráficos mostrados pela função Avisa*/
+void Aviso(int posX, int posY, char * msg, int color, Lider hitler){
+
+	hitler.Show();
+	setcolor(color);	
+	outtextxy(posX,posY,msg);
+}
 
