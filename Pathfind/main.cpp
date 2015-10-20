@@ -22,11 +22,11 @@ void* GetImage(char path[], int width, int height);
 #include "..\..\header\pagina.h"
 #include "..\..\header\lider.h"
 #include "..\..\header\jogador.h"
+#include "..\..\header\ondaeixo.h"
 
 
 /*Funções que utilizam as funções dos arquivos header*/
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo);
-void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo);
 void Avisa(TDelay gameTime, Lider Hitler);
 void MostraLideres(Jogador meuJog, Jogador outroJog, char onda);
 void Aviso(int posX, int posY, char * msg, int color, Lider hitler);
@@ -46,6 +46,7 @@ int main(){
 	bool gameLoop = true;
 	time_t agora = NULL;
 	TDelay gameTime;
+	OndaEixo ondaEixo;
 	int teste = 2;
 		
 
@@ -64,6 +65,9 @@ int main(){
 	outroJog.Init(LADO1);
 	eixoIA.Init(LADO3);
 	
+	// Inicializa gerenciador de ondas do eixo
+	ondaEixo.Init(&eixoIA);
+	
 	// Inicialização do campo de jogo a partir de um arquivo de coordenadas
 	meuCampo.Init("mapa05.txt");
 	
@@ -74,7 +78,7 @@ int main(){
 	minhaPg.Visual();
 	
 	// Começa a contar o tempo de jogo
-	gameTime.Init();
+	gameTime.Atualiza();
 	
 	//Loop do jogo
 	while(gameLoop == true){
@@ -96,7 +100,7 @@ int main(){
 		onda = gameTime.SoldOnda();	
 		
 		// Verifica o tipo de envio de soldados do Eixo
-		OndaSold(onda,outroJog.lado,&eixoIA,meuCampo);
+		ondaEixo.Verifica(onda,outroJog.lado,meuCampo);
 		
 		// Mostra os lideres
 		MostraLideres(meuJog,outroJog,onda);
@@ -115,6 +119,8 @@ int main(){
 				
 		//Deixa a página visual
 		minhaPg.Visual();
+		
+		cout << gameTime.GameTime() << endl;
 	
 
 	
@@ -152,7 +158,6 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 		if(pSold->vida > 0 && pSold->dest != true){
 			
 			pSold->Show();
-			
 			pSold->IA(meuCampo, tempoEspera);
 			
 		} 
@@ -171,43 +176,7 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 
 //=========================================================================
 
-// Rotina de envio de onda de soldados do Eixo
-void OndaSold(char onda, char* dest, Jogador *eixoIA , CampoJogo meuCampo){
-	
-	int soldX,  soldY, qtdIni, i;
-	Soldado *pSold;
-	Soldado *soldado0;
-	
-	soldado0 = eixoIA->soldado0;
 
-	
-	if(onda != SEM_ONDA){
-		
-		if(dest == LADO2){
-			soldX = EUACEGOX;
-			soldY = EUACEGOY;
-		} 
-		else if(dest == LADO1){
-			soldX = URSSCEGOX;
-			soldY = URSSCEGOY;
-		}
-		
-		switch(onda){
-			
-
-			case '1':				
-				qtdIni = 10;
-				for(i = 0; i < qtdIni; i++){
-					pSold = soldado0->Insere(soldado0,"Nazi");
-					pSold->GoTo(soldX,soldY);
-
-				}
-				break;		
-		}
-		
-	}
-
-}
 
 // Mostra uma mensagem conforme o tempo de jogo
 void Avisa(TDelay gameTime, Lider Hitler){
@@ -216,21 +185,21 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	
 	setcolor(YELLOW);
 	if(gTimeInt >= BEGIN && gTimeInt <= BEGIN + 2)
-		Aviso(590,10,"COMEÇAR",YELLOW,Hitler);
-			
-	else if(gTimeInt >= ONDA1 && gTimeInt <= ONDA1 + 2)
-		Aviso(480,30,"Faltam 4 m para o ataque final do EIXO",YELLOW, Hitler);
-	
+		Aviso(550,10,"INICIO DA BATALHA",YELLOW,Hitler);
+		
+	else if (gTimeInt >= ONDA1 && gTimeInt <= ONDA1 + 2)
+		Aviso(480,30,"Cuidado! Aí vem o primeiro soldado do Eixo", YELLOW,Hitler);
+				
 	else if(gTimeInt >= ONDA2 && gTimeInt <= ONDA2 + 2)
 		Aviso(480,30,"Faltam 3 m para o ataque final do EIXO",YELLOW,Hitler);
 	
-	else if(gTimeInt >= ONDA3 && gTimeInt <= ONDA3 + 2)
+	else if(gTimeInt >= ONDA5 && gTimeInt <= ONDA5 + 2)
 		Aviso(480,30,"Faltam 2 m para o ataque final do EIXO",YELLOW,Hitler);
 
-	else if(gTimeInt >= ONDA4 && gTimeInt <= ONDAF + 2)
+	else if(gTimeInt >= ONDA8 && gTimeInt <= ONDA8 + 2)
 		Aviso(480,30,"Falta 1 m para o ataque final do EIXO",YELLOW,Hitler);
 
-	else if(gTimeInt >= ONDAF && gTimeInt <= ONDAF + 2)
+	else if(gTimeInt >= ONDA10 && gTimeInt <= ONDA10 + 2)
 		Aviso(480,30,"É hora do ataque final do EIXO...",YELLOW,Hitler);
 
 	else if(gTimeInt >= END && gTimeInt <= END + 2)
@@ -239,18 +208,18 @@ void Avisa(TDelay gameTime, Lider Hitler){
 
 /*Busca uma imagem com as informações passadas por parâmetro*/
 void GetImage(void** pImg, char path[], int width, int height){
-		
-		// Lê e coloca na tela uma imagem
-		readimagefile(path,0,0,width,height); 
-		
-		/// Calcula o tamanho da imagem com base na posição
-		int size = imagesize(0,0,width,height);
-		
-		// Aloca memória para a variável que vai recebe-la
-		*pImg = malloc(size);
-		
-		// Recebe a imagem
-		getimage(0,0,width,height,*pImg); 
+	
+	// Lê e coloca na tela uma imagem
+	readimagefile(path,0,0,width,height); 
+	
+	/// Calcula o tamanho da imagem com base na posição
+	int size = imagesize(0,0,width,height);
+	
+	// Aloca memória para a variável que vai recebe-la
+	*pImg = malloc(size);
+	
+	// Recebe a imagem
+	getimage(0,0,width,height,*pImg); 
 }
 
 
@@ -273,12 +242,12 @@ void MostraLideres(Jogador meuJog, Jogador outroJog, char onda){
 /*Busca e retorna uma imagem com as informações passadas por parâmetro*/
 void* GetImage(char path[], int width, int height){
 		
-		void *pImg;
-		readimagefile(path,0,0,width,height); 
-		int size = imagesize(0,0,width,height);
-		pImg = malloc(size);
-		getimage(0,0,width,height,pImg); 
-		return pImg;
+	void *pImg;
+	readimagefile(path,0,0,width,height); 
+	int size = imagesize(0,0,width,height);
+	pImg = malloc(size);
+	getimage(0,0,width,height,pImg); 
+	return pImg;
 }	
 
 
@@ -289,4 +258,6 @@ void Aviso(int posX, int posY, char * msg, int color, Lider hitler){
 	setcolor(color);	
 	outtextxy(posX,posY,msg);
 }
+
+
 
