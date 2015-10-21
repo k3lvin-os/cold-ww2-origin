@@ -63,8 +63,8 @@ int main(){
 	minhaPg.Ativa();
 	
 	// Atribui times aos jogadores
-	meuJog.Init(LADO1);
-	outroJog.Init(LADO2);
+	meuJog.Init(LADO2);
+	outroJog.Init(LADO1);
 	eixoIA.Init(LADO3);
 	
 	// Inicializa gerenciador de ondas do eixo
@@ -119,14 +119,14 @@ int main(){
 		// Rotina de envio de soldados do Eixo
 		EnviaSold(&eixoIA,&outroJog,meuCampo);
 				
-		minhaGrd.Colocar(); // teste
+		//minhaGrd.Colocar(); // teste
 		
 				
 		//Deixa a página visual
 		minhaPg.Visual();
 		
 		// Teste
-		cout << gameTime.GameTime() << endl;
+		//cout << gameTime.GameTime() << endl;
 
 
 	
@@ -161,7 +161,7 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 	
 	for(pSold = soldado0->prox; pSold != NULL; pSold = pSold->prox){
 	
-		if(pSold->vida > 0 && pSold->dest != true){
+		if(pSold->vida > 0 && pSold->chegou != true){
 			
 			pSold->Show();
 			pSold->IA(meuCampo, tempoEspera);
@@ -172,7 +172,7 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 			
 			anterior = pSold->Anterior(soldado0);
 			
-			if(pSold->dest == true)
+			if(pSold->chegou == true)
 				pSold->Chegou(anterior);
 			else
 				pSold->Morre(anterior);		
