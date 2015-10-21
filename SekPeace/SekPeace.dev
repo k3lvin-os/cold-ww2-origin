@@ -1,25 +1,25 @@
 [Project]
-FileName=Pathfind.dev
-Name=Pathfind
+FileName=SekPeace.dev
+Name=SekPeace
 Type=1
 Ver=2
 ObjFiles=
 Includes=
 Libs=
-PrivateResource=Pathfind_private.rc
+PrivateResource=SekPeace_private.rc
 ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
 Linker=-lbgi_@@_-lgdi32_@@_-lcomdlg32_@@_-luuid_@@_-loleaut32_@@_-lole32_@@_
 IsCpp=1
-Icon=Pathfind.ico
+Icon=SekPeace.ico
 ExeOutput=
 ObjectOutput=
 LogOutput=
 LogOutputEnabled=0
 OverrideOutput=0
-OverrideOutputName=Pathfind.exe
+OverrideOutputName=SekPeace.exe
 HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
@@ -28,8 +28,8 @@ Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=3
-CompilerSettings=0000000100000000001000000
-UnitCount=12
+CompilerSettings=0000000100000000000000000
+UnitCount=11
 
 [VersionInfo]
 Major=1
@@ -81,7 +81,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit4]
-FileName=..\..\header\soldado.h
+FileName=..\..\header\jogador.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -91,7 +91,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit5]
-FileName=..\..\header\sprite.h
+FileName=..\..\header\lider.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -101,7 +101,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit6]
-FileName=..\..\header\td_defines.h
+FileName=..\..\header\ondaeixo.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -121,37 +121,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
-FileName=..\..\header\jogador.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit10]
-FileName=..\..\Assets\Icone\icon.ico
-CompileCpp=1
-Folder=
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit13]
-FileName=..\..\header\t_envio.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit11]
-FileName=..\..\header\lider.h
+FileName=..\..\header\soldado.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -161,7 +131,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit9]
-FileName=..\..\header\tdelay.h
+FileName=..\..\header\sprite.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -170,8 +140,18 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit12]
-FileName=..\..\header\ondaeixo.h
+[Unit10]
+FileName=..\..\header\td_defines.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit11]
+FileName=..\..\header\tdelay.h
 CompileCpp=1
 Folder=
 Compile=1
