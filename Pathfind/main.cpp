@@ -23,6 +23,7 @@ void* GetImage(char path[], int width, int height);
 #include "..\..\header\lider.h"
 #include "..\..\header\jogador.h"
 #include "..\..\header\ondaeixo.h"
+#include "..\..\header\grade.h"
 
 
 /*Funções que utilizam as funções dos arquivos header*/
@@ -48,6 +49,7 @@ int main(){
 	TDelay gameTime;
 	OndaEixo ondaEixo;
 	int teste = 2;
+	Grade minhaGrd;
 		
 
 
@@ -117,11 +119,15 @@ int main(){
 		// Rotina de envio de soldados do Eixo
 		EnviaSold(&eixoIA,&outroJog,meuCampo);
 				
+		//minhaGrd.Colocar(); // teste
+		
+				
 		//Deixa a página visual
 		minhaPg.Visual();
 		
+		// Teste
 		cout << gameTime.GameTime() << endl;
-	
+
 
 	
 		// Delay de FPS
@@ -253,7 +259,7 @@ void* GetImage(char path[], int width, int height){
 
 /*Texto e outros recursos gráficos mostrados pela função Avisa*/
 void Aviso(int posX, int posY, char * msg, int color, Lider hitler){
-
+	settextjustify(LEFT_TEXT,TOP_TEXT);
 	hitler.Show();
 	setcolor(color);	
 	outtextxy(posX,posY,msg);
