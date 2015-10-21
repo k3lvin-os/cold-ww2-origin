@@ -63,8 +63,8 @@ int main(){
 	minhaPg.Ativa();
 	
 	// Atribui times aos jogadores
-	meuJog.Init(LADO2);
-	outroJog.Init(LADO1);
+	meuJog.Init(LADO1);
+	outroJog.Init(LADO2);
 	eixoIA.Init(LADO3);
 	
 	// Inicializa gerenciador de ondas do eixo
@@ -119,7 +119,7 @@ int main(){
 		// Rotina de envio de soldados do Eixo
 		EnviaSold(&eixoIA,&outroJog,meuCampo);
 				
-		//minhaGrd.Colocar(); // teste
+		minhaGrd.Colocar(); // teste
 		
 				
 		//Deixa a página visual
