@@ -24,6 +24,7 @@ void* GetImage(char path[], int width, int height);
 #include "..\..\header\jogador.h"
 #include "..\..\header\ondaeixo.h"
 #include "..\..\header\grade.h"
+#include "..\..\header\barra_vida.h"
 
 
 /*Funções que utilizam as funções dos arquivos header*/
@@ -50,11 +51,15 @@ int main(){
 	OndaEixo ondaEixo;
 	int teste = 2;
 	Grade minhaGrd;
+	BarraVida meuHP;
 		
 
 
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H, "Seek Of Peace: Cold WW2");
+	
+	minhaGrd.Colocar();
+
 	
 	minhaPg.Init();	// Inicializa a estrutura página
 	minhaPg.Troca();	// Troca a página atual
@@ -121,12 +126,20 @@ int main(){
 				
 		//minhaGrd.Colocar(); // teste
 		
+
+		
 				
 		//Deixa a página visual
 		minhaPg.Visual();
 		
+		// Teste com a barra de vida
+		meuHP.Simples(TILE_W * 20, TILE_H * 11);
+		delay(100000);
+		
 		// Teste
 		//cout << gameTime.GameTime() << endl;
+		
+		
 
 
 	
