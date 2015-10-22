@@ -133,7 +133,7 @@ int main(){
 		minhaPg.Visual();
 		
 		// Teste com a barra de vida
-		meuHP.Simples(TILE_W * 20, TILE_H * 11);
+		meuHP.Simples(TILE_W * 20, TILE_H * 11,25);
 		delay(100000);
 		
 		// Teste
