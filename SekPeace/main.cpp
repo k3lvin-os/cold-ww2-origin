@@ -57,10 +57,7 @@ int main(){
 
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H, "Seek Of Peace: Cold WW2");
-	
-	minhaGrd.Colocar();
 
-	
 	minhaPg.Init();	// Inicializa a estrutura página
 	minhaPg.Troca();	// Troca a página atual
 
@@ -133,7 +130,7 @@ int main(){
 		minhaPg.Visual();
 		
 		// Teste com a barra de vida
-		meuHP.Simples(TILE_W * 20, TILE_H * 11,25);
+		meuHP.Show(TILE_W * 20, TILE_H * 11,25);
 		delay(100000);
 		
 		// Teste
