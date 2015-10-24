@@ -51,7 +51,6 @@ int main(){
 	OndaEixo ondaEixo;
 	int teste = 2;
 	Grade minhaGrd;
-	BarraVida meuHP;
 		
 
 
@@ -65,8 +64,8 @@ int main(){
 	minhaPg.Ativa();
 	
 	// Atribui times aos jogadores
-	meuJog.Init(LADO2);
-	outroJog.Init(LADO1);
+	meuJog.Init(LADO1);
+	outroJog.Init(LADO2);
 	eixoIA.Init(LADO3);
 	
 	// Inicializa gerenciador de ondas do eixo
@@ -129,9 +128,7 @@ int main(){
 		//Deixa a página visual
 		minhaPg.Visual();
 		
-		// Teste com a barra de vida
-		meuHP.Show(TILE_W * 20, TILE_H * 11,25);
-		delay(100000);
+
 		
 		// Teste
 		//cout << gameTime.GameTime() << endl;
@@ -165,6 +162,7 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 	Soldado *pSold, *anterior;
 	Soldado *soldado0;
 	TDelay *tempoEspera;
+	BarraVida meuHP;
 	
 	soldado0 = meuJog->soldado0;
 	tempoEspera = &(outroJog->esperaIni);
@@ -175,6 +173,7 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 			
 			pSold->Show();
 			pSold->IA(meuCampo, tempoEspera);
+			meuHP.Show(pSold->x,pSold->y,pSold->vida,"soldado");
 			
 		} 
 		
@@ -239,9 +238,10 @@ void GetImage(void** pImg, char path[], int width, int height){
 }
 
 
-
 /*Mostra os líders/ avatares dos jogadores*/
 void MostraLideres(Jogador meuJog, Jogador outroJog, char onda){
+	
+	BarraVida meuHP;
 	
 	if(onda != SEM_ONDA){
 		meuJog.meuLider.Furia();
@@ -253,6 +253,8 @@ void MostraLideres(Jogador meuJog, Jogador outroJog, char onda){
 	outroJog.meuLider.VerificaImg(outroJog.vida);
 	meuJog.meuLider.Show();
 	outroJog.meuLider.Show();
+	meuHP.Show(STALIN_X, STALIN_Y,0,"lider");
+	meuHP.Show(ROOSEVELT_X,ROOSEVELT_Y,100,"lider");
 }
 
 /*Busca e retorna uma imagem com as informações passadas por parâmetro*/
