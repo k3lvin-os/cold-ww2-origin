@@ -21,6 +21,7 @@ void* GetImage(char path[], int width, int height);
 #include "..\..\header\soldado.h"
 #include "..\..\header\pagina.h"
 #include "..\..\header\lider.h"
+#include "..\..\header\torre.h"
 #include "..\..\header\jogador.h"
 #include "..\..\header\ondaeixo.h"
 #include "..\..\header\grade.h"
@@ -32,6 +33,8 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo);
 void Avisa(TDelay gameTime, Lider Hitler);
 void MostraLideres(Jogador meuJog, Jogador outroJog, char onda);
 void Aviso(int posX, int posY, char * msg, int color, Lider hitler);
+void ColocaTorre(bool flagTorre);
+void DefesaTorres();
 
 
 
