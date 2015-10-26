@@ -33,7 +33,7 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo);
 void Avisa(TDelay gameTime, Lider Hitler);
 void MostraLideres(Jogador meuJog, Jogador outroJog, char onda);
 void Aviso(int posX, int posY, char * msg, int color, Lider hitler);
-
+void DefesaTorre(Jogador *meuJog, Jogador *outroJog);
 
 
 using namespace std;
@@ -129,6 +129,12 @@ int main(){
 		
 		// Rotina de envio de soldados do Eixo
 		EnviaSold(&eixoIA,&outroJog,meuCampo);
+		
+		// Rotina de defesa da torre contra o Eixo
+		DefesaTorre(&meuJog,&eixoIA);
+		
+		// Rotina de defesa da torre contra o outro jogador
+		DefesaTorre(&meuJog,&outroJog);
 		
 				
 		//Deixa a página visual
@@ -283,7 +289,20 @@ void Aviso(int posX, int posY, char * msg, int color, Lider hitler){
 	outtextxy(posX,posY,msg);
 }
 
-
+/*Procedimento de defesa da torre*/
+void DefesaTorre(Jogador *meuJog, Jogador *outroJog){
+	Torre *torre0;
+	Soldado *soldado0;
+	Torre *pTorre;
+	
+	torre0 = meuJog->torre0;
+	
+	for(pTorre = torre0->prox; pTorre != NULL; pTorre->prox){
+		
+		pTorre->MostraTorre();
+	}
+	
+}
 
 
 
