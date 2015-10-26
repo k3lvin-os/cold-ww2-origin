@@ -34,7 +34,7 @@ void Avisa(TDelay gameTime, Lider Hitler);
 void MostraLideres(Jogador meuJog, Jogador outroJog, char onda);
 void Aviso(int posX, int posY, char * msg, int color, Lider hitler);
 void DefesaTorre(Jogador *meuJog, Jogador *outroJog);
-
+bool SemTorrePerto(Torre *torre0, int x,int y);
 
 using namespace std;
 
@@ -298,14 +298,31 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog){
 	Soldado *soldado0;
 	Torre *pTorre;
 	
+	
 	torre0 = meuJog->torre0;
 	
 	for(pTorre = torre0->prox; pTorre != NULL;pTorre = pTorre->prox){
 		
+		if(pTorre->alvo == NULL){
+			pTorre->SemAlvo();
+		}
+		else{
+			// pTorre->ComAlvo();
+		}
 		pTorre->MostraTorre();
+
 	}
 	
 }
 
-
+//==================================================
+// Verifica se não há torres do jogador por perto
+bool SemTorrePerto(Torre *torre0, int x,int y){
+	
+	Torre *pTorre;
+	
+	for(pTorre = torre0->prox; pTorre != NULL; pTorre = pTorre->prox){
+		// EM DESENVOLVIMENTO
+	}
+}
 
