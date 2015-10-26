@@ -33,8 +33,6 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo);
 void Avisa(TDelay gameTime, Lider Hitler);
 void MostraLideres(Jogador meuJog, Jogador outroJog, char onda);
 void Aviso(int posX, int posY, char * msg, int color, Lider hitler);
-void ColocaTorre(bool flagTorre);
-void DefesaTorres();
 
 
 
@@ -67,8 +65,8 @@ int main(){
 	minhaPg.Ativa();
 	
 	// Atribui times aos jogadores
-	meuJog.Init(LADO1);
-	outroJog.Init(LADO2);
+	meuJog.Init(LADO2);
+	outroJog.Init(LADO1);
 	eixoIA.Init(LADO3);
 	
 	// Inicializa gerenciador de ondas do eixo
@@ -96,12 +94,12 @@ int main(){
 		// Limpa a tela
 		cleardevice();
 		
-		meuCampo.Mostrar();		// Mostra campo de jogo
-		meuJog.MostraGUI(); // Mostra gui do jogador
+		// Mostra campo de jogo	
+		meuCampo.Mostrar();	
 		
-		// Verifica o input do usuário com a GUI
-		meuJog.InputGUI();
-		
+		// Mostra gui do jogador
+		meuJog.MostraGUI(); 
+	
 		// Verifica se é hora de enviar uma onda de soldados do Eixo
 		onda = gameTime.SoldOnda();	
 		
@@ -111,21 +109,26 @@ int main(){
 		// Mostra os lideres
 		MostraLideres(meuJog,outroJog,onda);
 		
-		// Limpa campo de carregamento de imagens
-		meuCampo.LimpaD();
-		
 		// Avisa momentos importantes para o jogador
 		Avisa(gameTime, eixoIA.meuLider);
+	
+		//minhaGrd.Colocar(); // teste
+		
+		// Verifica o input do usuário com a GUI
+		meuJog.InputGUI();
+		
+		
+		// Coloca procedimento de colocar torre
+		meuJog.ArrastaTorre(meuCampo);
+		
+		// Limpa campo de carregamento de imagens
+		meuCampo.LimpaD();
 		
 		// Rotina de envio de soldados do jogador
 		EnviaSold(&meuJog,&outroJog,meuCampo);
 		
 		// Rotina de envio de soldados do Eixo
 		EnviaSold(&eixoIA,&outroJog,meuCampo);
-				
-		//minhaGrd.Colocar(); // teste
-		
-
 		
 				
 		//Deixa a página visual
@@ -279,6 +282,8 @@ void Aviso(int posX, int posY, char * msg, int color, Lider hitler){
 	setcolor(color);	
 	outtextxy(posX,posY,msg);
 }
+
+
 
 
 
