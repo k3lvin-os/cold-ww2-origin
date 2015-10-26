@@ -106,8 +106,7 @@ int main(){
 		// Verifica o tipo de envio de soldados do Eixo
 		ondaEixo.Verifica(onda,outroJog.lado,meuCampo);
 		
-		// Mostra os lideres
-		MostraLideres(meuJog,outroJog,onda);
+
 		
 		// Avisa momentos importantes para o jogador
 		Avisa(gameTime, eixoIA.meuLider);
@@ -117,10 +116,9 @@ int main(){
 		// Verifica o input do usuário com a GUI
 		meuJog.InputGUI();
 		
-		
 		// Coloca procedimento de colocar torre
 		meuJog.ArrastaTorre(meuCampo);
-		
+				
 		// Limpa campo de carregamento de imagens
 		meuCampo.LimpaD();
 		
@@ -136,7 +134,9 @@ int main(){
 		// Rotina de defesa da torre contra o outro jogador
 		DefesaTorre(&meuJog,&outroJog);
 		
-				
+		// Mostra os lideres
+		MostraLideres(meuJog,outroJog,onda);
+						
 		//Deixa a página visual
 		minhaPg.Visual();
 		
@@ -158,6 +158,9 @@ int main(){
 	meuJog.soldado0->LimpaNo(meuJog.soldado0);
 	outroJog.soldado0->LimpaNo(outroJog.soldado0);
 	eixoIA.soldado0->LimpaNo(eixoIA.soldado0);
+	meuJog.torre0->LimpaNo(meuJog.torre0);
+	outroJog.torre0->LimpaNo(outroJog.torre0);
+	eixoIA.torre0->LimpaNo(eixoIA.torre0);
 	
 	
 	closegraph();
@@ -297,7 +300,7 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog){
 	
 	torre0 = meuJog->torre0;
 	
-	for(pTorre = torre0->prox; pTorre != NULL; pTorre->prox){
+	for(pTorre = torre0->prox; pTorre != NULL;pTorre = pTorre->prox){
 		
 		pTorre->MostraTorre();
 	}
