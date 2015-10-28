@@ -2,6 +2,7 @@
 #include <fstream> // E / S de arquivos
 #include <iomanip> // Para ler em caracter a caracter
 #include <time.h> // Para trabalhar com o tempo
+#include <math.h> // Para usar a função potenciação e raiz quadrada
 #include <graphics.h>
 
 // Funções que NÃO utilizam as estruturas dos arquivos header
@@ -37,7 +38,6 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog);
 bool SemTorrePerto(Torre *torre0, int tileCimaX,int tileCimaY);
 
 using namespace std;
-
 int main(){
 	
 	// Declaração de variáveis
@@ -65,8 +65,8 @@ int main(){
 	minhaPg.Ativa();
 	
 	// Atribui times aos jogadores
-	meuJog.Init(LADO2);
-	outroJog.Init(LADO1);
+	meuJog.Init(LADO1);
+	outroJog.Init(LADO2);
 	eixoIA.Init(LADO3);
 	
 	// Inicializa gerenciador de ondas do eixo
@@ -174,7 +174,7 @@ int main(){
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 
 	Soldado *novoIni;
-	Soldado *pSold, *anterior;
+	Soldado *inimigo, *anterior;
 	Soldado *soldado0;
 	TDelay *tempoEspera;
 	BarraVida meuHP;
@@ -182,24 +182,24 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 	soldado0 = meuJog->soldado0;
 	tempoEspera = &(outroJog->esperaIni);
 	
-	for(pSold = soldado0->prox; pSold != NULL; pSold = pSold->prox){
+	for(inimigo = soldado0->prox; inimigo != NULL; inimigo = inimigo->prox){
 	
-		if(pSold->vida > 0 && pSold->chegou != true){
+		if(inimigo->vida > 0 && inimigo->chegou != true){
 			
-			pSold->Show();
-			pSold->IA(meuCampo, tempoEspera);
-			meuHP.Show(pSold->x,pSold->y,pSold->vida,"soldado");
+			inimigo->Show();
+			inimigo->IA(meuCampo, tempoEspera);
+			meuHP.Show(inimigo->x,inimigo->y,inimigo->vida,"soldado");
 			
 		} 
 		
 		else{
 			
-			anterior = pSold->Anterior(soldado0);
+			anterior = inimigo->Anterior(soldado0);
 			
-			if(pSold->chegou == true)
-				pSold->Chegou(anterior);
+			if(inimigo->chegou == true)
+				inimigo->Chegou(anterior);
 			else
-				pSold->Morre(anterior);		
+				inimigo->Morre(anterior);		
 		}
 	}
 }
@@ -298,19 +298,30 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog){
 	Soldado *soldado0;
 	Torre *pTorre;
 	
-	
 	torre0 = meuJog->torre0;
+	soldado0 = outroJog->soldado0;
 	
 	for(pTorre = torre0->prox; pTorre != NULL;pTorre = pTorre->prox){
 		
 		if(pTorre->alvo == NULL){
-			pTorre->SemAlvo();
+			
+			pTorre->AnimacaoPatrulha();
+			pTorre->BuscaAlvo(soldado0);
 		}
 		else{
-			// pTorre->ComAlvo();
+			
+			if(pTorre->CampoVisao(*pTorre->alvo) == true){
+				
+			} else{				
+				pTorre->alvo = NULL;
+				//TESTE
+				std::cout << "Perdi o alvo de vista...\n";
+			}
 		}
 		pTorre->MostraTorre();
-
+		// TESTE
+		setcolor(BLUE);
+		circle(pTorre->x + 16,pTorre->y + 16,TORRE_RAIO);
 	}
 	
 }
