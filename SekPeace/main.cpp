@@ -34,7 +34,7 @@ void Avisa(TDelay gameTime, Lider Hitler);
 void MostraLideres(Jogador meuJog, Jogador outroJog, char onda);
 void Aviso(int posX, int posY, char * msg, int color, Lider hitler);
 void DefesaTorre(Jogador *meuJog, Jogador *outroJog);
-bool SemTorrePerto(Torre *torre0, int x,int y);
+bool SemTorrePerto(Torre *torre0, int tileCimaX,int tileCimaY);
 
 using namespace std;
 
@@ -136,7 +136,7 @@ int main(){
 		
 		// Mostra os lideres
 		MostraLideres(meuJog,outroJog,onda);
-						
+							
 		//Deixa a página visual
 		minhaPg.Visual();
 		
@@ -315,14 +315,4 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog){
 	
 }
 
-//==================================================
-// Verifica se não há torres do jogador por perto
-bool SemTorrePerto(Torre *torre0, int x,int y){
-	
-	Torre *pTorre;
-	
-	for(pTorre = torre0->prox; pTorre != NULL; pTorre = pTorre->prox){
-		// EM DESENVOLVIMENTO
-	}
-}
 
