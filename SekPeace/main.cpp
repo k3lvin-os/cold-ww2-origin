@@ -31,7 +31,7 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo);
 void Avisa(TDelay gameTime, Lider Hitler);
 void MostraLideres(Lider *meuLider, Lider *outroLider);
 void Aviso(int posX, int posY, char * msg, int color, Lider hitler);
-void DefesaTorre(Jogador *meuJog, Jogador *outroJog);
+void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA);
 bool SemTorrePerto(Torre *torre0, int tileCimaX,int tileCimaY);
 
 using namespace std;
@@ -102,7 +102,7 @@ int main(){
 		onda = gameTime.SoldOnda();	
 		
 		// Verifica o tipo de envio de soldados do Eixo
-		ondaEixo.Verifica(onda,outroJog.lado,meuCampo);
+		ondaEixo.Verifica(onda,meuJog.lado,meuCampo);
 
 		// Avisa momentos importantes para o jogador
 		Avisa(gameTime, eixoIA.lider);
@@ -119,17 +119,14 @@ int main(){
 		// Rotina de envio de soldados do jogador
 		EnviaSold(&meuJog,&outroJog,meuCampo);
 		
-		// Rotina de envio de soldados do Eixo
-		EnviaSold(&eixoIA,&outroJog,meuCampo);
-		
-		// Rotina de defesa da torre contra o Eixo
-		DefesaTorre(&meuJog,&eixoIA);
-		
-		// Rotina de defesa da torre contra o outro jogador
-		DefesaTorre(&meuJog,&outroJog);
+		// Rotina de envio de soldados do Eixo contra o jogador
+		EnviaSold(&eixoIA,&meuJog,meuCampo);
+			
+		// Rotina de defesa da torre
+		DefesaTorre(&meuJog,&outroJog,&eixoIA);
 		
 		// Mostra os lideres
-		MostraLideres(&(meuJog.lider),&(outroJog.lider));
+		MostraLideres(&meuJog.lider,&outroJog.lider);
 							
 		//Deixa a página visual
 		minhaPg.Visual();
@@ -278,23 +275,31 @@ void Aviso(int posX, int posY, char * msg, int color, Lider hitler){
 }
 
 /*Procedimento de defesa da torre*/
-void DefesaTorre(Jogador *meuJog, Jogador *outroJog){
+void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA){
 	Torre *torre0;
 	Soldado *soldado0;
 	Torre *pTorre;
 	
 	torre0 = meuJog->torre0;
-	soldado0 = outroJog->soldado0;
 	
 	for(pTorre = torre0->prox; pTorre != NULL;pTorre = pTorre->prox){
 		
-		if(pTorre->alvo == NULL){
+		if(pTorre->alvo == NULL){		
+
+			soldado0 = eixoIA->soldado0;
 			
-			pTorre->tipoAnimCanhao = 0;
-			pTorre->AnimacaoPatrulha();
-			pTorre->BuscaAlvo(soldado0);
+			if(pTorre->BuscaAlvo(soldado0) == false){
+				
+				soldado0 = outroJog->soldado0;
+				
+				if(pTorre->BuscaAlvo(soldado0) == false){
+					pTorre->tipoAnimCanhao = 0;
+					pTorre->AnimacaoPatrulha();				
+				}
+			}
 		}
-		else{
+		
+		if(pTorre->alvo != NULL){
 			
 			if(pTorre->CampoVisao(*pTorre->alvo) == true){
 				
