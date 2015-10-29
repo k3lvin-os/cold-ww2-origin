@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h> // Para gerar números aleatórios
 #include <fstream> // E / S de arquivos
 #include <iomanip> // Para ler em caracter a caracter
 #include <time.h> // Para trabalhar com o tempo
@@ -9,10 +10,6 @@
 void Carrega(void *arrayImg, void *arrayMask, char *rPath);
 void GetImage(void** pImg, char path[], int width, int height);
 void* GetImage(char path[], int width, int height);
-
-
-
-
 
 // Bibliotecas criados pela equipe de desenvolvimento
 #include "..\..\header\td_defines.h"
@@ -32,7 +29,7 @@ void* GetImage(char path[], int width, int height);
 /*Funções que utilizam as funções dos arquivos header*/
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo);
 void Avisa(TDelay gameTime, Lider Hitler);
-void MostraLideres(Jogador meuJog, Jogador outroJog, char onda);
+void MostraLideres(Lider *meuLider, Lider *outroLider);
 void Aviso(int posX, int posY, char * msg, int color, Lider hitler);
 void DefesaTorre(Jogador *meuJog, Jogador *outroJog);
 bool SemTorrePerto(Torre *torre0, int tileCimaX,int tileCimaY);
@@ -53,7 +50,8 @@ int main(){
 	int teste = 2;
 	Grade minhaGrd;
 		
-
+	// Fornece uma seed para o gerador de números pseudoaleatórios
+	srand(time(NULL));
 
 	// Inicialize a janela gráfica
 	initwindow(TELA_W,TELA_H, "Seek Of Peace: Cold WW2");
@@ -105,14 +103,10 @@ int main(){
 		
 		// Verifica o tipo de envio de soldados do Eixo
 		ondaEixo.Verifica(onda,outroJog.lado,meuCampo);
-		
 
-		
 		// Avisa momentos importantes para o jogador
-		Avisa(gameTime, eixoIA.meuLider);
-	
-		//minhaGrd.Colocar(); // teste
-		
+		Avisa(gameTime, eixoIA.lider);
+			
 		// Verifica o input do usuário com a GUI
 		meuJog.InputGUI();
 		
@@ -135,23 +129,13 @@ int main(){
 		DefesaTorre(&meuJog,&outroJog);
 		
 		// Mostra os lideres
-		MostraLideres(meuJog,outroJog,onda);
+		MostraLideres(&(meuJog.lider),&(outroJog.lider));
 							
 		//Deixa a página visual
 		minhaPg.Visual();
-		
-
-		
-		// Teste
-		//cout << gameTime.GameTime() << endl;
-		
-		
-
-
 	
 		// Delay de FPS
-		delay(FPS);
-		
+		delay(FPS);	
 	}
 	// Libera a memória
 	meuCampo.LimpaMem();
@@ -161,7 +145,6 @@ int main(){
 	meuJog.torre0->LimpaNo(meuJog.torre0);
 	outroJog.torre0->LimpaNo(outroJog.torre0);
 	eixoIA.torre0->LimpaNo(eixoIA.torre0);
-	
 	
 	closegraph();
 	return 0;	
@@ -174,7 +157,7 @@ int main(){
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 
 	Soldado *novoIni;
-	Soldado *inimigo, *anterior;
+	Soldado *pSold, *anterior;
 	Soldado *soldado0;
 	TDelay *tempoEspera;
 	BarraVida meuHP;
@@ -182,24 +165,26 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 	soldado0 = meuJog->soldado0;
 	tempoEspera = &(outroJog->esperaIni);
 	
-	for(inimigo = soldado0->prox; inimigo != NULL; inimigo = inimigo->prox){
+	for(pSold = soldado0->prox; pSold != NULL; pSold = pSold->prox){
 	
-		if(inimigo->vida > 0 && inimigo->chegou != true){
+		if(pSold->vida > 0 && pSold->chegou != true){
 			
-			inimigo->Show();
-			inimigo->IA(meuCampo, tempoEspera);
-			meuHP.Show(inimigo->x,inimigo->y,inimigo->vida,"soldado");
+			pSold->Show();
+			pSold->IA(meuCampo, tempoEspera);
+			meuHP.Show(pSold->x,pSold->y,pSold->vida,"soldado");
 			
 		} 
 		
 		else{
 			
-			anterior = inimigo->Anterior(soldado0);
+			anterior = pSold->Anterior(soldado0);
 			
-			if(inimigo->chegou == true)
-				inimigo->Chegou(anterior);
+			if(pSold->chegou == true)
+				pSold->Chegou(anterior);
 			else
-				inimigo->Morre(anterior);		
+				pSold->Morre(anterior);
+				
+			pSold = anterior;		
 		}
 	}
 }
@@ -254,22 +239,22 @@ void GetImage(void** pImg, char path[], int width, int height){
 
 
 /*Mostra os líders/ avatares dos jogadores*/
-void MostraLideres(Jogador meuJog, Jogador outroJog, char onda){
+void MostraLideres(Lider *meuLider, Lider *outroLider){
 	
 	BarraVida meuHP;
+
+		
+	meuLider->VerificaFuria();
+	outroLider->VerificaFuria();
 	
-	if(onda != SEM_ONDA){
-		meuJog.meuLider.Furia();
-		outroJog.meuLider.Furia();
-	}
-	meuJog.meuLider.VerificaFuria();
-	outroJog.meuLider.VerificaFuria();
-	meuJog.meuLider.VerificaImg(meuJog.vida);
-	outroJog.meuLider.VerificaImg(outroJog.vida);
-	meuJog.meuLider.Show();
-	outroJog.meuLider.Show();
-	meuHP.Show(STALIN_X, STALIN_Y,0,"lider");
-	meuHP.Show(ROOSEVELT_X,ROOSEVELT_Y,100,"lider");
+	meuLider->VerificaImg();
+	outroLider->VerificaImg();
+	
+	meuLider->Show();
+	outroLider->Show();
+	
+	meuHP.Show(STALIN_X, STALIN_Y,*meuLider->vida,"lider");
+	meuHP.Show(ROOSEVELT_X,ROOSEVELT_Y,*outroLider->vida,"lider");
 }
 
 /*Busca e retorna uma imagem com as informações passadas por parâmetro*/
@@ -305,6 +290,7 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog){
 		
 		if(pTorre->alvo == NULL){
 			
+			pTorre->tipoAnimCanhao = 0;
 			pTorre->AnimacaoPatrulha();
 			pTorre->BuscaAlvo(soldado0);
 		}
@@ -312,16 +298,19 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog){
 			
 			if(pTorre->CampoVisao(*pTorre->alvo) == true){
 				
-			} else{				
+				pTorre->tipoAnimCanhao = 1;
+				pTorre->AnimacaoMira();
+				
+				if(pTorre->reload.PassouDelay(TORRE_RELOAD)){
+					pTorre->tipoAnimCanhao = 2;
+					pTorre->Atira();
+					pTorre->reload.Atualiza();
+				}
+			} else		
 				pTorre->alvo = NULL;
-				//TESTE
-				std::cout << "Perdi o alvo de vista...\n";
-			}
 		}
+		
 		pTorre->MostraTorre();
-		// TESTE
-		setcolor(BLUE);
-		circle(pTorre->x + 16,pTorre->y + 16,TORRE_RAIO);
 	}
 	
 }
