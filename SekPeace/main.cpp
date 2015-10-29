@@ -176,11 +176,18 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 			
 			anterior = pSold->Anterior(soldado0);
 			
-			if(pSold->chegou == true)
-				pSold->Chegou(anterior);
-			else
-				pSold->Morre(anterior);
+			if(pSold->chegou == true){
 				
+				pSold->Remove(anterior);
+				outroJog->vida -= DANO_CHEGOU;
+				outroJog->lider.Furia();
+			}
+			else{
+				pSold->Remove(anterior);
+				outroJog->dinheiro += BONUS_SOLD;
+				
+			}
+			
 			pSold = anterior;		
 		}
 	}
