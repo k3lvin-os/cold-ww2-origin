@@ -4,6 +4,7 @@
 #include <iomanip> // Para ler em caracter a caracter
 #include <time.h> // Para trabalhar com o tempo
 #include <math.h> // Para usar a função potenciação e raiz quadrada
+#include <windows.h> // Para trabalhar com funções de som do Windows
 #include <graphics.h>
 
 // Funções que NÃO utilizam as estruturas dos arquivos header
@@ -82,8 +83,12 @@ int main(){
 	// Começa a contar o tempo de jogo
 	gameTime.Atualiza();
 	
+	// Música do gameplay 
+	PlaySound("../../Assets/Music/gameplay.wav",NULL,SND_LOOP | SND_ASYNC);	
+		
 	//Loop do jogo
 	while(gameLoop == true){
+	
 		
 		// Troca e ativa uma nova página para modificações
 		minhaPg.Troca();
