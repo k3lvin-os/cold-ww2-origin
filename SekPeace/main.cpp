@@ -257,8 +257,13 @@ void MostraLideres(Lider *meuLider, Lider *outroLider){
 	meuLider->Show();
 	outroLider->Show();
 	
-	meuHP.Show(STALIN_X, STALIN_Y,*meuLider->vida,"lider");
-	meuHP.Show(ROOSEVELT_X,ROOSEVELT_Y,*outroLider->vida,"lider");
+	if(meuLider->nome == "Stalin"){
+		meuHP.Show(STALIN_X, STALIN_Y,*meuLider->vida,"lider");
+		meuHP.Show(ROOSEVELT_X,ROOSEVELT_Y,*outroLider->vida,"lider");
+	} else{
+		meuHP.Show(ROOSEVELT_X,ROOSEVELT_Y,*meuLider->vida,"lider");
+		meuHP.Show(STALIN_X, STALIN_Y,*outroLider->vida,"lider");
+	}
 }
 
 /*Busca e retorna uma imagem com as informações passadas por parâmetro*/
