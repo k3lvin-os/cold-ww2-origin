@@ -320,7 +320,6 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA){
 			
 			if(pTorre->CampoVisao(*pTorre->alvo) == true){
 				
-				pTorre->tipoAnimCanhao = 1;
 				pTorre->AnimacaoMira();
 				
 				if(pTorre->reload.PassouDelay(TORRE_RELOAD)){
