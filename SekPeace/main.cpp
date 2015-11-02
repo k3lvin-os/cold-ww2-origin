@@ -25,6 +25,8 @@ void* GetImage(char path[], int width, int height);
 #include "..\..\header\ondaeixo.h"
 #include "..\..\header\grade.h"
 #include "..\..\header\barra_vida.h"
+using namespace std;
+
 
 
 /*Funções que utilizam as funções dos arquivos header*/
@@ -35,119 +37,57 @@ void Aviso(int posX, int posY, char * msg, int color, Lider hitler);
 void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA);
 bool SemTorrePerto(Torre *torre0, int tileCimaX,int tileCimaY);
 
-using namespace std;
-int main(){
-	
-	// Declaração de variáveis
-	Jogador meuJog,  outroJog, eixoIA;
-	char onda;
-	int mouseX, mouseY;
-	CampoJogo meuCampo;
-	Pagina minhaPg;
-	bool gameLoop = true;
-	time_t agora = NULL;
-	TDelay gameTime;
-	OndaEixo ondaEixo;
-	int teste = 2;
-	Grade minhaGrd;
-		
-	// Fornece uma seed para o gerador de números pseudoaleatórios
-	srand(time(NULL));
 
-	// Inicialize a janela gráfica
-	initwindow(TELA_W,TELA_H, "Seek Of Peace: Cold WW2");
+// Variáveis globais
+//======================================================
+Jogador meuJog,  outroJog, eixoIA;
+CampoJogo meuCampo;
+OndaEixo ondaEixo;
+char onda;			// Ceritifique-se que essas variáveis
+Pagina minhaPg;		// são inicializadas no começo de todas
+bool gameLoop;		// funções em que são utilzadas
+TDelay gameTime;
+Grade minhaGrd;
+//==========================================================
 
-	minhaPg.Init();	// Inicializa a estrutura página
-	minhaPg.Troca();	// Troca a página atual
-
-	// Trabalha com a página nos "bastidores"
+// Funções que usam variáveis globais
+void SinglePlayer();
+void Menu(){
+	minhaPg.Troca();
 	minhaPg.Ativa();
 	
-	// Atribui times aos jogadores
-	meuJog.Init(LADO1);
-	outroJog.Init(LADO2);
-	eixoIA.Init(LADO3);
-	
-	// Inicializa gerenciador de ondas do eixo
-	ondaEixo.Init(&eixoIA);
-	
-	// Inicialização do campo de jogo a partir de um arquivo de coordenadas
-	meuCampo.Init("mapa05.txt");
-	
-	// Mostra campo de jogo
-	meuCampo.Mostrar();
-	
-	// Deixa a página visual
-	minhaPg.Visual();
-	
-	// Começa a contar o tempo de jogo
-	gameTime.Atualiza();
-	
-	// Música do gameplay 
-	PlaySound("../../Assets/Music/gameplay.wav",NULL,SND_LOOP | SND_ASYNC);	
-		
-	//Loop do jogo
-	while(gameLoop == true){
-	
-		
-		// Troca e ativa uma nova página para modificações
-		minhaPg.Troca();
-		minhaPg.Ativa();
-		
-		// Limpa a tela
-		cleardevice();
-		
-		// Mostra campo de jogo	
-		meuCampo.Mostrar();	
-		
-		// Mostra gui do jogador
-		meuJog.MostraGUI(); 
-	
-		// Verifica se é hora de enviar uma onda de soldados do Eixo
-		onda = gameTime.SoldOnda();	
-		
-		// Verifica o tipo de envio de soldados do Eixo
-		ondaEixo.Verifica(onda,meuJog.lado,meuCampo);
+	meuCampo.Init("menu.txt");
+	settextjustify(LEFT_TEXT,CENTER_TEXT);
 
-		// Avisa momentos importantes para o jogador
-		Avisa(gameTime, eixoIA.lider);
-			
-		// Verifica o input do usuário com a GUI
-		meuJog.InputGUI();
-		
-		// Coloca procedimento de colocar torre
-		meuJog.ArrastaTorre(meuCampo);
-				
-		// Limpa campo de carregamento de imagens
-		meuCampo.LimpaD();
-		
-		// Rotina de envio de soldados do jogador
-		EnviaSold(&meuJog,&outroJog,meuCampo);
-		
-		// Rotina de envio de soldados do Eixo contra o jogador
-		EnviaSold(&eixoIA,&meuJog,meuCampo);
-			
-		// Rotina de defesa da torre
-		DefesaTorre(&meuJog,&outroJog,&eixoIA);
-		
-		// Mostra os lideres
-		MostraLideres(&meuJog.lider,&outroJog.lider);
-							
-		//Deixa a página visual
-		minhaPg.Visual();
+	meuCampo.Mostrar();
+	minhaGrd.Colocar();
 	
-		// Delay de FPS
-		delay(FPS);	
+	settextstyle(BOLD_FONT,HORIZ_DIR,7);
+	setcolor(WHITE);
+	outtextxy(LOGO_X,LOGO_Y,"SEEK OF PEACE");
+	setcolor(DARKGRAY);
+	outtextxy(LOGO2_X,LOGO2_Y,"COLD WW2");
+	
+	minhaPg.Visual();
+	while(1){
 	}
-	// Libera a memória
-	meuCampo.LimpaMem();
-	meuJog.soldado0->LimpaNo(meuJog.soldado0);
-	outroJog.soldado0->LimpaNo(outroJog.soldado0);
-	eixoIA.soldado0->LimpaNo(eixoIA.soldado0);
-	meuJog.torre0->LimpaNo(meuJog.torre0);
-	outroJog.torre0->LimpaNo(outroJog.torre0);
-	eixoIA.torre0->LimpaNo(eixoIA.torre0);
+}
+
+int main(){
 	
+	// Fornece uma seed para o gerador de números pseudoaleatórios
+	srand(time(NULL));
+	
+	// Inicializa a janela gráfica
+	initwindow(TELA_W,TELA_H, "Seek Of Peace: Cold WW2");
+	
+
+	// Chama o menu de jogo
+	Menu();
+
+	// Inicia o modo de jogo com um jogador
+	SinglePlayer();
+		
 	closegraph();
 	return 0;	
 }
@@ -334,6 +274,107 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA){
 		pTorre->MostraTorre();
 	}
 	
+}
+
+// Modo de um jogador
+void SinglePlayer(){
+
+
+	minhaPg.Init();	// Inicializa a estrutura página
+	minhaPg.Troca();	// Troca a página atual
+
+	// Trabalha com a página nos "bastidores"
+	minhaPg.Ativa();
+	
+	cleardevice();
+	
+	// Atribui times aos jogadores
+	meuJog.Init(LADO2);
+	outroJog.Init(LADO1);
+	eixoIA.Init(LADO3);
+	
+	// Inicializa gerenciador de ondas do eixo
+	ondaEixo.Init(&eixoIA);
+	
+	// Inicialização do campo de jogo a partir de um arquivo de coordenadas
+	meuCampo.Init("mapa05.txt");
+	
+	// Mostra campo de jogo
+	meuCampo.Mostrar();
+	
+	// Deixa a página visual
+	minhaPg.Visual();
+	
+	// Começa a contar o tempo de jogo
+	gameTime.Atualiza();
+	
+	// Música do gameplay 
+	PlaySound("../../Assets/Music/gameplay.wav",NULL,SND_LOOP | SND_ASYNC);	
+		
+	// Define o loop de jogo
+	gameLoop = true;
+			
+	//Loop do jogo
+	while(gameLoop == true){
+	
+		
+		// Troca e ativa uma nova página para modificações
+		minhaPg.Troca();
+		minhaPg.Ativa();
+		
+		// Limpa a tela
+		cleardevice();
+		
+		// Mostra campo de jogo	
+		meuCampo.Mostrar();	
+		
+		// Mostra gui do jogador
+		meuJog.MostraGUI(); 
+	
+		// Verifica se é hora de enviar uma onda de soldados do Eixo
+		onda = gameTime.SoldOnda();	
+		
+		// Verifica o tipo de envio de soldados do Eixo
+		ondaEixo.Verifica(onda,meuJog.lado,meuCampo);
+
+		// Avisa momentos importantes para o jogador
+		Avisa(gameTime, eixoIA.lider);
+			
+		// Verifica o input do usuário com a GUI
+		meuJog.InputGUI();
+		
+		// Coloca procedimento de colocar torre
+		meuJog.ArrastaTorre(meuCampo);
+				
+		// Limpa campo de carregamento de imagens
+		meuCampo.LimpaD();
+		
+		// Rotina de envio de soldados do jogador
+		EnviaSold(&meuJog,&outroJog,meuCampo);
+		
+		// Rotina de envio de soldados do Eixo contra o jogador
+		EnviaSold(&eixoIA,&meuJog,meuCampo);
+			
+		// Rotina de defesa da torre
+		DefesaTorre(&meuJog,&outroJog,&eixoIA);
+		
+		// Mostra os lideres
+		MostraLideres(&meuJog.lider,&outroJog.lider);
+							
+		//Deixa a página visual
+		minhaPg.Visual();
+	
+		// Delay de FPS
+		delay(FPS);	
+	}
+	// Libera a memória
+	meuCampo.LimpaMem();
+	meuJog.soldado0->LimpaNo(meuJog.soldado0);
+	outroJog.soldado0->LimpaNo(outroJog.soldado0);
+	eixoIA.soldado0->LimpaNo(eixoIA.soldado0);
+	meuJog.torre0->LimpaNo(meuJog.torre0);
+	outroJog.torre0->LimpaNo(outroJog.torre0);
+	eixoIA.torre0->LimpaNo(eixoIA.torre0);
 }
 
 
