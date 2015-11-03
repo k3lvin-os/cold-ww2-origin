@@ -58,6 +58,7 @@ void SinglePlayer();
 EscolhaEmMenu MenuUmJogador();
 EscolhaEmMenu Menu();
 EscolhaEmMenu MenuUmJog();
+void BackgroundMenu();
 
 
 
@@ -387,29 +388,13 @@ EscolhaEmMenu Menu(){
 	minhaPg.Troca();
 	minhaPg.Ativa();
 	
-	// Configurações iniciais de texto
-	settextjustify(LEFT_TEXT,CENTER_TEXT);
-	settextstyle(BOLD_FONT,HORIZ_DIR,7);
-	
-	// Carrega o menu de jogo (imagem de fundo)
-	meuCampo.Init("menu.txt");
-	meuCampo.Mostrar();
-	
-	// Logo do jogo
-	setcolor(GREEN);
-	outtextxy(LOGO_X,LOGO_Y,"SEEK OF PEACE");
-	setcolor(DARKGRAY);
-	outtextxy(LOGO2_X,LOGO2_Y,"COLD WW2");
-	setfillstyle(1,LIGHTGRAY);
+	BackgroundMenu();
 	
 	// Botoões do menu
 	bar(BOTAO1_X,BOTAO1_Y,BOTAO1_X + (TILE_W * 4),BOTAO1_Y + (TILE_H * 4));
 	bar(BOTAO2_X,BOTAO2_Y,BOTAO2_X + (TILE_W * 5),BOTAO2_Y + (TILE_H * 4));
 	bar(BOTAO3_X,BOTAO2_Y,BOTAO3_X + (TILE_W * 4),BOTAO3_Y + (TILE_H * 4));
 	
-	// Texto dos botões
-	settextstyle(BOLD_FONT,HORIZ_DIR,1);
-	setcolor(LIGHTGREEN);
 
 	outtextxy(BOTAO1_X + 48  ,BOTAO1_Y + (TILE_H * 2), "UM"); 
 	outtextxy(BOTAO1_X + 8 ,BOTAO1_Y + (TILE_W * 2) + 16, "JOGADOR"); 
@@ -437,20 +422,75 @@ EscolhaEmMenu Menu(){
 
 // Menu de um jogador
 EscolhaEmMenu MenuUmJog(){
+	
 	EscolhaEmMenu escolha;
+	Radio gameSpeed;
+	gameSpeed.prox = NULL;
 
-	// Não usei a paginação aqui
-	// porque  parte da tela fica preta
-	meuCampo.Mostrar(0,10,TILE_QTDX ,TILE_QTDY);
+	gameSpeed.Insere(&gameSpeed,"4",false,TILE_W * 20 + 16, TILE_H * 10 + 16);
+	gameSpeed.Insere(&gameSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	escolha = SEM_ESCOLHA;
 	
-
-	
-	
-	escolha = SEM_ESCOLHA;
 	while(escolha == SEM_ESCOLHA){
+	
+		minhaPg.Troca();
+		minhaPg.Ativa();
 		
+		cleardevice();
+		
+		// Desenha o background básico do menu
+		BackgroundMenu();
+		
+		
+		// Barra de contraste para os botões radio
+		setfillstyle(1,BLACK);
+		setcolor(BLACK);
+		bar(TILE_W * 20, TILE_W * 10,TILE_W * 24,TILE_H * 11 );
+		
+		// Botões radio da velocidade do jogo
+		setcolor(LIGHTGREEN);
+		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "Velocidade do jogo");
+		gameSpeed.MostraLista(&gameSpeed);
+		
+		// Botão "JOGAR"
+		setcolor(LIGHTGRAY);
+		setfillstyle(1,LIGHTGRAY);
+		bar(BOTAO_JOGAR_X, BOTAO_JOGAR_Y, TILE_W * 22, TILE_H * 19);
+		settextjustify(LEFT_TEXT,CENTER_TEXT);
+		setcolor(LIGHTGREEN);
+		outtextxy(BOTAO_JOGAR_X + 8,BOTAO_JOGAR_Y + 24,"JOGAR");
+		
+		minhaPg.Visual();
+		
+		gameSpeed.VerificaClick(&gameSpeed);
 	}
 	
+	gameSpeed.LimpaNo(&gameSpeed);
 	return escolha;
+}
+
+// Desenha o visual básico do menu de jogo
+void BackgroundMenu(){
+	
+	
+	settextjustify(LEFT_TEXT,CENTER_TEXT);
+	// Modifica texto para o tamanho do logo
+	settextstyle(BOLD_FONT,HORIZ_DIR,7);
+	
+	// Carrega o menu de jogo (imagem de fundo)
+	meuCampo.Init("menu.txt"); // **** Simplificar esta função
+								//       , assim que possível
+	meuCampo.Mostrar();		 
+	 
+	// Logo do jogo
+	setcolor(GREEN);
+	outtextxy(LOGO_X,LOGO_Y,"SEEK OF PEACE");
+	setcolor(DARKGRAY);
+	outtextxy(LOGO2_X,LOGO2_Y,"COLD WW2");
+	setfillstyle(1,LIGHTGRAY);
+	
+	// Modifica texto para tamanho usual
+	settextstyle(BOLD_FONT,HORIZ_DIR,1);
+	setcolor(LIGHTGREEN);
+	
 }
 
