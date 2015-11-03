@@ -13,6 +13,8 @@ void GetImage(void** pImg, char path[], int width, int height);
 void* GetImage(char path[], int width, int height);
 
 // Bibliotecas criados pela equipe de desenvolvimento
+#include "..\..\header\radiobutton.h"
+#include "..\..\header\enumeracoes.h"
 #include "..\..\header\td_defines.h"
 #include "..\..\header\sprite.h"
 #include "..\..\header\campojogo.h"
@@ -48,68 +50,44 @@ Pagina minhaPg;		// são inicializadas no começo de todas
 bool gameLoop;		// funções em que são utilzadas
 TDelay gameTime;
 Grade minhaGrd;
+EscolhaEmMenu escolhaMenu;
 //==========================================================
 
 // Funções que usam variáveis globais
 void SinglePlayer();
-void Menu(){
-	
-	minhaPg.Troca();
-	minhaPg.Ativa();
-	
-	// Configurações iniciais de texto
-	settextjustify(LEFT_TEXT,CENTER_TEXT);
-	settextstyle(BOLD_FONT,HORIZ_DIR,7);
-	
-	// Carrega o menu de jogo (imagem de fundo)
-	meuCampo.Init("menu.txt");
-	meuCampo.Mostrar();
-	//minhaGrd.Colocar();
-	
-	// Logo do jogo
-	setcolor(GREEN);
-	outtextxy(LOGO_X,LOGO_Y,"SEEK OF PEACE");
-	setcolor(DARKGRAY);
-	outtextxy(LOGO2_X,LOGO2_Y,"COLD WW2");
-	setfillstyle(1,LIGHTGRAY);
-	
-	// Botoões do menu
-	bar(BOTAO1_X,BOTAO1_Y,BOTAO1_X + (TILE_W * 4),BOTAO1_Y + (TILE_H * 4));
-	bar(BOTAO2_X,BOTAO2_Y,BOTAO2_X + (TILE_W * 5),BOTAO2_Y + (TILE_H * 4));
-	bar(BOTAO3_X,BOTAO2_Y,BOTAO3_X + (TILE_W * 4),BOTAO3_Y + (TILE_H * 4));
-	
-	// Texto dos botões
-	settextstyle(BOLD_FONT,HORIZ_DIR,1);
-	setcolor(LIGHTGREEN);
+EscolhaEmMenu MenuUmJogador();
+EscolhaEmMenu Menu();
+EscolhaEmMenu MenuUmJog();
 
-	outtextxy(BOTAO1_X + 48  ,BOTAO1_Y + (TILE_H * 2), "UM"); 
-	outtextxy(BOTAO1_X + 8 ,BOTAO1_Y + (TILE_W * 2) + 16, "JOGADOR"); 
-	
-	outtextxy(BOTAO2_X + 56  ,BOTAO2_Y + (TILE_H * 2), "DOIS"); 
-	outtextxy(BOTAO2_X  + 16,BOTAO2_Y + (TILE_W * 2) + 16, "JOGADORES");
-	
-	outtextxy(BOTAO3_X + 8  ,BOTAO3_Y + 72 , "CRÉDITOS"); 
-			
-	minhaPg.Visual();
-	while(1){
-	}
-}
+
 
 int main(){
 	
 	// Fornece uma seed para o gerador de números pseudoaleatórios
 	srand(time(NULL));
 	
+	minhaPg.Init();	// Inicializa a estrutura página
+	
 	// Inicializa a janela gráfica
 	initwindow(TELA_W,TELA_H, "Seek Of Peace: Cold WW2");
 	
-
-	// Chama o menu de jogo
-	Menu();
-
-	// Inicia o modo de jogo com um jogador
-	SinglePlayer();
+	escolhaMenu = MENU;
+	
+	// Loop do jogo
+	while(escolhaMenu != SAIR ){
 		
+		switch(escolhaMenu){
+			case MENU:
+				escolhaMenu = Menu();
+				break;
+			case UM_JOGADOR:
+				escolhaMenu = MENU;
+				SinglePlayer();
+				break;
+			case MENU_UM_JOG:
+				escolhaMenu = MenuUmJog();
+		}	
+	}	
 	closegraph();
 	return 0;	
 }
@@ -302,7 +280,6 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA){
 void SinglePlayer(){
 
 
-	minhaPg.Init();	// Inicializa a estrutura página
 	minhaPg.Troca();	// Troca a página atual
 
 	// Trabalha com a página nos "bastidores"
@@ -399,4 +376,81 @@ void SinglePlayer(){
 	eixoIA.torre0->LimpaNo(eixoIA.torre0);
 }
 
+//=============================================================
+// Menu de jogo
+EscolhaEmMenu Menu(){
+
+	
+	EscolhaEmMenu escolha;
+	int mouseX,mouseY;
+
+	minhaPg.Troca();
+	minhaPg.Ativa();
+	
+	// Configurações iniciais de texto
+	settextjustify(LEFT_TEXT,CENTER_TEXT);
+	settextstyle(BOLD_FONT,HORIZ_DIR,7);
+	
+	// Carrega o menu de jogo (imagem de fundo)
+	meuCampo.Init("menu.txt");
+	meuCampo.Mostrar();
+	
+	// Logo do jogo
+	setcolor(GREEN);
+	outtextxy(LOGO_X,LOGO_Y,"SEEK OF PEACE");
+	setcolor(DARKGRAY);
+	outtextxy(LOGO2_X,LOGO2_Y,"COLD WW2");
+	setfillstyle(1,LIGHTGRAY);
+	
+	// Botoões do menu
+	bar(BOTAO1_X,BOTAO1_Y,BOTAO1_X + (TILE_W * 4),BOTAO1_Y + (TILE_H * 4));
+	bar(BOTAO2_X,BOTAO2_Y,BOTAO2_X + (TILE_W * 5),BOTAO2_Y + (TILE_H * 4));
+	bar(BOTAO3_X,BOTAO2_Y,BOTAO3_X + (TILE_W * 4),BOTAO3_Y + (TILE_H * 4));
+	
+	// Texto dos botões
+	settextstyle(BOLD_FONT,HORIZ_DIR,1);
+	setcolor(LIGHTGREEN);
+
+	outtextxy(BOTAO1_X + 48  ,BOTAO1_Y + (TILE_H * 2), "UM"); 
+	outtextxy(BOTAO1_X + 8 ,BOTAO1_Y + (TILE_W * 2) + 16, "JOGADOR"); 
+	outtextxy(BOTAO2_X + 56  ,BOTAO2_Y + (TILE_H * 2), "DOIS"); 
+	outtextxy(BOTAO2_X  + 16,BOTAO2_Y + (TILE_W * 2) + 16, "JOGADORES");
+	outtextxy(BOTAO3_X + 8  ,BOTAO3_Y + 72 , "CRÉDITOS"); 
+			
+	minhaPg.Visual(); 
+	
+	escolha = SEM_ESCOLHA;
+	while(escolha == SEM_ESCOLHA){
+		
+		if(GetKeyState(VK_LBUTTON) & 0x80){
+			mouseX = mousex();
+			mouseY = mousey();
+			
+			if( (mouseX > BOTAO1_X && mouseX < BOTAO1_X + (TILE_W * 4))  
+			&& (mouseY > BOTAO1_Y && mouseY < BOTAO1_Y + (TILE_H * 4))) 
+				escolha = MENU_UM_JOG;
+		}
+	}	
+	return escolha;
+}
+
+
+// Menu de um jogador
+EscolhaEmMenu MenuUmJog(){
+	EscolhaEmMenu escolha;
+
+	// Não usei a paginação aqui
+	// porque  parte da tela fica preta
+	meuCampo.Mostrar(0,10,TILE_QTDX ,TILE_QTDY);
+	
+
+	
+	
+	escolha = SEM_ESCOLHA;
+	while(escolha == SEM_ESCOLHA){
+		
+	}
+	
+	return escolha;
+}
 
