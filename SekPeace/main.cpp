@@ -53,21 +53,43 @@ Grade minhaGrd;
 // Funções que usam variáveis globais
 void SinglePlayer();
 void Menu(){
+	
 	minhaPg.Troca();
 	minhaPg.Ativa();
 	
-	meuCampo.Init("menu.txt");
+	// Configurações iniciais de texto
 	settextjustify(LEFT_TEXT,CENTER_TEXT);
-
-	meuCampo.Mostrar();
-	minhaGrd.Colocar();
-	
 	settextstyle(BOLD_FONT,HORIZ_DIR,7);
-	setcolor(WHITE);
+	
+	// Carrega o menu de jogo (imagem de fundo)
+	meuCampo.Init("menu.txt");
+	meuCampo.Mostrar();
+	//minhaGrd.Colocar();
+	
+	// Logo do jogo
+	setcolor(GREEN);
 	outtextxy(LOGO_X,LOGO_Y,"SEEK OF PEACE");
 	setcolor(DARKGRAY);
 	outtextxy(LOGO2_X,LOGO2_Y,"COLD WW2");
+	setfillstyle(1,LIGHTGRAY);
 	
+	// Botoões do menu
+	bar(BOTAO1_X,BOTAO1_Y,BOTAO1_X + (TILE_W * 4),BOTAO1_Y + (TILE_H * 4));
+	bar(BOTAO2_X,BOTAO2_Y,BOTAO2_X + (TILE_W * 5),BOTAO2_Y + (TILE_H * 4));
+	bar(BOTAO3_X,BOTAO2_Y,BOTAO3_X + (TILE_W * 4),BOTAO3_Y + (TILE_H * 4));
+	
+	// Texto dos botões
+	settextstyle(BOLD_FONT,HORIZ_DIR,1);
+	setcolor(LIGHTGREEN);
+
+	outtextxy(BOTAO1_X + 48  ,BOTAO1_Y + (TILE_H * 2), "UM"); 
+	outtextxy(BOTAO1_X + 8 ,BOTAO1_Y + (TILE_W * 2) + 16, "JOGADOR"); 
+	
+	outtextxy(BOTAO2_X + 56  ,BOTAO2_Y + (TILE_H * 2), "DOIS"); 
+	outtextxy(BOTAO2_X  + 16,BOTAO2_Y + (TILE_W * 2) + 16, "JOGADORES");
+	
+	outtextxy(BOTAO3_X + 8  ,BOTAO3_Y + 72 , "CRÉDITOS"); 
+			
 	minhaPg.Visual();
 	while(1){
 	}
