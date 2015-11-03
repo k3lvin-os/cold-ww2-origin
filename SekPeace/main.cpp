@@ -423,12 +423,18 @@ EscolhaEmMenu Menu(){
 // Menu de um jogador
 EscolhaEmMenu MenuUmJog(){
 	
+	int mouseX, mouseY;
 	EscolhaEmMenu escolha;
-	Radio gameSpeed;
+	Radio gameSpeed, lider;
+	
 	gameSpeed.prox = NULL;
+	lider.prox = NULL;
+
 
 	gameSpeed.Insere(&gameSpeed,"4",false,TILE_W * 20 + 16, TILE_H * 10 + 16);
 	gameSpeed.Insere(&gameSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	escolha = SEM_ESCOLHA;
+	lider.Insere(&lider,"Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16);
+	lider.Insere(&lider,"Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16);
 	
 	while(escolha == SEM_ESCOLHA){
 	
@@ -446,10 +452,16 @@ EscolhaEmMenu MenuUmJog(){
 		setcolor(BLACK);
 		bar(TILE_W * 20, TILE_W * 10,TILE_W * 24,TILE_H * 11 );
 		
-		// Botões radio da velocidade do jogo
 		setcolor(LIGHTGREEN);
+
+		// Botões radio da velocidade do jogo
 		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "Velocidade do jogo");
 		gameSpeed.MostraLista(&gameSpeed);
+		
+		// Botões de rádio de escolha de lideres
+		outtextxy(TILE_W * 11, TILE_H * 12 + 16,"Lider:" );
+		lider.MostraLista(&lider);
+		
 		
 		// Botão "JOGAR"
 		setcolor(LIGHTGRAY);
@@ -462,6 +474,19 @@ EscolhaEmMenu MenuUmJog(){
 		minhaPg.Visual();
 		
 		gameSpeed.VerificaClick(&gameSpeed);
+		lider.VerificaClick(&lider);
+		
+		if(GetKeyState(VK_LBUTTON) & 0x80){
+			mouseX = mousex();
+			mouseY = mousey();
+			
+			if(mouseX > BOTAO_JOGAR_X && mouseX < TILE_W * 22 &&
+			mouseY > BOTAO_JOGAR_Y && mouseY < TILE_H * 19){
+				escolha = UM_JOGADOR;
+			}
+			
+			
+		}
 	}
 	
 	gameSpeed.LimpaNo(&gameSpeed);
