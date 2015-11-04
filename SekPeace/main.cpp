@@ -73,7 +73,8 @@ int main(){
 	botaoDoisJog.Init(BOTAO2_X,BOTAO2_Y,5,4);
 	botaoCredit.Init(BOTAO3_X,BOTAO3_Y,4,4);
 	botaoJogar.Init(BOTAO_JOGAR_X,BOTAO_JOGAR_Y,3,1);
-	
+	botaoVoltar.Init(BOTAO_VOLTAR_X,BOTAO_VOLTAR_Y,3,1);
+
 	gameSpeed = NULL;
 
 	// Fornece uma seed para o gerador de números pseudoaleatórios
@@ -435,8 +436,7 @@ EscolhaEmMenu MenuUmJog(){
 	
 	radioSpeed.prox = NULL;
 	lider.prox = NULL;
-
-
+	
 	radioSpeed.Insere(&radioSpeed,"4",false,TILE_W * 20 + 16, TILE_H * 10 + 16);
 	radioSpeed.Insere(&radioSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	escolha = SEM_ESCOLHA;
 	lider.Insere(&lider,"Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16);
@@ -451,8 +451,7 @@ EscolhaEmMenu MenuUmJog(){
 		
 		// Desenha o background básico do menu
 		BackgroundMenu();
-		
-		
+				
 		// Barra de contraste para os botões radio
 		setfillstyle(1,BLACK);
 		setcolor(BLACK);
@@ -475,9 +474,13 @@ EscolhaEmMenu MenuUmJog(){
 		setfillstyle(1,LIGHTGRAY);
 		
 		botaoJogar.Show();
+		botaoVoltar.Show();
+		
+		
 		settextjustify(LEFT_TEXT,CENTER_TEXT);
 		setcolor(LIGHTGREEN);
 		outtextxy(BOTAO_JOGAR_X + 8,BOTAO_JOGAR_Y + 24,"JOGAR");
+		outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,"VOLTAR");
 		
 		minhaPg.Visual();
 		
@@ -500,6 +503,10 @@ EscolhaEmMenu MenuUmJog(){
 				gameSpeed = 4;
 			else
 				gameSpeed = 8;
+		}
+		
+		if(botaoVoltar.CheckClick() == true){
+			escolha = MENU;
 		}
 			
 	}
