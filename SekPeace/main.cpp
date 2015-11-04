@@ -419,8 +419,12 @@ EscolhaEmMenu Menu(){
 	escolha = SEM_ESCOLHA;
 	while(escolha == SEM_ESCOLHA){
 		
-		if( botaoUmJog.CheckClick() == true)  
-			escolha = MENU_UM_JOG;
+		if(GetKeyState(VK_LBUTTON) & 0x80){
+			mouseX = mousex();
+			mouseY = mousey();
+			if(botaoUmJog.CheckClick(mouseX,mouseY) == true)  
+			   escolha = MENU_UM_JOG;	
+		}
 	}
 	
 	return escolha;
@@ -484,31 +488,46 @@ EscolhaEmMenu MenuUmJog(){
 		
 		minhaPg.Visual();
 		
-		radioSpeed.VerificaClick(&radioSpeed);
-		lider.VerificaClick(&lider);
 		
-		if(botaoJogar.CheckClick() == true){
-			escolha = UM_JOGADOR;			
+		if(GetKeyState(VK_LBUTTON) & 0x80){
 			
-			if( lider.RadioChecked(&lider)->label == "Roosevelt"){
-				ladoMeuJog = LADO1;
-				ladoOutroJog = LADO2;
-			} 
-			else{
-				ladoMeuJog = LADO2;
-				ladoOutroJog = LADO1;
+			mouseX = mousex();
+			mouseY = mousey();
+			
+			// ============ Processamento dos botões rádio========
+			radioSpeed.VerificaClick(&radioSpeed,mouseX,mouseY);
+			lider.VerificaClick(&lider,mouseX,mouseY);
+			//================= Fim do processamento===========
+			
+			//=========== Processamento do botão jogar
+			if(botaoJogar.CheckClick(mouseX,mouseY) == true){
+				
+				escolha = UM_JOGADOR;
+							
+				if( lider.RadioChecked(&lider)->label == "Roosevelt"){
+					ladoMeuJog = LADO1;
+					ladoOutroJog = LADO2;
+				} 
+				else{
+					ladoMeuJog = LADO2;
+					ladoOutroJog = LADO1;
+				}
+				
+				if(radioSpeed.RadioChecked(&radioSpeed)->label == "4")
+					gameSpeed = 4;
+				else
+					gameSpeed = 8;
 			}
+			//=========== Fim do processamento ===========
 			
-			if(radioSpeed.RadioChecked(&radioSpeed)->label == "4")
-				gameSpeed = 4;
-			else
-				gameSpeed = 8;
-		}
+			
+			// ============ Processamento do botão Voltar
+			else if(botaoVoltar.CheckClick(mouseX,mouseY) == true){
+				escolha = MENU;
+			}
+			//============== Fim do processamento ========
 		
-		if(botaoVoltar.CheckClick() == true){
-			escolha = MENU;
-		}
-			
+		}		
 	}
 	radioSpeed.LimpaNo(&radioSpeed);
 	return escolha;
