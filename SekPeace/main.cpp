@@ -26,6 +26,7 @@ void* GetImage(char path[], int width, int height);
 #include "..\..\header\jogador.h"
 #include "..\..\header\ondaeixo.h"
 #include "..\..\header\grade.h"
+#include "..\..\header\botao.h"
 #include "..\..\header\barra_vida.h"
 using namespace std;
 
@@ -51,6 +52,8 @@ bool gameLoop;		// funções em que são utilzadas
 TDelay gameTime;
 Grade minhaGrd;
 EscolhaEmMenu escolhaMenu;
+Botao botaoUmJog, botaoDoisJog, botaoCredit, botaoJogar, botaoVoltar;
+char *ladoMeuJog,*ladoOutroJog;
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -64,6 +67,12 @@ void BackgroundMenu();
 
 int main(){
 	
+	// Inicialize os botões que serão usados nos menus
+	botaoUmJog.Init(BOTAO1_X,BOTAO1_Y,4,4);
+	botaoDoisJog.Init(BOTAO2_X,BOTAO2_Y,5,4);
+	botaoCredit.Init(BOTAO3_X,BOTAO3_Y,4,4);
+	botaoJogar.Init(BOTAO_JOGAR_X,BOTAO_JOGAR_Y,3,1);
+
 	// Fornece uma seed para o gerador de números pseudoaleatórios
 	srand(time(NULL));
 	
@@ -289,8 +298,8 @@ void SinglePlayer(){
 	cleardevice();
 	
 	// Atribui times aos jogadores
-	meuJog.Init(LADO2);
-	outroJog.Init(LADO1);
+	meuJog.Init(ladoMeuJog);
+	outroJog.Init(ladoOutroJog);
 	eixoIA.Init(LADO3);
 	
 	// Inicializa gerenciador de ondas do eixo
@@ -391,11 +400,10 @@ EscolhaEmMenu Menu(){
 	BackgroundMenu();
 	
 	// Botoões do menu
-	bar(BOTAO1_X,BOTAO1_Y,BOTAO1_X + (TILE_W * 4),BOTAO1_Y + (TILE_H * 4));
-	bar(BOTAO2_X,BOTAO2_Y,BOTAO2_X + (TILE_W * 5),BOTAO2_Y + (TILE_H * 4));
-	bar(BOTAO3_X,BOTAO2_Y,BOTAO3_X + (TILE_W * 4),BOTAO3_Y + (TILE_H * 4));
+	botaoUmJog.Show();
+	botaoDoisJog.Show(); 
+	botaoCredit.Show();
 	
-
 	outtextxy(BOTAO1_X + 48  ,BOTAO1_Y + (TILE_H * 2), "UM"); 
 	outtextxy(BOTAO1_X + 8 ,BOTAO1_Y + (TILE_W * 2) + 16, "JOGADOR"); 
 	outtextxy(BOTAO2_X + 56  ,BOTAO2_Y + (TILE_H * 2), "DOIS"); 
@@ -407,15 +415,10 @@ EscolhaEmMenu Menu(){
 	escolha = SEM_ESCOLHA;
 	while(escolha == SEM_ESCOLHA){
 		
-		if(GetKeyState(VK_LBUTTON) & 0x80){
-			mouseX = mousex();
-			mouseY = mousey();
-			
-			if( (mouseX > BOTAO1_X && mouseX < BOTAO1_X + (TILE_W * 4))  
-			&& (mouseY > BOTAO1_Y && mouseY < BOTAO1_Y + (TILE_H * 4))) 
-				escolha = MENU_UM_JOG;
-		}
-	}	
+		if( botaoUmJog.CheckClick() == true)  
+			escolha = MENU_UM_JOG;
+	}
+	
 	return escolha;
 }
 
@@ -450,7 +453,8 @@ EscolhaEmMenu MenuUmJog(){
 		// Barra de contraste para os botões radio
 		setfillstyle(1,BLACK);
 		setcolor(BLACK);
-		bar(TILE_W * 20, TILE_W * 10,TILE_W * 24,TILE_H * 11 );
+		bar(TILE_W * 20, TILE_H * 10,TILE_W * 24,TILE_H * 11 );
+		bar(TILE_W * 20, TILE_H * 12, TILE_W * 28, TILE_H * 13);
 		
 		setcolor(LIGHTGREEN);
 
@@ -466,7 +470,8 @@ EscolhaEmMenu MenuUmJog(){
 		// Botão "JOGAR"
 		setcolor(LIGHTGRAY);
 		setfillstyle(1,LIGHTGRAY);
-		bar(BOTAO_JOGAR_X, BOTAO_JOGAR_Y, TILE_W * 22, TILE_H * 19);
+		
+		botaoJogar.Show();
 		settextjustify(LEFT_TEXT,CENTER_TEXT);
 		setcolor(LIGHTGREEN);
 		outtextxy(BOTAO_JOGAR_X + 8,BOTAO_JOGAR_Y + 24,"JOGAR");
@@ -476,17 +481,19 @@ EscolhaEmMenu MenuUmJog(){
 		gameSpeed.VerificaClick(&gameSpeed);
 		lider.VerificaClick(&lider);
 		
-		if(GetKeyState(VK_LBUTTON) & 0x80){
-			mouseX = mousex();
-			mouseY = mousey();
+		if(botaoJogar.CheckClick() == true){
+			escolha = UM_JOGADOR;			
 			
-			if(mouseX > BOTAO_JOGAR_X && mouseX < TILE_W * 22 &&
-			mouseY > BOTAO_JOGAR_Y && mouseY < TILE_H * 19){
-				escolha = UM_JOGADOR;
+			if( lider.RadioChecked(&lider)->label == "Roosevelt"){
+				ladoMeuJog = LADO1;
+				ladoOutroJog = LADO2;
+			} 
+			else{
+				ladoMeuJog = LADO2;
+				ladoOutroJog = LADO1;
 			}
-			
-			
 		}
+			
 	}
 	
 	gameSpeed.LimpaNo(&gameSpeed);
