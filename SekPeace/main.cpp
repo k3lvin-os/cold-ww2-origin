@@ -54,6 +54,7 @@ Grade minhaGrd;
 EscolhaEmMenu escolhaMenu;
 Botao botaoUmJog, botaoDoisJog, botaoCredit, botaoJogar, botaoVoltar;
 char *ladoMeuJog,*ladoOutroJog;
+int gameSpeed;
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -72,6 +73,8 @@ int main(){
 	botaoDoisJog.Init(BOTAO2_X,BOTAO2_Y,5,4);
 	botaoCredit.Init(BOTAO3_X,BOTAO3_Y,4,4);
 	botaoJogar.Init(BOTAO_JOGAR_X,BOTAO_JOGAR_Y,3,1);
+	
+	gameSpeed = NULL;
 
 	// Fornece uma seed para o gerador de números pseudoaleatórios
 	srand(time(NULL));
@@ -298,12 +301,12 @@ void SinglePlayer(){
 	cleardevice();
 	
 	// Atribui times aos jogadores
-	meuJog.Init(ladoMeuJog);
-	outroJog.Init(ladoOutroJog);
-	eixoIA.Init(LADO3);
+	meuJog.Init(ladoMeuJog,&gameSpeed);
+	outroJog.Init(ladoOutroJog,&gameSpeed);
+	eixoIA.Init(LADO3,&gameSpeed);
 	
 	// Inicializa gerenciador de ondas do eixo
-	ondaEixo.Init(&eixoIA);
+	ondaEixo.Init(&eixoIA,&gameSpeed);
 	
 	// Inicialização do campo de jogo a partir de um arquivo de coordenadas
 	meuCampo.Init("mapa05.txt");
@@ -428,14 +431,14 @@ EscolhaEmMenu MenuUmJog(){
 	
 	int mouseX, mouseY;
 	EscolhaEmMenu escolha;
-	Radio gameSpeed, lider;
+	Radio radioSpeed, lider;
 	
-	gameSpeed.prox = NULL;
+	radioSpeed.prox = NULL;
 	lider.prox = NULL;
 
 
-	gameSpeed.Insere(&gameSpeed,"4",false,TILE_W * 20 + 16, TILE_H * 10 + 16);
-	gameSpeed.Insere(&gameSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	escolha = SEM_ESCOLHA;
+	radioSpeed.Insere(&radioSpeed,"4",false,TILE_W * 20 + 16, TILE_H * 10 + 16);
+	radioSpeed.Insere(&radioSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	escolha = SEM_ESCOLHA;
 	lider.Insere(&lider,"Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16);
 	lider.Insere(&lider,"Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16);
 	
@@ -460,7 +463,7 @@ EscolhaEmMenu MenuUmJog(){
 
 		// Botões radio da velocidade do jogo
 		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "Velocidade do jogo");
-		gameSpeed.MostraLista(&gameSpeed);
+		radioSpeed.MostraLista(&radioSpeed);
 		
 		// Botões de rádio de escolha de lideres
 		outtextxy(TILE_W * 11, TILE_H * 12 + 16,"Lider:" );
@@ -478,7 +481,7 @@ EscolhaEmMenu MenuUmJog(){
 		
 		minhaPg.Visual();
 		
-		gameSpeed.VerificaClick(&gameSpeed);
+		radioSpeed.VerificaClick(&radioSpeed);
 		lider.VerificaClick(&lider);
 		
 		if(botaoJogar.CheckClick() == true){
@@ -492,11 +495,15 @@ EscolhaEmMenu MenuUmJog(){
 				ladoMeuJog = LADO2;
 				ladoOutroJog = LADO1;
 			}
+			
+			if(radioSpeed.RadioChecked(&radioSpeed)->label == "4")
+				gameSpeed = 4;
+			else
+				gameSpeed = 8;
 		}
 			
 	}
-	
-	gameSpeed.LimpaNo(&gameSpeed);
+	radioSpeed.LimpaNo(&radioSpeed);
 	return escolha;
 }
 
