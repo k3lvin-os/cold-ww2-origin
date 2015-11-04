@@ -74,16 +74,26 @@ int main(){
 	botaoCredit.Init(BOTAO3_X,BOTAO3_Y,4,4);
 	botaoJogar.Init(BOTAO_JOGAR_X,BOTAO_JOGAR_Y,3,1);
 	botaoVoltar.Init(BOTAO_VOLTAR_X,BOTAO_VOLTAR_Y,3,1);
-
+	
+	// A velocidade do jogo ainda não foi definida
 	gameSpeed = NULL;
-
+	
 	// Fornece uma seed para o gerador de números pseudoaleatórios
 	srand(time(NULL));
 	
-	minhaPg.Init();	// Inicializa a estrutura página
+	// Inicializa a estrutura página
+	minhaPg.Init();	
 	
 	// Inicializa a janela gráfica
 	initwindow(TELA_W,TELA_H, "Seek Of Peace: Cold WW2");
+	
+	// Processo de carregamento dos tiles do jogo
+	minhaPg.Troca();
+	minhaPg.Ativa();
+	meuCampo.Init();	
+	cleardevice();
+	minhaPg.Visual();
+	// ======= Fim do processamento ============
 	
 	escolhaMenu = MENU;
 	
@@ -310,7 +320,7 @@ void SinglePlayer(){
 	ondaEixo.Init(&eixoIA,&gameSpeed);
 	
 	// Inicialização do campo de jogo a partir de um arquivo de coordenadas
-	meuCampo.Init("mapa05.txt");
+	meuCampo.PosLoad("mapa05.txt");
 	
 	// Mostra campo de jogo
 	meuCampo.Mostrar();
@@ -523,8 +533,8 @@ void BackgroundMenu(){
 	settextstyle(BOLD_FONT,HORIZ_DIR,7);
 	
 	// Carrega o menu de jogo (imagem de fundo)
-	meuCampo.Init("menu.txt"); // **** Simplificar esta função
-								//       , assim que possível
+	meuCampo.PosLoad("menu.txt"); 
+								
 	meuCampo.Mostrar();		 
 	 
 	// Logo do jogo
