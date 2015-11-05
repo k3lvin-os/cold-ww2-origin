@@ -55,6 +55,9 @@ EscolhaEmMenu escolhaMenu;
 Botao botaoUmJog, botaoDoisJog, botaoCredit, botaoJogar, botaoVoltar;
 char *ladoMeuJog,*ladoOutroJog;
 int gameSpeed;
+Botao botaoCliente, botaoServidor;
+Radio radioSpeed, radioLider;
+
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -62,7 +65,10 @@ void SinglePlayer();
 EscolhaEmMenu MenuUmJogador();
 EscolhaEmMenu Menu();
 EscolhaEmMenu MenuUmJog();
+EscolhaEmMenu MenuDoisJog();
 void BackgroundMenu();
+EscolhaEmMenu MenuCliente();
+EscolhaEmMenu MenuServidor();
 
 
 
@@ -74,6 +80,16 @@ int main(){
 	botaoCredit.Init(BOTAO3_X,BOTAO3_Y,4,4);
 	botaoJogar.Init(BOTAO_JOGAR_X,BOTAO_JOGAR_Y,3,1);
 	botaoVoltar.Init(BOTAO_VOLTAR_X,BOTAO_VOLTAR_Y,3,1);
+	botaoCliente.Init(BOTAO_CLIENTE_X, BOTAO_CLIENTE_Y, 5,4);
+	botaoServidor.Init(BOTAO_SERV_X,BOTAO_SERV_Y ,5,4);
+	
+	//Inicialize os radio buttons que serão usados nos menus
+	radioSpeed.prox = NULL;
+	radioLider.prox = NULL;
+	radioSpeed.Insere(&radioSpeed,"4",false,TILE_W * 20 + 16, TILE_H * 10 + 16);
+	radioSpeed.Insere(&radioSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	
+	radioLider.Insere(&radioLider,"Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16);
+	radioLider.Insere(&radioLider,"Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16);
 	
 	// A velocidade do jogo ainda não foi definida
 	gameSpeed = NULL;
@@ -110,14 +126,61 @@ int main(){
 				break;
 			case MENU_UM_JOG:
 				escolhaMenu = MenuUmJog();
+				break;
+			case MENU_DOIS_JOG:
+				escolhaMenu = MenuDoisJog();
+				break;
+			case MENU_CLIENTE:
+				escolhaMenu = MenuCliente();
+				break;
+			case MENU_SERVIDOR:
+				escolhaMenu = MenuServidor();
+				break;
 		}	
-	}	
+	}
+	
+	radioSpeed.LimpaNo(&radioSpeed);
 	closegraph();
 	return 0;	
 }
 
 
-/*Funções*/
+// Menu de dois jogadores
+EscolhaEmMenu MenuDoisJog(){
+	
+	EscolhaEmMenu escolha;
+
+	minhaPg.Troca();
+	minhaPg.Ativa();
+	
+	cleardevice();
+	BackgroundMenu();
+	botaoCliente.Show();
+	botaoServidor.Show();
+	botaoVoltar.Show();
+	outtextxy(botaoCliente.x + 32, botaoCliente.y + 72,"CLIENTE");
+	outtextxy(botaoServidor.x + 24,botaoServidor.y + 72,"SERVIDOR");
+	outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,"VOLTAR");
+
+	minhaPg.Visual();
+	
+	escolha = SEM_ESCOLHA;
+	while(escolha == SEM_ESCOLHA){
+		
+		if(botaoCliente.CheckClick() == true)
+			escolha = MENU_CLIENTE;
+			
+		if(botaoServidor.CheckClick() == true)
+			escolha = MENU_SERVIDOR;
+			
+		if(botaoVoltar.CheckClick() == true)
+			escolha = MENU;
+	}
+		
+	return escolha;
+}
+
+
 
 // Rotina de envio de soldados para outro jogador 
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
@@ -431,6 +494,9 @@ EscolhaEmMenu Menu(){
 		
 		if( botaoUmJog.CheckClick() == true)  
 			escolha = MENU_UM_JOG;
+			
+		if(botaoDoisJog.CheckClick() == true)
+			escolha = MENU_DOIS_JOG;
 	}
 	
 	return escolha;
@@ -440,17 +506,8 @@ EscolhaEmMenu Menu(){
 // Menu de um jogador
 EscolhaEmMenu MenuUmJog(){
 	
-	int mouseX, mouseY;
 	EscolhaEmMenu escolha;
-	Radio radioSpeed, lider;
-	
-	radioSpeed.prox = NULL;
-	lider.prox = NULL;
-	
-	radioSpeed.Insere(&radioSpeed,"4",false,TILE_W * 20 + 16, TILE_H * 10 + 16);
-	radioSpeed.Insere(&radioSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	escolha = SEM_ESCOLHA;
-	lider.Insere(&lider,"Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16);
-	lider.Insere(&lider,"Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16);
+	escolha = SEM_ESCOLHA;
 	
 	while(escolha == SEM_ESCOLHA){
 	
@@ -462,45 +519,38 @@ EscolhaEmMenu MenuUmJog(){
 		// Desenha o background básico do menu
 		BackgroundMenu();
 				
-		// Barra de contraste para os botões radio
+		// Barras de contraste para os botões radio
 		setfillstyle(1,BLACK);
 		setcolor(BLACK);
 		bar(TILE_W * 20, TILE_H * 10,TILE_W * 24,TILE_H * 11 );
 		bar(TILE_W * 20, TILE_H * 12, TILE_W * 28, TILE_H * 13);
-		
-		setcolor(LIGHTGREEN);
-
-		// Botões radio da velocidade do jogo
-		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "Velocidade do jogo");
-		radioSpeed.MostraLista(&radioSpeed);
-		
-		// Botões de rádio de escolha de lideres
-		outtextxy(TILE_W * 11, TILE_H * 12 + 16,"Lider:" );
-		lider.MostraLista(&lider);
-		
-		
-		// Botão "JOGAR"
-		setcolor(LIGHTGRAY);
-		setfillstyle(1,LIGHTGRAY);
-		
+	
+		// Mostra os botões 
 		botaoJogar.Show();
 		botaoVoltar.Show();
+				
+		// Mostra botões radio
+		radioSpeed.MostraLista(&radioSpeed);
+		radioLider.MostraLista(&radioLider);
 		
-		
-		settextjustify(LEFT_TEXT,CENTER_TEXT);
-		setcolor(LIGHTGREEN);
+		// Mostra o texto dos botões 
+		outtextxy(TILE_W * 11, TILE_H * 12 + 16,"Lider:" );
+		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "Velocidade do jogo");
 		outtextxy(BOTAO_JOGAR_X + 8,BOTAO_JOGAR_Y + 24,"JOGAR");
 		outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,"VOLTAR");
 		
 		minhaPg.Visual();
 		
+		// Verifica clicks nos botões rádio
 		radioSpeed.VerificaClick(&radioSpeed);
-		lider.VerificaClick(&lider);
+		radioLider.VerificaClick(&radioLider);
 		
+		
+		// --------------- Processamento do botão Jogar===================
 		if(botaoJogar.CheckClick() == true){
 			escolha = UM_JOGADOR;			
-			
-			if( lider.RadioChecked(&lider)->label == "Roosevelt"){
+				
+			if( radioLider.RadioChecked(&radioLider)->label == "Roosevelt"){
 				ladoMeuJog = LADO1;
 				ladoOutroJog = LADO2;
 			} 
@@ -508,19 +558,21 @@ EscolhaEmMenu MenuUmJog(){
 				ladoMeuJog = LADO2;
 				ladoOutroJog = LADO1;
 			}
-			
+				
+				
 			if(radioSpeed.RadioChecked(&radioSpeed)->label == "4")
 				gameSpeed = 4;
 			else
 				gameSpeed = 8;
 		}
-		
+		//========================== Fim do processamento==================	
+	
+		// Processamento do botão voltar
 		if(botaoVoltar.CheckClick() == true){
 			escolha = MENU;
 		}
 			
 	}
-	radioSpeed.LimpaNo(&radioSpeed);
 	return escolha;
 }
 
@@ -549,4 +601,91 @@ void BackgroundMenu(){
 	setcolor(LIGHTGREEN);
 	
 }
+
+
+// Menu do cliente
+EscolhaEmMenu MenuCliente(){
+	
+	EscolhaEmMenu escolha;
+	
+	minhaPg.Troca();
+	minhaPg.Ativa();
+	cleardevice();
+	BackgroundMenu();
+	minhaPg.Visual();
+	
+	escolha = SEM_ESCOLHA;
+
+	while(escolha == SEM_ESCOLHA){
+		
+	}
+	
+	return escolha;
+}
+
+EscolhaEmMenu MenuServidor(){
+		
+	/*
+	
+	Botao botaoAbrirServ;
+	botaoAbrirServ.Init()
+
+*/	EscolhaEmMenu escolha;
+	escolha = SEM_ESCOLHA;
+	
+	while(escolha == SEM_ESCOLHA){
+	
+		minhaPg.Troca();
+		minhaPg.Ativa();
+		
+		cleardevice();
+		
+		// Desenha o background básico do menu
+		BackgroundMenu();
+				
+		// Barras de contraste para os botões radio
+		setfillstyle(1,BLACK);
+		setcolor(BLACK);
+		bar(TILE_W * 20, TILE_H * 10,TILE_W * 24,TILE_H * 11 );
+		bar(TILE_W * 20, TILE_H * 12, TILE_W * 28, TILE_H * 13);
+		bar(TILE_W * 20, TILE_H * 14, TILE_W * 32, TILE_H * 17);
+	
+		// Mostra os botões 
+		botaoJogar.Show();
+		botaoVoltar.Show();
+				
+		// Mostra botões radio
+		radioSpeed.MostraLista(&radioSpeed);
+		radioLider.MostraLista(&radioLider);
+		
+		// Mostra o texto dos botões 
+		outtextxy(TILE_W * 11, TILE_H * 12 + 16,"Lider:" );
+		outtextxy(TILE_W * 11,TILE_H * 14 + 16, "Log: " );
+		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "Velocidade do jogo");
+		outtextxy(BOTAO_JOGAR_X + 8,BOTAO_JOGAR_Y + 24,"JOGAR");
+		outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,"VOLTAR");
+		
+		minhaPg.Visual();
+		
+		// Verifica clicks nos botões rádio
+		radioSpeed.VerificaClick(&radioSpeed);
+		radioLider.VerificaClick(&radioLider);
+		
+		
+		// --------------- Processamento do botão Jogar===================
+		if(botaoJogar.CheckClick() == true){
+			// Processamento de jogo via rede
+		}
+		//========================== Fim do processamento==================	
+	
+		// Processamento do botão voltar
+		if(botaoVoltar.CheckClick() == true){
+			escolha = MENU_DOIS_JOG;
+			delay(100); // Delay para evitar duplo click
+		}
+	
+	}
+	return escolha;	
+}
+
 
