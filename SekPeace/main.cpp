@@ -62,8 +62,8 @@ EscolhaEmMenu escolhaMenu;
 Botao botaoUmJog, botaoDoisJog, botaoCredit, botaoJogar, botaoVoltar;
 char *ladoMeuJog,*ladoOutroJog;
 int gameSpeed;
-Botao botaoCliente, botaoServidor;
-Radio radioSpeed, radioLider;
+Botao botaoCliente, botaoServidor, botaoConectar;
+Radio radioSpeed, radioLider, radioModoIP;
 Rede minhaRede;
 
 //==========================================================
@@ -82,6 +82,9 @@ EscolhaEmMenu MenuServidor();
 
 int main(){
 	
+	// Inicializa biblioteca de conexões em rede
+	minhaRede.WinSockInit();
+	
 	// Inicialize os botões que serão usados nos menus
 	botaoUmJog.Init(BOTAO1_X,BOTAO1_Y,4,4);
 	botaoDoisJog.Init(BOTAO2_X,BOTAO2_Y,5,4);
@@ -90,17 +93,25 @@ int main(){
 	botaoVoltar.Init(BOTAO_VOLTAR_X,BOTAO_VOLTAR_Y,3,1);
 	botaoCliente.Init(BOTAO_CLIENTE_X, BOTAO_CLIENTE_Y, 5,4);
 	botaoServidor.Init(BOTAO_SERV_X,BOTAO_SERV_Y ,5,4);
+	botaoConectar.Init(TILE_W * 17,TILE_H * 12 + 8, 5,1);
 	
 	//Inicialize os radio buttons que serão usados nos menus
 	radioSpeed.prox = NULL;
 	radioLider.prox = NULL;
+	radioModoIP.prox = NULL;
 	radioSpeed.Insere(&radioSpeed,"4",false,TILE_W * 20 + 16, TILE_H * 10 + 16);
 	radioSpeed.Insere(&radioSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	
 	radioLider.Insere(&radioLider,"Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16);
 	radioLider.Insere(&radioLider,"Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16);
+	radioModoIP.Insere(&radioModoIP,"Automático", true,TILE_W * 20 + 16, TILE_H * 10 + 16);
+	radioModoIP.Insere(&radioModoIP,"Manual", false,TILE_W * 20 + 16, TILE_H * 11 + 16);
 	
 	// A velocidade do jogo ainda não foi definida
 	gameSpeed = NULL;
+	
+	// Carrega o IP padrão do servidor
+	minhaRede.ipServer = LOCALHOST;
+	minhaRede.portaServ = PORTA_PADRAO;
 	
 	// Fornece uma seed para o gerador de números pseudoaleatórios
 	srand(time(NULL));
@@ -147,6 +158,7 @@ int main(){
 		}	
 	}
 	
+	WSACleanup();
 	radioSpeed.LimpaNo(&radioSpeed);
 	closegraph();
 	return 0;	
@@ -163,8 +175,9 @@ EscolhaEmMenu MenuDoisJog(){
 	
 	cleardevice();
 	BackgroundMenu();
+	
 	botaoCliente.Show();
-	botaoServidor.Show();
+	botaoServidor.Show();	
 	botaoVoltar.Show();
 	outtextxy(botaoCliente.x + 32, botaoCliente.y + 72,"CLIENTE");
 	outtextxy(botaoServidor.x + 24,botaoServidor.y + 72,"SERVIDOR");
@@ -615,16 +628,62 @@ void BackgroundMenu(){
 EscolhaEmMenu MenuCliente(){
 	
 	EscolhaEmMenu escolha;
-	
-	minhaPg.Troca();
-	minhaPg.Ativa();
-	cleardevice();
-	BackgroundMenu();
-	minhaPg.Visual();
-	
 	escolha = SEM_ESCOLHA;
-
+	char ipEPorta[25];
+	char temp[7];
+	
+	minhaRede.ClientInit();
 	while(escolha == SEM_ESCOLHA){
+		
+			
+		minhaPg.Troca();
+		minhaPg.Ativa();
+		
+		cleardevice();
+		
+		// Desenha o background básico do menu
+		BackgroundMenu();
+				
+		// Barras de contraste para os botões radio
+		setfillstyle(1,BLACK);
+		setcolor(BLACK);
+		bar(TILE_W * 20, TILE_H * 10,TILE_W * 27,TILE_H * 12 );
+		
+		botaoVoltar.Show();
+		botaoJogar.Show();
+		botaoConectar.Show();
+		
+		radioModoIP.MostraLista(&radioModoIP);
+		
+		strcpy(ipEPorta,minhaRede.ipServer);
+		strcat(ipEPorta,":");
+		itoa(minhaRede.portaServ,temp,10);
+		strcat(ipEPorta,temp);
+		
+		
+		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "IP / Porta do Servidor: ");
+		outtextxy(TILE_W * 27 + 8, TILE_H * 10 + 24, ipEPorta);
+		outtextxy(botaoJogar.x + 8,botaoJogar.y + 24,"JOGAR");
+		outtextxy(botaoVoltar.x + 4,botaoVoltar.y + 24,"VOLTAR");
+		outtextxy(botaoConectar.x + 16,botaoConectar.y + 24,"CONECTAR");
+		
+		//minhaGrd.Colocar();
+		minhaPg.Visual();
+		
+		radioModoIP.VerificaClick(&radioModoIP);
+		
+		if(botaoConectar.CheckClick() == true){
+			if(minhaRede.ConectaServer() == true){
+				minhaRede.EnviaParaOServer("Oi");
+			}
+		}
+		
+		if(botaoVoltar.CheckClick() == true){
+			escolha = MENU_DOIS_JOG;
+			minhaRede.FechaConexaoClient();
+			delay(150);
+		}
+			
 		
 	}
 	
@@ -706,8 +765,13 @@ EscolhaEmMenu MenuServidor(){
 		// Processamento do botão voltar
 		if(botaoVoltar.CheckClick() == true){
 			escolha = MENU_DOIS_JOG;
-			minhaRede.FechaSocketServer();
+			minhaRede.FechaConexaoClient();
 			delay(100); // Delay para evitar duplo click
+		}
+		
+		if(minhaRede.AceitaConexaoClient() == true){
+			if(minhaRede.RecebeDoClient() == true)
+				cout << minhaRede.recvBuf;
 		}
 	
 	}
