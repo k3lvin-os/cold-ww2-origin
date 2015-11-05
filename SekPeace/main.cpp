@@ -4,8 +4,13 @@
 #include <iomanip> // Para ler em caracter a caracter
 #include <time.h> // Para trabalhar com o tempo
 #include <math.h> // Para usar a função potenciação e raiz quadrada
+#include <winsock2.h> // Para trabalhar com comunicação em rede
+#include <stdio.h>	  // Para trabalhar com funlções da linguagem C
 #include <windows.h> // Para trabalhar com funções de som do Windows
 #include <graphics.h>
+
+// Para usar a biblioteca Winsock (comunicação em rede)
+#pragma comment (lib, "Ws2_32.lib")
 
 // Funções que NÃO utilizam as estruturas dos arquivos header
 void Carrega(void *arrayImg, void *arrayMask, char *rPath);
@@ -28,6 +33,7 @@ void* GetImage(char path[], int width, int height);
 #include "..\..\header\grade.h"
 #include "..\..\header\botao.h"
 #include "..\..\header\barra_vida.h"
+#include "..\..\header\rede.h"
 using namespace std;
 
 
@@ -39,6 +45,7 @@ void MostraLideres(Lider *meuLider, Lider *outroLider);
 void Aviso(int posX, int posY, char * msg, int color, Lider hitler);
 void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA);
 bool SemTorrePerto(Torre *torre0, int tileCimaX,int tileCimaY);
+
 
 
 // Variáveis globais
@@ -57,6 +64,7 @@ char *ladoMeuJog,*ladoOutroJog;
 int gameSpeed;
 Botao botaoCliente, botaoServidor;
 Radio radioSpeed, radioLider;
+Rede minhaRede;
 
 //==========================================================
 
@@ -624,13 +632,12 @@ EscolhaEmMenu MenuCliente(){
 }
 
 EscolhaEmMenu MenuServidor(){
-		
-	/*
 	
-	Botao botaoAbrirServ;
-	botaoAbrirServ.Init()
-
-*/	EscolhaEmMenu escolha;
+	// Inicializa as flags e o servidor
+	minhaRede.FlagsInit();	
+	minhaRede.ServerInit();
+	
+	EscolhaEmMenu escolha;
 	escolha = SEM_ESCOLHA;
 	
 	while(escolha == SEM_ESCOLHA){
@@ -665,6 +672,24 @@ EscolhaEmMenu MenuServidor(){
 		outtextxy(BOTAO_JOGAR_X + 8,BOTAO_JOGAR_Y + 24,"JOGAR");
 		outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,"VOLTAR");
 		
+		if(minhaRede.servidorAberto == true){
+			setcolor(LIGHTGREEN);
+			outtextxy(TILE_W * 20, TILE_H * 14 + 16, "- Servidor está aberto!");
+		} else{
+			setcolor(LIGHTRED);
+			outtextxy(TILE_W * 20, TILE_H * 14 + 16, "- O servidor não está aberto");
+		}
+		
+		if(minhaRede.clienteConectado == true){
+			setcolor(LIGHTGREEN);
+			outtextxy(TILE_W * 20, TILE_H * 15 + 8, "- Cliente está conectado!");
+		} else{
+			setcolor(YELLOW);
+			outtextxy(TILE_W * 20, TILE_H * 15 + 8, "- Aguardando cliente...");
+		}
+				
+
+		
 		minhaPg.Visual();
 		
 		// Verifica clicks nos botões rádio
@@ -681,6 +706,7 @@ EscolhaEmMenu MenuServidor(){
 		// Processamento do botão voltar
 		if(botaoVoltar.CheckClick() == true){
 			escolha = MENU_DOIS_JOG;
+			minhaRede.FechaSocketServer();
 			delay(100); // Delay para evitar duplo click
 		}
 	
