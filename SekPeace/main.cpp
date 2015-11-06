@@ -371,9 +371,12 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA){
 				pTorre->AnimacaoMira();
 				
 				if(pTorre->reload.PassouDelay(TORRE_RELOAD)){
+					pTorre->reload.Atualiza();
 					pTorre->tipoAnimCanhao = 2;
 					pTorre->Atira();
-					pTorre->reload.Atualiza();
+					
+					if(pTorre->alvo->vida <= 0)
+						pTorre->AnulaEsteAlvo(torre0,pTorre->alvo);		
 				}
 			} else		
 				pTorre->alvo = NULL;
