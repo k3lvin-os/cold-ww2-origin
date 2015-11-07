@@ -682,7 +682,7 @@ EscolhaEmMenu MenuCliente(){
 		
 		if(botaoVoltar.CheckClick() == true){
 			escolha = MENU_DOIS_JOG;
-			minhaRede.FechaConexaoClient();
+			minhaRede.FechaSocketClient();
 			delay(150);
 		}
 			
