@@ -94,7 +94,7 @@ int main(){
 	botaoCliente.Init(BOTAO_CLIENTE_X, BOTAO_CLIENTE_Y, 5,4);
 	botaoServidor.Init(BOTAO_SERV_X,BOTAO_SERV_Y ,5,4);
 	botaoConectar.Init(TILE_W * 17,TILE_H * 12 + 8, 5,1);
-	botaoAbrirServ.Init(TILE_W * 11,TILE_H * 14,3,2);
+	botaoAbrirServ.Init(TILE_W * 11,TILE_H * 14,4,2);
 	
 	//Inicialize os radio buttons que serão usados nos menus
 	radioSpeed.prox = NULL;
@@ -695,7 +695,8 @@ EscolhaEmMenu MenuCliente(){
 EscolhaEmMenu MenuServidor(){
 	
 	// Inicializa as flags e o servidor
-	minhaRede.FlagsInit();	
+	minhaRede.FlagsInit();
+	
 	minhaRede.ServerInit();
 	
 	EscolhaEmMenu escolha;
@@ -732,13 +733,15 @@ EscolhaEmMenu MenuServidor(){
 		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "Velocidade do jogo");
 		outtextxy(BOTAO_JOGAR_X + 8,BOTAO_JOGAR_Y + 24,"JOGAR");
 		outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,"VOLTAR");
+		outtextxy(botaoAbrirServ.x + 24,botaoAbrirServ.y + 24, "ABRIR");
+		outtextxy(botaoAbrirServ.x + 8,botaoAbrirServ.y + 40,"SERVIDOR");
 		
-		if(minhaRede.servidorAberto == true){
+		if(minhaRede.servidorInit == true){
 			setcolor(LIGHTGREEN);
-			outtextxy(TILE_W * 20, TILE_H * 14 + 16, "- Servidor está aberto!");
+			outtextxy(TILE_W * 20, TILE_H * 14 + 16, "- Click em \"Abrir Servidor\".");
 		} else{
 			setcolor(LIGHTRED);
-			outtextxy(TILE_W * 20, TILE_H * 14 + 16, "- O servidor não está aberto");
+			outtextxy(TILE_W * 20, TILE_H * 14 + 16, "- Falha na inicialização do servidor.");
 		}
 		
 		if(minhaRede.clienteConectado == true){
@@ -767,7 +770,7 @@ EscolhaEmMenu MenuServidor(){
 		// Processamento do botão voltar
 		if(botaoVoltar.CheckClick() == true){
 			escolha = MENU_DOIS_JOG;
-			minhaRede.FechaConexaoClient();
+			minhaRede.FechaSocketServer();
 			delay(100); // Delay para evitar duplo click
 		}
 		
