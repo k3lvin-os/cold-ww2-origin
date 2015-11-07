@@ -343,56 +343,48 @@ void Aviso(int posX, int posY, char * msg, int color, Lider hitler){
 /*Procedimento de defesa da torre*/
 void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA){
 	Torre *torre0;
-	Soldado *soldado0;
+	Soldado *soldado0, *alvo;
 	Torre *pTorre;
 	
 	torre0 = meuJog->torre0;
 	
 	for(pTorre = torre0->prox; pTorre != NULL;pTorre = pTorre->prox){
 		
+		alvo = NULL;
 		pTorre->tipoAnimCanhao = 0;
+		soldado0 = eixoIA->soldado0;
 		
-		if(pTorre->alvo == NULL){
+		alvo = pTorre->BuscaAlvo(soldado0);	
 		
-			soldado0 = eixoIA->soldado0;
+		if(alvo == NULL){
+				
+			soldado0 = outroJog->soldado0;
+				
+			if(pTorre->BuscaAlvo(soldado0) == NULL)
+				pTorre->AnimacaoPatrulha();	
+							
+		}
 			
-			if(pTorre->BuscaAlvo(soldado0) == false){
-				
-				soldado0 = outroJog->soldado0;
-				
-				if(pTorre->BuscaAlvo(soldado0) == false){
-					pTorre->AnimacaoPatrulha();				
-				}
-			}
+		if(alvo != NULL){
+			
+			pTorre->AnimacaoMira(alvo);
+			
+			if(pTorre->reload.PassouDelay(TORRE_RELOAD)){
+				pTorre->reload.Atualiza();
+				pTorre->tipoAnimCanhao = 2;
+				pTorre->Atira(alvo);
+			}	
 		}
 		
-		if(pTorre->alvo != NULL){
-			
-			cout << "Tenho um alvo\n";
-			
-			if(pTorre->CampoVisao(*pTorre->alvo) == true){
-				
-				pTorre->AnimacaoMira();
-				
-				if(pTorre->reload.PassouDelay(TORRE_RELOAD)){
-					pTorre->reload.Atualiza();
-					pTorre->tipoAnimCanhao = 2;
-					pTorre->Atira();
-					
-					if(pTorre->alvo->vida <= 0){
-						pTorre->AnulaEsteAlvo(torre0,pTorre->alvo);		
-						cout << "Matei o alvo\n";
-					}
-				}
-			} else{
-				pTorre->alvo = NULL;
-				cout << "Perdi o alvo de vista\n";
-			}		
-		}
-		pTorre->MostraTorre();
+		pTorre->MostraTorre();	 	
 	}
-	
+			
+			
+			
 }
+		
+
+
 
 // Modo de um jogador
 void SinglePlayer(){
