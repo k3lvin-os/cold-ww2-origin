@@ -59,10 +59,10 @@ bool gameLoop;		// funções em que são utilzadas
 TDelay gameTime;
 Grade minhaGrd;
 EscolhaEmMenu escolhaMenu;
-Botao botaoUmJog, botaoDoisJog, botaoCredit, botaoJogar, botaoVoltar;
+Botao botaoUmJog, botaoDoisJog, botaoCredit, botaoJogar, botaoVoltar,
+botaoCliente, botaoServidor, botaoConectar, botaoAbrirServ;
 char *ladoMeuJog,*ladoOutroJog;
 int gameSpeed;
-Botao botaoCliente, botaoServidor, botaoConectar;
 Radio radioSpeed, radioLider, radioModoIP;
 Rede minhaRede;
 
@@ -94,6 +94,7 @@ int main(){
 	botaoCliente.Init(BOTAO_CLIENTE_X, BOTAO_CLIENTE_Y, 5,4);
 	botaoServidor.Init(BOTAO_SERV_X,BOTAO_SERV_Y ,5,4);
 	botaoConectar.Init(TILE_W * 17,TILE_H * 12 + 8, 5,1);
+	botaoAbrirServ.Init(TILE_W * 11,TILE_H * 14,3,2);
 	
 	//Inicialize os radio buttons que serão usados nos menus
 	radioSpeed.prox = NULL;
@@ -722,6 +723,7 @@ EscolhaEmMenu MenuServidor(){
 		// Mostra os botões 
 		botaoJogar.Show();
 		botaoVoltar.Show();
+		botaoAbrirServ.Show();
 				
 		// Mostra botões radio
 		radioSpeed.MostraLista(&radioSpeed);
@@ -729,7 +731,6 @@ EscolhaEmMenu MenuServidor(){
 		
 		// Mostra o texto dos botões 
 		outtextxy(TILE_W * 11, TILE_H * 12 + 16,"Lider:" );
-		outtextxy(TILE_W * 11,TILE_H * 14 + 16, "Log: " );
 		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "Velocidade do jogo");
 		outtextxy(BOTAO_JOGAR_X + 8,BOTAO_JOGAR_Y + 24,"JOGAR");
 		outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,"VOLTAR");
@@ -772,10 +773,15 @@ EscolhaEmMenu MenuServidor(){
 			delay(100); // Delay para evitar duplo click
 		}
 		
-		if(minhaRede.AceitaConexaoClient() == true){
-			if(minhaRede.RecebeDoClient() == true)
-				cout << minhaRede.recvBuf;
+		// Processamento do botão Abrir servidor
+		if(botaoAbrirServ.CheckClick() == true){
+			if(minhaRede.AceitaConexaoClient() == true){
+				if(minhaRede.RecebeDoClient() == true)
+					cout << minhaRede.recvBuf;
+			}
 		}
+		
+
 	
 	}
 	return escolha;	
