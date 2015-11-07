@@ -350,8 +350,10 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA){
 	
 	for(pTorre = torre0->prox; pTorre != NULL;pTorre = pTorre->prox){
 		
-		if(pTorre->alvo == NULL){		
-
+		pTorre->tipoAnimCanhao = 0;
+		
+		if(pTorre->alvo == NULL){
+		
 			soldado0 = eixoIA->soldado0;
 			
 			if(pTorre->BuscaAlvo(soldado0) == false){
@@ -359,13 +361,14 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA){
 				soldado0 = outroJog->soldado0;
 				
 				if(pTorre->BuscaAlvo(soldado0) == false){
-					pTorre->tipoAnimCanhao = 0;
 					pTorre->AnimacaoPatrulha();				
 				}
 			}
 		}
 		
 		if(pTorre->alvo != NULL){
+			
+			cout << "Tenho um alvo\n";
 			
 			if(pTorre->CampoVisao(*pTorre->alvo) == true){
 				
@@ -376,13 +379,16 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA){
 					pTorre->tipoAnimCanhao = 2;
 					pTorre->Atira();
 					
-					if(pTorre->alvo->vida <= 0)
+					if(pTorre->alvo->vida <= 0){
 						pTorre->AnulaEsteAlvo(torre0,pTorre->alvo);		
+						cout << "Matei o alvo\n";
+					}
 				}
-			} else		
+			} else{
 				pTorre->alvo = NULL;
+				cout << "Perdi o alvo de vista\n";
+			}		
 		}
-		
 		pTorre->MostraTorre();
 	}
 	
@@ -454,20 +460,20 @@ void SinglePlayer(){
 		// Verifica o input do usuário com a GUI
 		meuJog.InputGUI();
 		
-		// Coloca procedimento de colocar torre
+		// Executa procedimento de colocar torre
 		meuJog.ArrastaTorre(meuCampo);
 				
 		// Limpa campo de carregamento de imagens
 		meuCampo.LimpaD();
+				
+		// Rotina de defesa da torre
+		DefesaTorre(&meuJog,&outroJog,&eixoIA);
 		
 		// Rotina de envio de soldados do jogador
 		EnviaSold(&meuJog,&outroJog,meuCampo);
 		
 		// Rotina de envio de soldados do Eixo contra o jogador
 		EnviaSold(&eixoIA,&meuJog,meuCampo);
-			
-		// Rotina de defesa da torre
-		DefesaTorre(&meuJog,&outroJog,&eixoIA);
 		
 		// Mostra os lideres
 		MostraLideres(&meuJog.lider,&outroJog.lider);
