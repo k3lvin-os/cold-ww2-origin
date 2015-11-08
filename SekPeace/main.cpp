@@ -65,7 +65,6 @@ char *ladoMeuJog,*ladoOutroJog;
 int gameSpeed;
 Radio radioSpeed, radioLider, radioModoIP;
 Rede minhaRede;
-
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -640,6 +639,19 @@ void BackgroundMenu(){
 // Menu do cliente
 EscolhaEmMenu MenuCliente(){
 	
+	int i;
+	char c;
+	char nomeMeuLider[20];
+	char liderDele[30];
+	char velocidJogo[27];
+	char buffer[15];
+	TipoPacote tipoPacote;
+	
+	strcpy(nomeMeuLider, "Meu Lider: ");
+	strcpy(liderDele, "Outro Lider: ");
+	strcpy(velocidJogo, "Velocidade do Jogo: ");
+
+	
 	EscolhaEmMenu escolha;
 	escolha = SEM_ESCOLHA;
 	char ipEPorta[25];
@@ -666,8 +678,17 @@ EscolhaEmMenu MenuCliente(){
 		
 		
 		// Informações do jogo
-		if(minhaRede.clienteConectado == true)
+		if(minhaRede.clienteConectado == true){
 			bar(TILE_W * 12, TILE_H * 14, TILE_W * 26, TILE_H * 17);
+			setcolor(LIGHTBLUE);
+			outtextxy(TILE_W * 12 + 8,TILE_H * 14 + 16,nomeMeuLider);
+			setcolor(LIGHTRED);
+			outtextxy(TILE_W * 12 + 8,TILE_H * 15 + 16 ,liderDele);
+			setcolor(LIGHTGREEN);
+			outtextxy(TILE_W * 12 + 8,TILE_H * 16 + 16 ,velocidJogo);	
+		}
+
+			
 
 		
 		botaoVoltar.Show();
@@ -697,15 +718,79 @@ EscolhaEmMenu MenuCliente(){
 		
 		if(minhaRede.clienteConectado)
 			radioModoIP.VerificaClick(&radioModoIP);
+			
+		if(botaoJogar.CheckClick() == true){
+			if(minhaRede.clienteConectado == true){
+				escolha = UM_JOGADOR;
+			}
+		}
 		
 		if(botaoConexao.CheckClick() == true){
 			
 			if(minhaRede.clienteConectado == false){
 				
 				if(minhaRede.ConectaServer() == true){
-					
+					cout << minhaRede.pacote;
 					if(minhaRede.RecebeDoServer() == true){
-						cout << minhaRede.pacote;
+					//cout << minhaRede.pacote;
+					
+						c = minhaRede.pacote[0];
+						i = 0;
+						tipoPacote = SEM_TIPO;
+						strcpy(buffer,"");
+						
+						while(c != '\0'){
+		
+							if(c == '|' && tipoPacote == SEM_TIPO){
+								
+															
+								if(strcmp(buffer,"LIDER") == 0){
+									tipoPacote = LIDER_SERV;	
+								}
+								else if(strcmp(buffer,"GAMESPEED") == 0){
+									tipoPacote = GAMESPEED;
+								}
+								
+								strcpy(buffer,"");	
+
+								
+							} else if(c == '|' && tipoPacote != SEM_TIPO){
+								
+								if(tipoPacote == LIDER_SERV){
+									strcat(liderDele,buffer);
+									
+									if(strcmp(buffer,"Stalin") == 0){
+										strcat(nomeMeuLider,"Roosevelt");
+										ladoMeuJog = LADO1;
+										ladoOutroJog = LADO2;
+									} else{
+										strcat(nomeMeuLider,"Stalin");
+										ladoMeuJog = LADO2;
+										ladoOutroJog = LADO1;
+									}
+									
+									
+								} else if(tipoPacote == GAMESPEED){
+									strcat(velocidJogo,buffer);
+									if(strcmp(buffer,"4") == 0){
+										gameSpeed = 4;
+									} else{
+										gameSpeed = 8;
+									}
+								}
+								
+								tipoPacote = SEM_TIPO;
+								strcpy(buffer,"");		
+							} 
+							
+							else{
+								strcat(buffer,&c);	
+							}
+							
+							i++;
+							c = minhaRede.pacote[i];
+						}	
+						
 					}
 				}
 				
@@ -855,12 +940,11 @@ EscolhaEmMenu MenuServidor(){
 					}
 					
 
-					strcpy(pacote,"LIDER|\"");
+					strcpy(pacote,"LIDER|");
 					strcat(pacote,tempLider);
-					strcat(pacote,"\"|GAMESPEED|\"");
+					strcat(pacote,"|GAMESPEED|");
 					strcat(pacote,tempGmSpeed);
-					strcat(pacote,"\"");
-					
+					strcat(pacote,"|");									
 					minhaRede.EnviaParaOClient(pacote);
 					delayParaGUI = true;
 				}
