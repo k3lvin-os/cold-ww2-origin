@@ -60,7 +60,7 @@ TDelay gameTime;
 Grade minhaGrd;
 EscolhaEmMenu escolhaMenu;
 Botao botaoUmJog, botaoDoisJog, botaoCredit, botaoJogar, botaoVoltar,
-botaoCliente, botaoServidor, botaoConectar, botaoAbrirServ;
+botaoCliente, botaoServidor, botaoConexao, botaoOpcaoServ;
 char *ladoMeuJog,*ladoOutroJog;
 int gameSpeed;
 Radio radioSpeed, radioLider, radioModoIP;
@@ -83,7 +83,17 @@ EscolhaEmMenu MenuServidor();
 int main(){
 	
 	// Inicializa biblioteca de conexões em rede
-	minhaRede.WinSockInit();
+	//minhaRede.WinSockInit();
+	
+	int iResult;
+    
+    WSADATA wsaData;		// Biblioteca para conexão em rede
+	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	
+    if (iResult != NO_ERROR) {
+        wprintf(L"WSAStartup failed with error: %ld\n", iResult);
+        return false;
+    }
 	
 	// Inicialize os botões que serão usados nos menus
 	botaoUmJog.Init(BOTAO1_X,BOTAO1_Y,4,4);
@@ -93,8 +103,8 @@ int main(){
 	botaoVoltar.Init(BOTAO_VOLTAR_X,BOTAO_VOLTAR_Y,3,1);
 	botaoCliente.Init(BOTAO_CLIENTE_X, BOTAO_CLIENTE_Y, 5,4);
 	botaoServidor.Init(BOTAO_SERV_X,BOTAO_SERV_Y ,5,4);
-	botaoConectar.Init(TILE_W * 17,TILE_H * 12 + 8, 5,1);
-	botaoAbrirServ.Init(TILE_W * 11,TILE_H * 14,4,2);
+	botaoConexao.Init(TILE_W * 17,TILE_H * 12 + 8, 5,1);
+	botaoOpcaoServ.Init(TILE_W * 11,TILE_H * 14,4,2);
 	
 	//Inicialize os radio buttons que serão usados nos menus
 	radioSpeed.prox = NULL;
@@ -635,6 +645,8 @@ EscolhaEmMenu MenuCliente(){
 	char temp[7];
 	
 	minhaRede.ClientInit();
+	
+	
 	while(escolha == SEM_ESCOLHA){
 		
 			
@@ -653,7 +665,7 @@ EscolhaEmMenu MenuCliente(){
 		
 		botaoVoltar.Show();
 		botaoJogar.Show();
-		botaoConectar.Show();
+		botaoConexao.Show();
 		
 		radioModoIP.MostraLista(&radioModoIP);
 		
@@ -667,18 +679,36 @@ EscolhaEmMenu MenuCliente(){
 		outtextxy(TILE_W * 27 + 8, TILE_H * 10 + 24, ipEPorta);
 		outtextxy(botaoJogar.x + 8,botaoJogar.y + 24,"JOGAR");
 		outtextxy(botaoVoltar.x + 4,botaoVoltar.y + 24,"VOLTAR");
-		outtextxy(botaoConectar.x + 16,botaoConectar.y + 24,"CONECTAR");
 		
+		if(minhaRede.clienteConectado == false)
+			outtextxy(botaoConexao.x + 16,botaoConexao.y + 24,"CONECTAR");
+		else
+			outtextxy(botaoConexao.x + 16,botaoConexao.y + 24,"DESCONECTAR");
+	
 		//minhaGrd.Colocar();
 		minhaPg.Visual();
 		
 		radioModoIP.VerificaClick(&radioModoIP);
 		
-		if(botaoConectar.CheckClick() == true){
-			if(minhaRede.ConectaServer() == true){
-				minhaRede.EnviaParaOServer("Oi");
+		if(botaoConexao.CheckClick() == true){
+			
+			if(minhaRede.clienteConectado == false){
+				
+				if(minhaRede.ConectaServer() == true){
+					
+					if(minhaRede.RecebeDoServer() == true){
+						cout << minhaRede.pacote;
+						delay(125);
+					}
+				}
+				
 			}
-		}
+		
+		} else{
+			// Talvez seja interessante mandar uma mensagem avisando
+			// o fim da conexão
+			minhaRede.FechaSocketClient();
+		} 
 		
 		if(botaoVoltar.CheckClick() == true){
 			escolha = MENU_DOIS_JOG;
@@ -690,9 +720,12 @@ EscolhaEmMenu MenuCliente(){
 	}
 	
 	return escolha;
+
 }
 
 EscolhaEmMenu MenuServidor(){
+	
+	char pacote[30], tempGmSpeed[2], *tempLider;
 	
 	// Inicializa as flags e o servidor
 	minhaRede.FlagsInit();
@@ -702,7 +735,10 @@ EscolhaEmMenu MenuServidor(){
 	EscolhaEmMenu escolha;
 	escolha = SEM_ESCOLHA;
 	
+	
 	while(escolha == SEM_ESCOLHA){
+		
+		cout << "Estou aqui\n";
 	
 		minhaPg.Troca();
 		minhaPg.Ativa();
@@ -722,7 +758,7 @@ EscolhaEmMenu MenuServidor(){
 		// Mostra os botões 
 		botaoJogar.Show();
 		botaoVoltar.Show();
-		botaoAbrirServ.Show();
+		botaoOpcaoServ.Show();
 				
 		// Mostra botões radio
 		radioSpeed.MostraLista(&radioSpeed);
@@ -733,9 +769,19 @@ EscolhaEmMenu MenuServidor(){
 		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "Velocidade do jogo");
 		outtextxy(BOTAO_JOGAR_X + 8,BOTAO_JOGAR_Y + 24,"JOGAR");
 		outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,"VOLTAR");
-		outtextxy(botaoAbrirServ.x + 24,botaoAbrirServ.y + 24, "ABRIR");
-		outtextxy(botaoAbrirServ.x + 8,botaoAbrirServ.y + 40,"SERVIDOR");
 		
+		
+		// Alteração da opção de conexão
+		if(minhaRede.clienteConectado == false){
+			outtextxy(botaoOpcaoServ.x + 24,botaoOpcaoServ.y + 24, "ABRIR");
+			outtextxy(botaoOpcaoServ.x + 8,botaoOpcaoServ.y + 40,"SERVIDOR");
+		} else{
+			outtextxy(botaoOpcaoServ.x + 24,botaoOpcaoServ.y + 24, "FECHAR");
+			outtextxy(botaoOpcaoServ.x + 8,botaoOpcaoServ.y + 40,"SERVIDOR");
+		}
+
+		
+		// Primeira mensagem do log
 		if(minhaRede.servidorInit == true){
 			setcolor(LIGHTGREEN);
 			outtextxy(TILE_W * 20, TILE_H * 14 + 16, "- Click em \"Abrir Servidor\".");
@@ -744,46 +790,70 @@ EscolhaEmMenu MenuServidor(){
 			outtextxy(TILE_W * 20, TILE_H * 14 + 16, "- Falha na inicialização do servidor.");
 		}
 		
+		
+		// Segunda mensagem do log
 		if(minhaRede.clienteConectado == true){
-			setcolor(LIGHTGREEN);
+			setcolor(LIGHTBLUE);
 			outtextxy(TILE_W * 20, TILE_H * 15 + 8, "- Cliente está conectado!");
-		} else{
-			setcolor(YELLOW);
-			outtextxy(TILE_W * 20, TILE_H * 15 + 8, "- Aguardando cliente...");
-		}
-				
-
+		} 
 		
 		minhaPg.Visual();
 		
-		// Verifica clicks nos botões rádio
-		radioSpeed.VerificaClick(&radioSpeed);
-		radioLider.VerificaClick(&radioLider);
+		
+		// Verifica clicks nos botões rádio (funcionam apenas antes do cliente se conectar)
+		if(minhaRede.clienteConectado == false){
+			radioSpeed.VerificaClick(&radioSpeed);
+			radioLider.VerificaClick(&radioLider);
+		}
+
 		
 		
 		// --------------- Processamento do botão Jogar===================
 		if(botaoJogar.CheckClick() == true){
 			// Processamento de jogo via rede
 		}
-		//========================== Fim do processamento==================	
 	
-		// Processamento do botão voltar
+		//===============Processamento do botão voltar=================
 		if(botaoVoltar.CheckClick() == true){
 			escolha = MENU_DOIS_JOG;
 			minhaRede.FechaSocketServer();
 			delay(100); // Delay para evitar duplo click
 		}
 		
-		// Processamento do botão Abrir servidor
-		if(botaoAbrirServ.CheckClick() == true){
-			if(minhaRede.AceitaConexaoClient() == true){
-				if(minhaRede.RecebeDoClient() == true)
-					cout << minhaRede.recvBuf;
-			}
-		}
-		
+		// ===============Processamento do botão Abrir servidor===============
+		if(botaoOpcaoServ.CheckClick() == true){
+			
+			if(minhaRede.clienteConectado == true)
+				minhaRede.FechaConexaoClient();	
+			 else{
+				outtextxy(TILE_W * 20, TILE_H * 15 + 8, "- Aguardando cliente...");
+				if(minhaRede.AceitaConexaoClient() == true){
+					
+					strcpy(tempGmSpeed ,radioSpeed.RadioChecked(&radioSpeed)->label);
+					gameSpeed = atoi(tempGmSpeed);	
+					tempLider = radioLider.RadioChecked(&radioLider)->label; 
+					
+					if( tempLider == "Roosevelt"){
+						ladoMeuJog = LADO1;
+						ladoOutroJog = LADO2;
+					} 
+					else{
+						ladoMeuJog = LADO2;
+						ladoOutroJog = LADO1;
+					}
+					
 
-	
+					strcpy(pacote,"LIDER|\"");
+					strcat(pacote,tempLider);
+					strcat(pacote,"\"|GAMESPEED|\"");
+					strcat(pacote,tempGmSpeed);
+					strcat(pacote,"\"");
+					
+					minhaRede.EnviaParaOClient(pacote);
+				}
+			}
+
+		}
 	}
 	return escolha;	
 }
