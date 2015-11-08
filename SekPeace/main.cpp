@@ -187,6 +187,7 @@ EscolhaEmMenu MenuDoisJog(){
 	cleardevice();
 	BackgroundMenu();
 	
+
 	botaoCliente.Show();
 	botaoServidor.Show();	
 	botaoVoltar.Show();
@@ -663,6 +664,12 @@ EscolhaEmMenu MenuCliente(){
 		setcolor(BLACK);
 		bar(TILE_W * 20, TILE_H * 10,TILE_W * 27,TILE_H * 12 );
 		
+		
+		// Informações do jogo
+		if(minhaRede.clienteConectado == true)
+			bar(TILE_W * 12, TILE_H * 14, TILE_W * 26, TILE_H * 17);
+
+		
 		botaoVoltar.Show();
 		botaoJogar.Show();
 		botaoConexao.Show();
@@ -688,7 +695,8 @@ EscolhaEmMenu MenuCliente(){
 		//minhaGrd.Colocar();
 		minhaPg.Visual();
 		
-		radioModoIP.VerificaClick(&radioModoIP);
+		if(minhaRede.clienteConectado)
+			radioModoIP.VerificaClick(&radioModoIP);
 		
 		if(botaoConexao.CheckClick() == true){
 			
@@ -698,19 +706,17 @@ EscolhaEmMenu MenuCliente(){
 					
 					if(minhaRede.RecebeDoServer() == true){
 						cout << minhaRede.pacote;
-						delay(125);
 					}
 				}
 				
 			}
 		
-		} else{
-			// Talvez seja interessante mandar uma mensagem avisando
-			// o fim da conexão
-			minhaRede.FechaSocketClient();
-		} 
+		}
+		
 		
 		if(botaoVoltar.CheckClick() == true){
+			/// Talvez seja interessante enviar uma mensagem
+			// para o servidor antes de fechar o socket
 			escolha = MENU_DOIS_JOG;
 			minhaRede.FechaSocketClient();
 			delay(150);
@@ -725,6 +731,7 @@ EscolhaEmMenu MenuCliente(){
 
 EscolhaEmMenu MenuServidor(){
 	
+	bool delayParaGUI = false;	
 	char pacote[30], tempGmSpeed[2], *tempLider;
 	
 	// Inicializa as flags e o servidor
@@ -737,9 +744,7 @@ EscolhaEmMenu MenuServidor(){
 	
 	
 	while(escolha == SEM_ESCOLHA){
-		
-		cout << "Estou aqui\n";
-	
+			
 		minhaPg.Troca();
 		minhaPg.Ativa();
 		
@@ -820,12 +825,19 @@ EscolhaEmMenu MenuServidor(){
 			delay(100); // Delay para evitar duplo click
 		}
 		
+		if(delayParaGUI == true){
+			delay(125);
+			delayParaGUI = false;
+		}
+		
 		// ===============Processamento do botão Abrir servidor===============
 		if(botaoOpcaoServ.CheckClick() == true){
 			
-			if(minhaRede.clienteConectado == true)
+		if(minhaRede.clienteConectado == true)
 				minhaRede.FechaConexaoClient();	
-			 else{
+			 else if(minhaRede.clienteConectado == false){
+			 	outtextxy(TILE_W * 20, TILE_H * 14 + 16, "_________Servidor aberto_________");
+			 	setcolor(YELLOW);
 				outtextxy(TILE_W * 20, TILE_H * 15 + 8, "- Aguardando cliente...");
 				if(minhaRede.AceitaConexaoClient() == true){
 					
@@ -850,6 +862,7 @@ EscolhaEmMenu MenuServidor(){
 					strcat(pacote,"\"");
 					
 					minhaRede.EnviaParaOClient(pacote);
+					delayParaGUI = true;
 				}
 			}
 
