@@ -357,7 +357,7 @@ void Aviso(int posX, int posY, char * msg, int color, Lider hitler){
 }
 
 /*Procedimento de defesa da torre*/
-void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA){
+void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira){
 	Torre *torre0;
 	Soldado *soldado0, *alvo;
 	Torre *pTorre;
@@ -388,7 +388,8 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA){
 			if(pTorre->reload.PassouDelay(TORRE_RELOAD)){
 				pTorre->reload.Atualiza();
 				pTorre->tipoAnimCanhao = 2;
-				pTorre->Atira(alvo);
+				if(atira == true)
+					pTorre->Atira(alvo);
 			}	
 		}
 		
@@ -476,9 +477,9 @@ void Gameplay(TipoGameplay tipoGameplay){
 		meuCampo.LimpaD();
 				
 		// Rotina de defesa da torre
-		DefesaTorre(&meuJog,&outroJog,&eixoIA);
+		DefesaTorre(&meuJog,&outroJog,&eixoIA,true);
 		
-		// Rotina de envio de soldados do jogador
+		// Rotina de envio de soldados o jogador
 		EnviaSold(&meuJog,&outroJog,meuCampo);
 		
 		// Rotina de envio de soldados do Eixo contra o jogador
@@ -486,18 +487,21 @@ void Gameplay(TipoGameplay tipoGameplay){
 		
 		// Mostra os lideres
 		MostraLideres(&meuJog.lider,&outroJog.lider);
-							
-		//Deixa a página visual
-		minhaPg.Visual();
 		
-		// Simula a IA no Singleplayer ou recebe/ envia dados no Multiplayer
+		// Simula a IA no Singleplayer 
 		if(tipoGameplay == SINGLEPLAYER)
 			IAOutroJog();
+		
+		//Ou recebe/envia dados no Multiplayer
 		else{
 			EnviaPacoteJogo();
 			RecebePacoteJogo();
 		}
 		
+							
+		//Deixa a página visual
+		minhaPg.Visual();
+	
 		// Simula o comportamento do outro jogador	
 		SimulaOutroJog(tipoGameplay);
 	
@@ -516,7 +520,6 @@ void Gameplay(TipoGameplay tipoGameplay){
 
 // Envia dados no modo multiplayer 
 void EnviaPacoteJogo(){
-	
 }
 
 
