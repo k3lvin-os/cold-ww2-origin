@@ -748,8 +748,8 @@ EscolhaEmMenu MenuCliente(){
 										
 										minhaRede.servOk = true;
 										escolha = UM_JOGADOR; // teste
-										
-									} else if(strcmp(buffer,"false") == 0){
+									} 
+									else if(strcmp(buffer,"false") == 0){
 										minhaRede.servOk = false;
 									}
 								}
@@ -757,7 +757,9 @@ EscolhaEmMenu MenuCliente(){
 								tipoPacote = SEM_TIPO;	
 								
 							} else{
-								strcpy(buffer,&c);
+								temp[0] = c;
+								temp[1] = '\0';
+								strcat(buffer,temp);
 							}
 							
 							i++;
@@ -767,11 +769,6 @@ EscolhaEmMenu MenuCliente(){
 			
 				
 				}		
-				else{
-					outtextxy(botaoConexao.x + 16,botaoConexao.y + 64, 
-						"Servidor ainda não está pronto para iniciar a partida");
-					delay(100);	
-				} 
 			}
 		}
 		
@@ -961,7 +958,6 @@ EscolhaEmMenu MenuServidor(){
 			if(minhaRede.clienteOk == false){
 				outtextxy(TILE_W * 20, TILE_H * 16 + 8, "- Aguardando resposta do cliente...");
 				if(minhaRede.RecebeDoClient() == true){
-					
 						c = minhaRede.pacote[0];
 						i = 0;
 						tipoPacote = SEM_TIPO;
@@ -974,11 +970,7 @@ EscolhaEmMenu MenuServidor(){
 								
 								if(strcmp("CLIENT_OK",buffer) == 0){
 									
-									if(strcmp(buffer,"true") == 0){
-										minhaRede.clienteOk = true;	
-									} else if(strcmp(buffer,"false") == 0){
-										minhaRede.clienteOk = false;
-									}
+									tipoPacote = CLIENT_OK;
 								}
 								
 								strcpy(buffer,"");
@@ -986,7 +978,12 @@ EscolhaEmMenu MenuServidor(){
 							} else if(c == '|' && tipoPacote != SEM_TIPO){
 								
 								if(tipoPacote == CLIENT_OK){
-									minhaRede.clienteOk = true;	
+									
+									if(strcmp("true",buffer) == 0){
+										minhaRede.clienteOk = true;
+									} else if(strcmp("false",buffer) == 0){
+										minhaRede.clienteOk = false;
+									}
 								}
 								
 								strcpy(buffer,"");
@@ -1006,7 +1003,7 @@ EscolhaEmMenu MenuServidor(){
 				if(minhaRede.clienteOk == true){
 					minhaRede.servOk = true;
 					minhaRede.EnviaParaOClient("SERVER_OK|true|");
-					escolha = UM_JOGADOR;
+					escolha = UM_JOGADOR; // TESTE
 				}
 			}
 		}

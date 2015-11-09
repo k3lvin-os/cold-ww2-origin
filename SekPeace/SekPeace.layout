@@ -1,7 +1,7 @@
 [Editor_0]
-CursorCol=9
-CursorRow=994
-TopLine=986
+CursorCol=8
+CursorRow=762
+TopLine=749
 LeftChar=1
 [Editors]
 Order=0,9,16,13,1
@@ -47,9 +47,9 @@ CursorRow=28
 TopLine=20
 LeftChar=1
 [Editor_1]
-CursorCol=9
-CursorRow=280
-TopLine=272
+CursorCol=8
+CursorRow=162
+TopLine=153
 LeftChar=1
 [Editor_5]
 CursorCol=11
@@ -58,7 +58,7 @@ TopLine=81
 LeftChar=1
 [Editor_13]
 CursorCol=11
-CursorRow=8
+CursorRow=7
 TopLine=1
 LeftChar=1
 [Editor_2]
@@ -82,7 +82,7 @@ CursorRow=41
 TopLine=28
 LeftChar=1
 [Editor_16]
-CursorCol=34
-CursorRow=112
-TopLine=100
+CursorCol=7
+CursorRow=38
+TopLine=29
 LeftChar=1
