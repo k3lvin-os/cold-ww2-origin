@@ -68,7 +68,7 @@ Rede minhaRede;
 //==========================================================
 
 // Funções que usam variáveis globais
-void SinglePlayer();
+void Gameplay(TipoGameplay tipoGameplay);
 EscolhaEmMenu MenuUmJogador();
 EscolhaEmMenu Menu();
 EscolhaEmMenu MenuUmJog();
@@ -76,8 +76,10 @@ EscolhaEmMenu MenuDoisJog();
 void BackgroundMenu();
 EscolhaEmMenu MenuCliente();
 EscolhaEmMenu MenuServidor();
-
-
+void IAOutroJog();
+void RecebePacoteJogo();
+void SimulaOutroJog(TipoGameplay tipoGameplay);
+void EnviaPacoteJogo();
 
 int main(){
 	
@@ -151,7 +153,11 @@ int main(){
 				break;
 			case UM_JOGADOR:
 				escolhaMenu = MENU;
-				SinglePlayer();
+				Gameplay(SINGLEPLAYER);
+				break;
+			case DOIS_JOGADORES:
+				escolhaMenu = MENU;
+				Gameplay(MULTIPLAYER);
 				break;
 			case MENU_UM_JOG:
 				escolhaMenu = MenuUmJog();
@@ -396,8 +402,9 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA){
 
 
 
+
 // Modo de um jogador
-void SinglePlayer(){
+void Gameplay(TipoGameplay tipoGameplay){
 
 
 	minhaPg.Troca();	// Troca a página atual
@@ -482,6 +489,17 @@ void SinglePlayer(){
 							
 		//Deixa a página visual
 		minhaPg.Visual();
+		
+		// Simula a IA no Singleplayer ou recebe/ envia dados no Multiplayer
+		if(tipoGameplay == SINGLEPLAYER)
+			IAOutroJog();
+		else{
+			EnviaPacoteJogo();
+			RecebePacoteJogo();
+		}
+		
+		// Simula o comportamento do outro jogador	
+		SimulaOutroJog(tipoGameplay);
 	
 		// Delay de FPS
 		delay(FPS);	
@@ -495,6 +513,31 @@ void SinglePlayer(){
 	outroJog.torre0->LimpaNo(outroJog.torre0);
 	eixoIA.torre0->LimpaNo(eixoIA.torre0);
 }
+
+// Envia dados no modo multiplayer 
+void EnviaPacoteJogo(){
+	
+}
+
+
+// Simula a IA no modo Singleplayer
+void IAOutroJog(){
+	
+}
+
+// Recebe dados no modo multiplayyer
+void RecebePacoteJogo(){
+	
+}
+
+// Simula o comportamento do outro jogador
+void SimulaOutroJog(TipoGameplay tipoGameplay){
+	
+}
+
+
+
+
 
 //=============================================================
 // Menu de jogo
