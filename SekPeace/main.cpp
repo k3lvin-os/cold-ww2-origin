@@ -639,13 +639,15 @@ void BackgroundMenu(){
 // Menu do cliente
 EscolhaEmMenu MenuCliente(){
 	
-	int i;
-	char c;
 	char nomeMeuLider[20];
 	char liderDele[30];
 	char velocidJogo[27];
 	char buffer[15];
 	TipoPacote tipoPacote;
+	char c;
+	int i;
+	char temp[2];
+
 	
 	strcpy(nomeMeuLider, "Meu Lider: ");
 	strcpy(liderDele, "Outro Lider: ");
@@ -655,7 +657,7 @@ EscolhaEmMenu MenuCliente(){
 	EscolhaEmMenu escolha;
 	escolha = SEM_ESCOLHA;
 	char ipEPorta[25];
-	char temp[7];
+	char charPorta[7];
 	
 	minhaRede.ClientInit();
 	
@@ -699,8 +701,8 @@ EscolhaEmMenu MenuCliente(){
 		
 		strcpy(ipEPorta,minhaRede.ipServer);
 		strcat(ipEPorta,":");
-		itoa(minhaRede.portaServ,temp,10);
-		strcat(ipEPorta,temp);
+		itoa(minhaRede.portaServ,charPorta,10);
+		strcat(ipEPorta,charPorta);
 		
 		
 		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "IP / Porta do Servidor: ");
@@ -716,21 +718,68 @@ EscolhaEmMenu MenuCliente(){
 		//minhaGrd.Colocar();
 		minhaPg.Visual();
 		
-		if(minhaRede.clienteConectado)
+		if(minhaRede.clienteConectado == false)
 			radioModoIP.VerificaClick(&radioModoIP);
 			
 		if(botaoJogar.CheckClick() == true){
 			if(minhaRede.clienteConectado == true){
-				escolha = UM_JOGADOR;
+				if(minhaRede.EnviaParaOServer("CLIENT_OK|true|") == true){
+					if(minhaRede.RecebeDoServer() == true){
+												
+						c = minhaRede.pacote[0];
+						i = 0;
+						tipoPacote = SEM_TIPO;
+						strcpy(buffer,"");	
+						
+						while(c != '\0'){
+							
+							if(c == '|' && tipoPacote == SEM_TIPO){
+								
+								if(strcmp(buffer,"SERVER_OK") == 0){
+									tipoPacote = SERVER_OK;
+								}
+								
+								strcpy(buffer,"");
+								
+							} else if(c == '|' && tipoPacote != SEM_TIPO){
+								
+								if(tipoPacote == SERVER_OK){
+									if(strcmp(buffer,"true") == 0){
+										
+										minhaRede.servOk = true;
+										escolha = UM_JOGADOR; // teste
+										
+									} else if(strcmp(buffer,"false") == 0){
+										minhaRede.servOk = false;
+									}
+								}
+								strcpy(buffer,"");
+								tipoPacote = SEM_TIPO;	
+								
+							} else{
+								strcpy(buffer,&c);
+							}
+							
+							i++;
+							c = minhaRede.pacote[i];	
+						}
+					}
+			
+				
+				}		
+				else{
+					outtextxy(botaoConexao.x + 16,botaoConexao.y + 64, 
+						"Servidor ainda não está pronto para iniciar a partida");
+					delay(100);	
+				} 
 			}
 		}
 		
-		if(botaoConexao.CheckClick() == true){
+		else if(botaoConexao.CheckClick() == true){
 			
 			if(minhaRede.clienteConectado == false){
 				
 				if(minhaRede.ConectaServer() == true){
-					cout << minhaRede.pacote;
 					if(minhaRede.RecebeDoServer() == true){
 					//cout << minhaRede.pacote;
 					
@@ -784,7 +833,9 @@ EscolhaEmMenu MenuCliente(){
 							} 
 							
 							else{
-								strcat(buffer,&c);	
+								temp[0] = c;
+								temp[1] = '\0';
+								strcat(buffer,temp);	
 							}
 							
 							i++;
@@ -792,6 +843,7 @@ EscolhaEmMenu MenuCliente(){
 						}	
 						
 					}
+					
 				}
 				
 			}
@@ -799,7 +851,7 @@ EscolhaEmMenu MenuCliente(){
 		}
 		
 		
-		if(botaoVoltar.CheckClick() == true){
+		else if(botaoVoltar.CheckClick() == true){
 			/// Talvez seja interessante enviar uma mensagem
 			// para o servidor antes de fechar o socket
 			escolha = MENU_DOIS_JOG;
@@ -818,6 +870,11 @@ EscolhaEmMenu MenuServidor(){
 	
 	bool delayParaGUI = false;	
 	char pacote[30], tempGmSpeed[2], *tempLider;
+	char buffer[15];
+	TipoPacote tipoPacote;
+	char c;
+	int i;
+	char temp[2];
 	
 	// Inicializa as flags e o servidor
 	minhaRede.FlagsInit();
@@ -900,7 +957,58 @@ EscolhaEmMenu MenuServidor(){
 		
 		// --------------- Processamento do botão Jogar===================
 		if(botaoJogar.CheckClick() == true){
-			// Processamento de jogo via rede
+			
+			if(minhaRede.clienteOk == false){
+				outtextxy(TILE_W * 20, TILE_H * 16 + 8, "- Aguardando resposta do cliente...");
+				if(minhaRede.RecebeDoClient() == true){
+					
+						c = minhaRede.pacote[0];
+						i = 0;
+						tipoPacote = SEM_TIPO;
+						strcpy(buffer,"");
+						
+						
+						while( c != '\0' ){
+							
+							if( c == '|' && tipoPacote == SEM_TIPO){
+								
+								if(strcmp("CLIENT_OK",buffer) == 0){
+									
+									if(strcmp(buffer,"true") == 0){
+										minhaRede.clienteOk = true;	
+									} else if(strcmp(buffer,"false") == 0){
+										minhaRede.clienteOk = false;
+									}
+								}
+								
+								strcpy(buffer,"");
+								
+							} else if(c == '|' && tipoPacote != SEM_TIPO){
+								
+								if(tipoPacote == CLIENT_OK){
+									minhaRede.clienteOk = true;	
+								}
+								
+								strcpy(buffer,"");
+								tipoPacote = SEM_TIPO;
+							}
+							else{
+								temp[0] = c;
+								temp[1] = '\0';
+								strcat(buffer,temp);
+							}
+							
+							i++;
+							c = minhaRede.pacote[i];
+							
+						}						
+				}
+				if(minhaRede.clienteOk == true){
+					minhaRede.servOk = true;
+					minhaRede.EnviaParaOClient("SERVER_OK|true|");
+					escolha = UM_JOGADOR;
+				}
+			}
 		}
 	
 		//===============Processamento do botão voltar=================
@@ -918,12 +1026,15 @@ EscolhaEmMenu MenuServidor(){
 		// ===============Processamento do botão Abrir servidor===============
 		if(botaoOpcaoServ.CheckClick() == true){
 			
-		if(minhaRede.clienteConectado == true)
+			if(minhaRede.clienteConectado == true)
 				minhaRede.FechaConexaoClient();	
-			 else if(minhaRede.clienteConectado == false){
-			 	outtextxy(TILE_W * 20, TILE_H * 14 + 16, "_________Servidor aberto_________");
-			 	setcolor(YELLOW);
+		
+			else if(minhaRede.clienteConectado == false){
+			
+				outtextxy(TILE_W * 20, TILE_H * 14 + 16, "_________Servidor aberto_________");
+				setcolor(YELLOW);
 				outtextxy(TILE_W * 20, TILE_H * 15 + 8, "- Aguardando cliente...");
+			
 				if(minhaRede.AceitaConexaoClient() == true){
 					
 					strcpy(tempGmSpeed ,radioSpeed.RadioChecked(&radioSpeed)->label);
