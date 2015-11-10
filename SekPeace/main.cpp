@@ -523,7 +523,7 @@ void EnviaPacoteJogo(){
 	bool enviei;
 	
 	char pacote[30];
-	strcpy(pacote,"");
+	strcpy(pacote,"NADA");
 	
 	if(meuJog.compreiSold == true){
 		strcat(pacote,"NEW_SOLD|true");
@@ -861,7 +861,6 @@ EscolhaEmMenu MenuCliente(){
 				
 				if(minhaRede.ConectaServer() == true){
 					if(minhaRede.RecebeDoServer() == true){
-					//cout << minhaRede.pacote;
 					
 						c = minhaRede.pacote[0];
 						i = 0;
@@ -1118,7 +1117,7 @@ EscolhaEmMenu MenuServidor(){
 				if(minhaRede.AceitaConexaoClient() == true){
 					
 					strcpy(tempGmSpeed ,radioSpeed.RadioChecked(&radioSpeed)->label);
-					gameSpeed = atoi(tempGmSpeed);	
+					gameSpeed = atoi(tempGmSpeed);
 					tempLider = radioLider.RadioChecked(&radioLider)->label; 
 					
 					if( tempLider == "Roosevelt"){
