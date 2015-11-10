@@ -406,8 +406,7 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 
 // Modo de um jogador
 void Gameplay(TipoGameplay tipoGameplay){
-
-
+	
 	minhaPg.Troca();	// Troca a página atual
 
 	// Trabalha com a página nos "bastidores"
@@ -468,7 +467,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 		Avisa(gameTime, eixoIA.lider);
 			
 		// Verifica o input do usuário com a GUI
-		meuJog.InputGUI();
+		meuJog.InputGUI ();
 		
 		// Executa procedimento de colocar torre
 		meuJog.ArrastaTorre(meuCampo);
@@ -497,13 +496,13 @@ void Gameplay(TipoGameplay tipoGameplay){
 			EnviaPacoteJogo();
 			RecebePacoteJogo();
 		}
-		
+			
+		// Simula o comportamento do outro jogador	
+		SimulaOutroJog(tipoGameplay);
 							
 		//Deixa a página visual
 		minhaPg.Visual();
-	
-		// Simula o comportamento do outro jogador	
-		SimulaOutroJog(tipoGameplay);
+
 	
 		// Delay de FPS
 		delay(FPS);	
@@ -520,6 +519,31 @@ void Gameplay(TipoGameplay tipoGameplay){
 
 // Envia dados no modo multiplayer 
 void EnviaPacoteJogo(){
+	
+	bool enviei;
+	
+	char pacote[30];
+	strcpy(pacote,"");
+	
+	if(meuJog.compreiSold == true){
+		strcat(pacote,"NEW_SOLD|true");
+		meuJog.compreiSold = false;
+	}
+	
+	if(minhaRede.clienteOuServidor == "cliente"){
+	
+		do{
+			enviei = minhaRede.EnviaParaOServer(pacote);
+		} while(enviei == false);
+
+	}
+		
+	else if(minhaRede.clienteOuServidor == "servidor"){
+		
+		do{
+			enviei = minhaRede.EnviaParaOClient(pacote);
+		} while(enviei == false);
+	}		
 }
 
 
@@ -531,6 +555,18 @@ void IAOutroJog(){
 // Recebe dados no modo multiplayyer
 void RecebePacoteJogo(){
 	
+	bool recebi;
+	
+	if(minhaRede.clienteOuServidor == "cliente")
+		recebi = minhaRede.RecebeDoServer();
+		
+	else if(minhaRede.clienteOuServidor == "servidor")
+		recebi = minhaRede.RecebeDoClient();	
+		
+	if(recebi == true)
+		cout << minhaRede.pacote << endl;
+	else
+		cout << "Não recebi o pacote" << endl;
 }
 
 // Simula o comportamento do outro jogador
@@ -793,7 +829,8 @@ EscolhaEmMenu MenuCliente(){
 									if(strcmp(buffer,"true") == 0){
 										
 										minhaRede.servOk = true;
-										escolha = UM_JOGADOR; // teste
+										escolha = DOIS_JOGADORES; 
+										
 									} 
 									else if(strcmp(buffer,"false") == 0){
 										minhaRede.servOk = false;
@@ -1049,7 +1086,7 @@ EscolhaEmMenu MenuServidor(){
 				if(minhaRede.clienteOk == true){
 					minhaRede.servOk = true;
 					minhaRede.EnviaParaOClient("SERVER_OK|true|");
-					escolha = UM_JOGADOR; // TESTE
+					escolha = DOIS_JOGADORES;
 				}
 			}
 		}
