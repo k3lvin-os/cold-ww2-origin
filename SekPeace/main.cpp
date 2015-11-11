@@ -414,8 +414,8 @@ void Gameplay(TipoGameplay tipoGameplay){
 	eixoIA.Init(LADO3,&gameSpeed);
 	
 	// Inicializa gerenciador de ondas do eixo
-	ondaVsMeuJog.Init(&eixoIA,&gameSpeed);
-	ondaVsOutroJog.Init(&eixoIA,&gameSpeed);
+	ondaVsMeuJog.Init(&eixoIA,&gameSpeed,meuJog.lado);
+	ondaVsOutroJog.Init(&eixoIA,&gameSpeed,outroJog.lado);
 	
 	// Inicialização do campo de jogo a partir de um arquivo de coordenadas
 	meuCampo.PosLoad("mapa05.txt");
@@ -456,7 +456,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 		onda = gameTime.SoldOnda();	
 				
 		// Verifica o tipo de envio de soldados do Eixo
-		ondaVsMeuJog.Verifica(onda,meuJog.lado,meuCampo);
+		ondaVsMeuJog.Verifica(onda,meuCampo);
 
 		// Avisa momentos importantes para o jogador
 		Avisa(gameTime, eixoIA.lider);
@@ -621,7 +621,7 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog){
 	}
 	
 	// Verifica a a onda atual para o envio de soldados do Eixo
-	ondaVsOutroJog->Verifica(onda,outroJog.lado,meuCampo);
+	ondaVsOutroJog->Verifica(onda,meuCampo);
 	
 	// Envia soldados do jogador adversário contra o jogador atual
 	EnviaSold(&outroJog,&meuJog,meuCampo);
