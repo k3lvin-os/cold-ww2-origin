@@ -367,8 +367,9 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 		if(alvo == NULL){
 				
 			soldado0 = outroJog->soldado0;
-				
-			if(pTorre->BuscaAlvo(soldado0) == NULL)
+			
+			alvo = pTorre->BuscaAlvo(soldado0);	
+			if(alvo == NULL);
 				pTorre->AnimacaoPatrulha();	
 							
 		}
@@ -466,11 +467,8 @@ void Gameplay(TipoGameplay tipoGameplay){
 		
 		// Executa procedimento de colocar torre
 		meuJog.ArrastaTorre(meuCampo);
-				
-		// Limpa campo de carregamento de imagens
-		meuCampo.LimpaD();
-				
-		// Rotina de defesa da torre
+						
+		// Rotina de defesa da torre 
 		DefesaTorre(&meuJog,&outroJog,&eixoIA,true);
 		
 		// Rotina de envio de soldados o jogador
@@ -494,6 +492,9 @@ void Gameplay(TipoGameplay tipoGameplay){
 			
 		// Simula o comportamento do outro jogador	
 		SimulaOutroJog(tipoGameplay,&ondaVsOutroJog);
+		
+		// Limpa campo de carregamento de imagens
+		meuCampo.LimpaD();
 							
 		//Deixa a página visual
 		minhaPg.Visual();
