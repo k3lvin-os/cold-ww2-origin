@@ -52,7 +52,6 @@ bool SemTorrePerto(Torre *torre0, int tileCimaX,int tileCimaY);
 //======================================================
 Jogador meuJog,  outroJog, eixoIA;
 CampoJogo meuCampo;
-OndaEixo ondaEixo;
 char onda;			// Ceritifique-se que essas variáveis
 Pagina minhaPg;		// são inicializadas no começo de todas
 bool gameLoop;		// funções em que são utilzadas
@@ -78,23 +77,16 @@ EscolhaEmMenu MenuCliente();
 EscolhaEmMenu MenuServidor();
 void IAOutroJog();
 void RecebePacoteJogo();
-void SimulaOutroJog(TipoGameplay tipoGameplay);
+void SimulaOutroJog(TipoGameplay tipoGameplay,OndaEixo *ondaVsOutroJog);
 void EnviaPacoteJogo();
 
 int main(){
 	
 	// Inicializa biblioteca de conexões em rede
-	//minhaRede.WinSockInit();
+	minhaRede.WinSockInit();
 	
 	int iResult;
-    
-    WSADATA wsaData;		// Biblioteca para conexão em rede
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	
-    if (iResult != NO_ERROR) {
-        wprintf(L"WSAStartup failed with error: %ld\n", iResult);
-        return false;
-    }
+
 	
 	// Inicialize os botões que serão usados nos menus
 	botaoUmJog.Init(BOTAO1_X,BOTAO1_Y,4,4);
@@ -174,7 +166,7 @@ int main(){
 		}	
 	}
 	
-	WSACleanup();
+	minhaRede.EncerraWinSock();
 	radioSpeed.LimpaNo(&radioSpeed);
 	closegraph();
 	return 0;	
@@ -407,6 +399,8 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 // Modo de um jogador
 void Gameplay(TipoGameplay tipoGameplay){
 	
+	OndaEixo ondaVsMeuJog, ondaVsOutroJog;
+	
 	minhaPg.Troca();	// Troca a página atual
 
 	// Trabalha com a página nos "bastidores"
@@ -420,7 +414,8 @@ void Gameplay(TipoGameplay tipoGameplay){
 	eixoIA.Init(LADO3,&gameSpeed);
 	
 	// Inicializa gerenciador de ondas do eixo
-	ondaEixo.Init(&eixoIA,&gameSpeed);
+	ondaVsMeuJog.Init(&eixoIA,&gameSpeed);
+	ondaVsOutroJog.Init(&eixoIA,&gameSpeed);
 	
 	// Inicialização do campo de jogo a partir de um arquivo de coordenadas
 	meuCampo.PosLoad("mapa05.txt");
@@ -459,9 +454,9 @@ void Gameplay(TipoGameplay tipoGameplay){
 	
 		// Verifica se é hora de enviar uma onda de soldados do Eixo
 		onda = gameTime.SoldOnda();	
-		
+				
 		// Verifica o tipo de envio de soldados do Eixo
-		ondaEixo.Verifica(onda,meuJog.lado,meuCampo);
+		ondaVsMeuJog.Verifica(onda,meuJog.lado,meuCampo);
 
 		// Avisa momentos importantes para o jogador
 		Avisa(gameTime, eixoIA.lider);
@@ -498,7 +493,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 		}
 			
 		// Simula o comportamento do outro jogador	
-		SimulaOutroJog(tipoGameplay);
+		SimulaOutroJog(tipoGameplay,&ondaVsOutroJog);
 							
 		//Deixa a página visual
 		minhaPg.Visual();
@@ -523,12 +518,16 @@ void EnviaPacoteJogo(){
 	bool enviei;
 	
 	char pacote[30];
-	strcpy(pacote,"NADA");
+	strcpy(pacote,"");
 	
-	if(meuJog.compreiSold == true){
-		strcat(pacote,"NEW_SOLD|true");
-		meuJog.compreiSold = false;
+	if(meuJog.qtdSoldEspera == 1){
+		strcat(pacote,"NEW_SOLD|");
+		meuJog.qtdSoldEspera = 0;
 	}
+	
+	
+	if(strcmp(pacote,"") == 0)
+		strcpy(pacote,"_");
 	
 	if(minhaRede.clienteOuServidor == "cliente"){
 	
@@ -555,6 +554,14 @@ void IAOutroJog(){
 // Recebe dados no modo multiplayyer
 void RecebePacoteJogo(){
 	
+	int i;
+	char c;
+	char temp[2];
+	char buffer[10];
+	TipoPacote tipoPacote;
+	char pacote[30];
+	
+	
 	bool recebi;
 	
 	if(minhaRede.clienteOuServidor == "cliente")
@@ -563,15 +570,65 @@ void RecebePacoteJogo(){
 	else if(minhaRede.clienteOuServidor == "servidor")
 		recebi = minhaRede.RecebeDoClient();	
 		
-	if(recebi == true)
-		cout << minhaRede.pacote << endl;
-	else
-		cout << "Não recebi o pacote" << endl;
+	if(recebi == true){
+		
+		c = minhaRede.pacote[0];
+		i = 0;
+		tipoPacote =  SEM_TIPO;
+		strcpy(buffer,"");
+		
+		while(c != '\0'){
+			
+			if(c == '|' && tipoPacote == SEM_TIPO ){
+				
+				if(strcmp(buffer,"NEW_SOLD") == 0){
+					outroJog.qtdSoldEspera = 1;
+					cout << "NEW_SOLD\n"; // Teste
+
+				}
+					
+				strcpy(buffer,"");
+			
+			} else if(c == '|' && tipoPacote != SEM_TIPO){
+				
+				strcpy(buffer,"");
+				
+			} else{
+				temp[0] = c;
+				temp[1] = '\0';
+				strcat(buffer,temp);
+			}
+			
+			i++;
+			c = minhaRede.pacote[i];
+		
+		}
+	}
 }
 
+
+
 // Simula o comportamento do outro jogador
-void SimulaOutroJog(TipoGameplay tipoGameplay){
+void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog){
 	
+	if(outroJog.qtdSoldEspera > 0){
+		
+		if(outroJog.envioSold.PassouDelay(ESPERA_DELAY) == true){
+			outroJog.envioSold.Atualiza();
+			outroJog.soldado0->Insere(outroJog.soldado0,outroJog.lado,gameSpeed);
+			outroJog.qtdSoldEspera--;
+		}	
+	}
+	
+	// Verifica a a onda atual para o envio de soldados do Eixo
+	ondaVsOutroJog->Verifica(onda,outroJog.lado,meuCampo);
+	
+	// Envia soldados do jogador adversário contra o jogador atual
+	EnviaSold(&outroJog,&meuJog,meuCampo);
+	
+	// Envia soldados nazistas contra o jogador adversário
+	EnviaSold(&eixoIA,&outroJog,meuCampo);
+
 }
 
 
