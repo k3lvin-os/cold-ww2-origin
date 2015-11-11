@@ -50,7 +50,7 @@ bool SemTorrePerto(Torre *torre0, int tileCimaX,int tileCimaY);
 
 // Variáveis globais
 //======================================================
-Jogador meuJog,  outroJog, eixoIA;
+Jogador meuJog,  outroJog, eixoVsMeuJog,eixoVsOutroJog;
 CampoJogo meuCampo;
 char onda;			// Ceritifique-se que essas variáveis
 Pagina minhaPg;		// são inicializadas no começo de todas
@@ -228,8 +228,8 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 	
 		if(pSold->vida > 0 && pSold->chegou != true){
 			
-			pSold->Show();
 			pSold->IA(meuCampo, tempoEspera);
+			pSold->Show();
 			meuHP.Show(pSold->x,pSold->y,pSold->vida,"soldado");
 			
 		} 
@@ -412,11 +412,12 @@ void Gameplay(TipoGameplay tipoGameplay){
 	// Atribui times aos jogadores
 	meuJog.Init(ladoMeuJog,&gameSpeed);
 	outroJog.Init(ladoOutroJog,&gameSpeed);
-	eixoIA.Init(LADO3,&gameSpeed);
+	eixoVsMeuJog.Init(LADO3,&gameSpeed);
+	eixoVsOutroJog.Init(LADO3,&gameSpeed);
 	
 	// Inicializa gerenciador de ondas do eixo
-	ondaVsMeuJog.Init(&eixoIA,&gameSpeed,meuJog.lado);
-	ondaVsOutroJog.Init(&eixoIA,&gameSpeed,outroJog.lado);
+	ondaVsMeuJog.Init(&eixoVsMeuJog,&gameSpeed,meuJog.lado);
+	ondaVsOutroJog.Init(&eixoVsOutroJog,&gameSpeed,outroJog.lado);
 	
 	// Inicialização do campo de jogo a partir de um arquivo de coordenadas
 	meuCampo.PosLoad("mapa05.txt");
@@ -460,7 +461,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 		ondaVsMeuJog.Verifica(onda,meuCampo);
 
 		// Avisa momentos importantes para o jogador
-		Avisa(gameTime, eixoIA.lider);
+		Avisa(gameTime, eixoVsMeuJog.lider);
 			
 		// Verifica o input do usuário com a GUI
 		meuJog.InputGUI ();
@@ -469,13 +470,13 @@ void Gameplay(TipoGameplay tipoGameplay){
 		meuJog.ArrastaTorre(meuCampo);
 						
 		// Rotina de defesa da torre 
-		DefesaTorre(&meuJog,&outroJog,&eixoIA,true);
+		DefesaTorre(&meuJog,&outroJog,&eixoVsMeuJog,true);
 		
 		// Rotina de envio de soldados o jogador
 		EnviaSold(&meuJog,&outroJog,meuCampo);
 		
 		// Rotina de envio de soldados do Eixo contra o jogador
-		EnviaSold(&eixoIA,&meuJog,meuCampo);
+		EnviaSold(&eixoVsMeuJog,&meuJog,meuCampo);
 		
 		// Mostra os lideres
 		MostraLideres(&meuJog.lider,&outroJog.lider);
@@ -505,12 +506,18 @@ void Gameplay(TipoGameplay tipoGameplay){
 	}
 	// Libera a memória
 	meuCampo.LimpaMem();
+	
+	//Limpa memória alocada para os soldados
 	meuJog.soldado0->LimpaNo(meuJog.soldado0);
 	outroJog.soldado0->LimpaNo(outroJog.soldado0);
-	eixoIA.soldado0->LimpaNo(eixoIA.soldado0);
+	eixoVsMeuJog.soldado0->LimpaNo(eixoVsMeuJog.soldado0);
+	eixoVsOutroJog.soldado0->LimpaNo(eixoVsOutroJog.soldado0);
+	
+	//Limpa memória alocada para as torres
 	meuJog.torre0->LimpaNo(meuJog.torre0);
 	outroJog.torre0->LimpaNo(outroJog.torre0);
-	eixoIA.torre0->LimpaNo(eixoIA.torre0);
+	eixoVsMeuJog.torre0->LimpaNo(eixoVsMeuJog.torre0);
+	eixoVsOutroJog.torre0->LimpaNo(eixoVsOutroJog.torre0);
 }
 
 // Envia dados no modo multiplayer 
@@ -628,7 +635,7 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog){
 	EnviaSold(&outroJog,&meuJog,meuCampo);
 	
 	// Envia soldados nazistas contra o jogador adversário
-	EnviaSold(&eixoIA,&outroJog,meuCampo);
+	EnviaSold(&eixoVsOutroJog,&outroJog,meuCampo);
 
 }
 
