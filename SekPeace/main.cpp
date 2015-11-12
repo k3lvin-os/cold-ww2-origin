@@ -521,13 +521,30 @@ void Gameplay(TipoGameplay tipoGameplay){
 void EnviaPacoteJogo(){
 	
 	bool enviei;
+	char pacote[70];
+	char temp[4];
 	
-	char pacote[30];
+	
 	strcpy(pacote,"");
 	
 	if(meuJog.qtdSoldEspera == 1){
 		strcat(pacote,"NEW_SOLD|");
 		meuJog.qtdSoldEspera = 0;
+	}
+	
+	if(meuJog.novaTorreXeY[0] != UNDEFINED && 
+	meuJog.novaTorreXeY[1] != UNDEFINED){
+		
+		strcat(pacote,"TORRE|");
+		itoa(meuJog.novaTorreXeY[0],temp,10);
+		strcat(pacote,temp);
+		strcat(pacote,"|");
+		itoa(meuJog.novaTorreXeY[1],temp,10);
+		strcat(pacote,temp);
+		strcat(pacote,"|");
+		
+		meuJog.novaTorreXeY[0] = UNDEFINED;
+		meuJog.novaTorreXeY[1] = UNDEFINED;
 	}
 	
 	
@@ -565,7 +582,7 @@ void RecebePacoteJogo(){
 	char buffer[10];
 	TipoPacote tipoPacote;
 	char pacote[30];
-	
+	int contador;
 	
 	bool recebi;
 	
@@ -581,6 +598,7 @@ void RecebePacoteJogo(){
 		i = 0;
 		tipoPacote =  SEM_TIPO;
 		strcpy(buffer,"");
+		contador = 0;
 		
 		while(c != '\0'){
 			
@@ -588,17 +606,35 @@ void RecebePacoteJogo(){
 				
 				if(strcmp(buffer,"NEW_SOLD") == 0){
 					outroJog.qtdSoldEspera = 1;
-					cout << "NEW_SOLD\n"; // Teste
-
 				}
+				
+				if(strcmp(buffer,"TORRE") == 0){
+					tipoPacote = TORRE;
+				} 
 					
 				strcpy(buffer,"");
 			
-			} else if(c == '|' && tipoPacote != SEM_TIPO){
+			} 
+			
+			else if(c == '|' && tipoPacote != SEM_TIPO){
+				
+				if(tipoPacote == TORRE){
+					
+					outroJog.novaTorreXeY[contador] = atoi(buffer);
+					contador++;
+					
+					if(contador > 1){
+						contador = 0;
+						tipoPacote = SEM_TIPO;
+					}
+				}
 				
 				strcpy(buffer,"");
 				
-			} else{
+			} 
+			
+			
+			else{
 				temp[0] = c;
 				temp[1] = '\0';
 				strcat(buffer,temp);
@@ -625,6 +661,17 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog){
 		}	
 	}
 	
+	if(outroJog.novaTorreXeY[0] != UNDEFINED
+	 && outroJog.novaTorreXeY[1] != UNDEFINED){
+	
+		outroJog.torre0->Insere(outroJog.torre0,outroJog.lado,
+		outroJog.novaTorreXeY[0],outroJog.novaTorreXeY[1]);
+		
+		outroJog.novaTorreXeY[0] = UNDEFINED;
+		outroJog.novaTorreXeY[1] = UNDEFINED;
+		
+	}
+	
 	// Verifica a a onda atual para o envio de soldados do Eixo
 	ondaVsOutroJog->Verifica(onda,meuCampo);
 	
@@ -633,6 +680,11 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog){
 	
 	// Envia soldados nazistas contra o jogador adversário
 	EnviaSold(&eixoVsOutroJog,&outroJog,meuCampo);
+	
+	if(tipoGameplay == SINGLEPLAYER)
+		DefesaTorre(&outroJog,&meuJog,&eixoVsOutroJog,true);
+	else
+		DefesaTorre(&outroJog,&meuJog,&eixoVsOutroJog,false);
 
 }
 
