@@ -112,10 +112,7 @@ int main(){
 	
 	// A velocidade do jogo ainda não foi definida
 	gameSpeed = NULL;
-	
-	// Carrega o IP padrão do servidor
-	minhaRede.ipServer = LOCALHOST;
-	minhaRede.portaServ = PORTA_PADRAO;
+
 	
 	// Fornece uma seed para o gerador de números pseudoaleatórios
 	srand(time(NULL));
@@ -806,8 +803,7 @@ EscolhaEmMenu MenuCliente(){
 	char ipEPorta[25];
 	char charPorta[7];
 	
-	minhaRede.ClientInit();
-	
+	minhaRede.ClientInit(LOCALHOST,PORTA_PADRAO);
 	
 	while(escolha == SEM_ESCOLHA){
 		
@@ -846,9 +842,9 @@ EscolhaEmMenu MenuCliente(){
 		
 		radioModoIP.MostraLista(&radioModoIP);
 		
-		strcpy(ipEPorta,minhaRede.ipServer);
+		strcpy(ipEPorta,LOCALHOST);
 		strcat(ipEPorta,":");
-		itoa(minhaRede.portaServ,charPorta,10);
+		itoa(PORTA_PADRAO,charPorta,10);
 		strcat(ipEPorta,charPorta);
 		
 		
@@ -1023,7 +1019,7 @@ EscolhaEmMenu MenuServidor(){
 	// Inicializa as flags e o servidor
 	minhaRede.FlagsInit();
 	
-	minhaRede.ServerInit();
+	minhaRede.ServerInit(PORTA_PADRAO);
 	
 	EscolhaEmMenu escolha;
 	escolha = SEM_ESCOLHA;
