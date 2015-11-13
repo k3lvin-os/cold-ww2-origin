@@ -362,7 +362,6 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 	
 	torre0 = meuJog->torre0;
 	strcpy(logTemp,"");
-	strcpy(logDano,"");
 	strcpy(temp,"");
 	
 	for(pTorre = torre0->prox; pTorre != NULL;pTorre = pTorre->prox){
@@ -701,6 +700,13 @@ void RecebePacoteJogo(){
 // Simula o comportamento do outro jogador
 void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* logAtira){
 	
+	char c;
+	int i, id, dano;
+	int tempCount;
+	int danoCount;
+	char temp[3];
+	Soldado *danoSoldado0, *alvo;
+	
 	if(outroJog.qtdSoldEspera > 0){
 		
 		if(outroJog.envioSold.PassouDelay(ESPERA_DELAY) == true){
@@ -733,6 +739,59 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 		DefesaTorre(&outroJog,&meuJog,&eixoVsOutroJog,true);
 	else{
 		DefesaTorre(&outroJog,&meuJog,&eixoVsOutroJog,false);
+		
+		if(strcmp(logDano,"") != 0){
+			
+			c = logDano[0];
+			danoCount = 1;
+			tempCount = 0;
+			i = 0;
+			strcpy(temp,"");
+								
+			while(c != '\0'){
+				
+				if(c != '|'){
+					temp[tempCount] = c;
+					temp[tempCount + 1] = '\0';
+					tempCount++;
+				} 
+				
+				else{
+					
+					cout << temp << "\n";	
+					tempCount = 0;
+					switch(danoCount){
+						case 1:
+							
+							if(strcmp(temp,EIXO_ID) == 0){
+								danoSoldado0 = eixoVsOutroJog.soldado0;
+							} else{
+								danoSoldado0 = meuJog.soldado0;
+							}
+							danoCount = 2;
+							break;
+							
+						case 2:
+							id =  atoi(temp);
+							alvo = alvo->GetSoldById(danoSoldado0,id);
+							danoCount = 3;
+							break;
+						case 3:
+							dano = atoi(temp);
+							if(alvo != NULL)
+								alvo->vida -= dano;
+							danoCount = 1;
+							break;	
+					}
+					strcpy(temp,"");
+				}
+				
+			
+				i++;
+				c = logDano[i];
+			}	
+		}
+		
 	}
 	
 }
