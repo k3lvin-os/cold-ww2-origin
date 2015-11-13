@@ -64,6 +64,7 @@ char *ladoMeuJog,*ladoOutroJog;
 int gameSpeed;
 Radio radioSpeed, radioLider, radioModoIP;
 Rede minhaRede;
+char logDano[100];
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -77,7 +78,7 @@ EscolhaEmMenu MenuCliente();
 EscolhaEmMenu MenuServidor();
 void IAOutroJog();
 void RecebePacoteJogo();
-void SimulaOutroJog(TipoGameplay tipoGameplay,OndaEixo *ondaVsOutroJog);
+void SimulaOutroJog(TipoGameplay tipoGameplay,OndaEixo *ondaVsOutroJog,char* logAtira);
 void EnviaPacoteJogo();
 
 int main(){
@@ -347,11 +348,22 @@ void Aviso(int posX, int posY, char * msg, int color, Lider hitler){
 
 /*Procedimento de defesa da torre*/
 void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira){
+	
+	int dano;
 	Torre *torre0;
 	Soldado *soldado0, *alvo;
 	Torre *pTorre;
+	char temp[3];
+	char logTemp[100];
+	int id, i,count;
+	char c;
+	
+	i = 0;
 	
 	torre0 = meuJog->torre0;
+	strcpy(logTemp,"");
+	strcpy(logDano,"");
+	strcpy(temp,"");
 	
 	for(pTorre = torre0->prox; pTorre != NULL;pTorre = pTorre->prox){
 		
@@ -378,16 +390,35 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 			if(pTorre->reload.PassouDelay(TORRE_RELOAD)){
 				pTorre->reload.Atualiza();
 				pTorre->tipoAnimCanhao = 2;
-				if(atira == true)
-					pTorre->Atira(alvo);
+				
+				if(atira == true){
+					dano = pTorre->Atira(alvo);
+					itoa(dano,temp,10);
+					strcat(logTemp,temp);
+					strcat(logTemp,"|");
+					
+					id = soldado0->GetId(soldado0,alvo);
+					itoa(id,temp,10);
+					strcat(logTemp,temp);
+					strcat(logTemp,"|");
+					
+					if(soldado0 == eixoIA->soldado0)
+						strcat(logTemp,EIXO_ID);
+					else
+						strcat(logTemp,OUTROJOG_ID);
+				
+					strcat(logTemp,"|");
+				}
 			}	
 		}
 		
 		pTorre->MostraTorre();	 	
 	}
-			
-			
-			
+	
+	if(strcmp(logTemp,"") != 0){
+		strcpy(logDano,"DANO|");
+		strcat(logDano,logTemp);
+	}			
 }
 		
 
@@ -396,6 +427,8 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 
 // Modo de um jogador
 void Gameplay(TipoGameplay tipoGameplay){
+	
+	char *logAtira;
 	
 	OndaEixo ondaVsMeuJog, ondaVsOutroJog;
 	
@@ -468,7 +501,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 						
 		// Rotina de defesa da torre 
 		DefesaTorre(&meuJog,&outroJog,&eixoVsMeuJog,true);
-		
+						
 		// Rotina de envio de soldados o jogador
 		EnviaSold(&meuJog,&outroJog,meuCampo);
 		
@@ -487,9 +520,11 @@ void Gameplay(TipoGameplay tipoGameplay){
 			EnviaPacoteJogo();
 			RecebePacoteJogo();
 		}
+		
+		cout << logDano << endl;
 			
 		// Simula o comportamento do outro jogador	
-		SimulaOutroJog(tipoGameplay,&ondaVsOutroJog);
+		SimulaOutroJog(tipoGameplay,&ondaVsOutroJog,logAtira);
 		
 		// Limpa campo de carregamento de imagens
 		meuCampo.LimpaD();
@@ -547,6 +582,7 @@ void EnviaPacoteJogo(){
 		meuJog.novaTorreXeY[1] = UNDEFINED;
 	}
 	
+	strcat(pacote,logDano);
 	
 	if(strcmp(pacote,"") == 0)
 		strcpy(pacote,"_");
@@ -579,12 +615,14 @@ void RecebePacoteJogo(){
 	int i;
 	char c;
 	char temp[2];
-	char buffer[10];
+	char buffer[100];
 	TipoPacote tipoPacote;
 	char pacote[30];
 	int contador;
-	
 	bool recebi;
+	
+	strcpy(logDano,"");
+
 	
 	if(minhaRede.clienteOuServidor == "cliente")
 		recebi = minhaRede.RecebeDoServer();
@@ -610,10 +648,13 @@ void RecebePacoteJogo(){
 				
 				if(strcmp(buffer,"TORRE") == 0){
 					tipoPacote = TORRE;
+				}
+				
+				if(strcmp(buffer,"DANO") == 0){
+					tipoPacote = DANO;
 				} 
 					
-				strcpy(buffer,"");
-			
+				strcpy(buffer,"");			
 			} 
 			
 			else if(c == '|' && tipoPacote != SEM_TIPO){
@@ -628,6 +669,12 @@ void RecebePacoteJogo(){
 						tipoPacote = SEM_TIPO;
 					}
 				}
+				
+				if(tipoPacote == DANO){
+					strcat(logDano,buffer);
+					strcat(logDano,"|");
+				}
+				
 				
 				strcpy(buffer,"");
 				
@@ -650,7 +697,7 @@ void RecebePacoteJogo(){
 
 
 // Simula o comportamento do outro jogador
-void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog){
+void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* logAtira){
 	
 	if(outroJog.qtdSoldEspera > 0){
 		
@@ -668,8 +715,7 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog){
 		outroJog.novaTorreXeY[0],outroJog.novaTorreXeY[1]);
 		
 		outroJog.novaTorreXeY[0] = UNDEFINED;
-		outroJog.novaTorreXeY[1] = UNDEFINED;
-		
+		outroJog.novaTorreXeY[1] = UNDEFINED;	
 	}
 	
 	// Verifica a a onda atual para o envio de soldados do Eixo
@@ -685,7 +731,7 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog){
 		DefesaTorre(&outroJog,&meuJog,&eixoVsOutroJog,true);
 	else
 		DefesaTorre(&outroJog,&meuJog,&eixoVsOutroJog,false);
-
+	
 }
 
 
