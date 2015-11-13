@@ -393,20 +393,22 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 				
 				if(atira == true){
 					dano = pTorre->Atira(alvo);
-					itoa(dano,temp,10);
-					strcat(logTemp,temp);
-					strcat(logTemp,"|");
-					
-					id = soldado0->GetId(soldado0,alvo);
-					itoa(id,temp,10);
-					strcat(logTemp,temp);
-					strcat(logTemp,"|");
 					
 					if(soldado0 == eixoIA->soldado0)
 						strcat(logTemp,EIXO_ID);
 					else
 						strcat(logTemp,OUTROJOG_ID);
-				
+					
+					strcat(logTemp,"|");
+	
+						
+					id = soldado0->GetId(soldado0,alvo);
+					itoa(id,temp,10);
+					strcat(logTemp,temp);
+					strcat(logTemp,"|");	
+					
+					itoa(dano,temp,10);
+					strcat(logTemp,temp);
 					strcat(logTemp,"|");
 				}
 			}	
@@ -729,8 +731,9 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 	
 	if(tipoGameplay == SINGLEPLAYER)
 		DefesaTorre(&outroJog,&meuJog,&eixoVsOutroJog,true);
-	else
+	else{
 		DefesaTorre(&outroJog,&meuJog,&eixoVsOutroJog,false);
+	}
 	
 }
 
