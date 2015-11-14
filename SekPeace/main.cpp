@@ -65,6 +65,7 @@ int gameSpeed;
 Radio radioSpeed, radioLider, radioModoIP;
 Rede minhaRede;
 char logDano[100];
+char *ipDoServidor,*portaDoServidor;
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -80,6 +81,7 @@ void IAOutroJog();
 void RecebePacoteJogo();
 void SimulaOutroJog(TipoGameplay tipoGameplay,OndaEixo *ondaVsOutroJog,char* logAtira);
 void EnviaPacoteJogo();
+void ConfigIPEPorta();
 
 int main(){
 	
@@ -113,6 +115,8 @@ int main(){
 	
 	// A velocidade do jogo ainda não foi definida
 	gameSpeed = NULL;
+	
+	ConfigIPEPorta();
 
 	
 	// Fornece uma seed para o gerador de números pseudoaleatórios
@@ -1395,3 +1399,68 @@ EscolhaEmMenu MenuServidor(){
 }
 
 
+// Carrrega o IP e a porta definida no arquivo config.txt
+void ConfigIPEPorta(){
+
+	std::ifstream leitor;
+	char c, temp[2], buffer[20],  portaEmChar[6];
+	LeituraIPEPorta leitura;
+	bool registra;
+	
+	ipDoServidor = LOCALHOST;
+	itoa(PORTA_PADRAO,portaEmChar,10);
+	portaDoServidor = portaEmChar;
+	
+	leitor.open("config.txt");
+	
+	if(!leitor.is_open())
+		return;
+	
+	
+	strcpy(buffer,"");
+	leitura = SEM_LEITURA;
+	registra = true;
+	
+	while(leitor.get(c)){
+					
+		if(c == '=' && leitura == SEM_LEITURA ){
+			
+			if(strcmp(buffer,"IP_DO_SERVIDOR ") == 0){
+				leitura = LEITURA_IP;
+			}
+			
+			else if(strcmp(buffer,"PORTA_DO_SERVIDOR ") == 0){
+				leitura = LEITURA_PORTA;
+			}
+			
+			registra = false;
+			strcpy(buffer,"");
+		}
+		
+		else if(leitura != SEM_LEITURA &&  c == '\"'){
+			
+			if(registra == false) // Abre aspas
+				registra = true;
+			else{
+				registra = false; // Fecha aspas
+				
+				if(leitura == LEITURA_IP)
+					ipDoServidor = buffer;
+				else if(leitura == LEITURA_PORTA)
+					portaDoServidor = buffer;	
+				strcpy(buffer,"");
+			}
+			
+		}
+		
+		else if(registra == true && c != '\n'){
+			temp[0] = c;
+			temp[1] = '\0';
+			strcat(buffer,temp);
+		}
+			
+	}
+	
+	leitor.close();
+
+}
