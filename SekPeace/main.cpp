@@ -521,9 +521,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 			EnviaPacoteJogo();
 			RecebePacoteJogo();
 		}
-		
-		cout << logDano << endl;
-			
+					
 		// Simula o comportamento do outro jogador	
 		SimulaOutroJog(tipoGameplay,&ondaVsOutroJog,logAtira);
 		
@@ -943,31 +941,32 @@ void BackgroundMenu(){
 // Menu do cliente
 EscolhaEmMenu MenuCliente(){
 	
-	char nomeMeuLider[20];
-	char liderDele[30];
+	EscolhaEmMenu escolha;
+	char ipEPorta[25];
+	char charPorta[7];
+	
+	
+	//==============================================
+	// Dados do display, que são mostrados após a conexão 
+	char nomeMeuLider[30];
+	char liderDele[30];		
 	char velocidJogo[27];
-	char buffer[15];
+	
+	//===============================================
+	// Variáveis utilziadas para destrinchar o pacote que foi recebido
+	char c, temp[2], buffer[15];
 	TipoPacote tipoPacote;
-	char c;
-	int i;
-	char temp[2];
-
+	int i;						
+	//================================================
 	
 	strcpy(nomeMeuLider, "Meu Lider: ");
 	strcpy(liderDele, "Outro Lider: ");
 	strcpy(velocidJogo, "Velocidade do Jogo: ");
-
 	
-	EscolhaEmMenu escolha;
 	escolha = SEM_ESCOLHA;
-	char ipEPorta[25];
-	char charPorta[7];
-	
-	minhaRede.ClientInit(LOCALHOST,PORTA_PADRAO);
 	
 	while(escolha == SEM_ESCOLHA){
 		
-			
 		minhaPg.Troca();
 		minhaPg.Ativa();
 		
@@ -981,7 +980,6 @@ EscolhaEmMenu MenuCliente(){
 		setcolor(BLACK);
 		bar(TILE_W * 20, TILE_H * 10,TILE_W * 27,TILE_H * 12 );
 		
-		
 		// Informações do jogo
 		if(minhaRede.clienteConectado == true){
 			bar(TILE_W * 12, TILE_H * 14, TILE_W * 26, TILE_H * 17);
@@ -992,22 +990,21 @@ EscolhaEmMenu MenuCliente(){
 			setcolor(LIGHTGREEN);
 			outtextxy(TILE_W * 12 + 8,TILE_H * 16 + 16 ,velocidJogo);	
 		}
-
-			
-
 		
+		
+		// Mostra botões
 		botaoVoltar.Show();
 		botaoJogar.Show();
 		botaoConexao.Show();
 		
+		// Mostra radio buttons
 		radioModoIP.MostraLista(&radioModoIP);
 		
+		// Processa e mostra texto
 		strcpy(ipEPorta,LOCALHOST);
 		strcat(ipEPorta,":");
 		itoa(PORTA_PADRAO,charPorta,10);
 		strcat(ipEPorta,charPorta);
-		
-		
 		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "IP / Porta do Servidor: ");
 		outtextxy(TILE_W * 27 + 8, TILE_H * 10 + 24, ipEPorta);
 		outtextxy(botaoJogar.x + 8,botaoJogar.y + 24,"JOGAR");
@@ -1018,17 +1015,31 @@ EscolhaEmMenu MenuCliente(){
 		else
 			outtextxy(botaoConexao.x + 16,botaoConexao.y + 24,"DESCONECTAR");
 	
-		//minhaGrd.Colocar();
 		minhaPg.Visual();
 		
+		
+		//Verificação de entrada nos radio buttons				
 		if(minhaRede.clienteConectado == false)
 			radioModoIP.VerificaClick(&radioModoIP);
-			
+		
+		//===========================================================================	
+		// Verificação de entrada no botão Jogar	
+		
 		if(botaoJogar.CheckClick() == true){
+			
 			if(minhaRede.clienteConectado == true){
 				if(minhaRede.EnviaParaOServer("CLIENT_OK|true|") == true){
+					
+					setcolor(YELLOW);
+					outtextxy(botaoVoltar.x, botaoVoltar.y + 64, "Aguardando servidor iniciar a partida...");
+					delay(750);
+					
 					if(minhaRede.RecebeDoServer() == true){
-												
+						
+						//===========================================================
+						// Análise do pacote que o servidor envia para inciar o jogo
+						//===========================================================
+													
 						c = minhaRede.pacote[0];
 						i = 0;
 						tipoPacote = SEM_TIPO;
@@ -1074,83 +1085,105 @@ EscolhaEmMenu MenuCliente(){
 				
 				}		
 			}
+			 else{
+				setcolor(LIGHTRED);
+				outtextxy(botaoVoltar.x, botaoVoltar.y + 64, "Conecte-se ao servidor para iniciar uma partida");
+				delay(750);
+			}
 		}
 		
+		
+		//=================================================================================
+		// Verificação de entrada no botão Conectar/Conecta
 		else if(botaoConexao.CheckClick() == true){
-			
+
 			if(minhaRede.clienteConectado == false){
 				
-				if(minhaRede.ConectaServer() == true){
-					if(minhaRede.RecebeDoServer() == true){
-					
-						c = minhaRede.pacote[0];
-						i = 0;
-						tipoPacote = SEM_TIPO;
-						strcpy(buffer,"");
-						
-						while(c != '\0'){
-		
-							if(c == '|' && tipoPacote == SEM_TIPO){
-								
-															
-								if(strcmp(buffer,"LIDER") == 0){
-									tipoPacote = LIDER_SERV;	
-								}
-								else if(strcmp(buffer,"GAMESPEED") == 0){
-									tipoPacote = GAMESPEED;
-								}
-								
-								strcpy(buffer,"");	
-
-								
-							} else if(c == '|' && tipoPacote != SEM_TIPO){
-								
-								if(tipoPacote == LIDER_SERV){
-									strcat(liderDele,buffer);
-									
-									if(strcmp(buffer,"Stalin") == 0){
-										strcat(nomeMeuLider,"Roosevelt");
-										ladoMeuJog = LADO1;
-										ladoOutroJog = LADO2;
-									} else{
-										strcat(nomeMeuLider,"Stalin");
-										ladoMeuJog = LADO2;
-										ladoOutroJog = LADO1;
-									}
-									
-									
-								} else if(tipoPacote == GAMESPEED){
-									strcat(velocidJogo,buffer);
-									if(strcmp(buffer,"4") == 0){
-										gameSpeed = 4;
-									} else{
-										gameSpeed = 8;
-									}
-								}
-								
-								tipoPacote = SEM_TIPO;
-								strcpy(buffer,"");		
-							} 
-							
-							else{
-								temp[0] = c;
-								temp[1] = '\0';
-								strcat(buffer,temp);	
-							}
-							
-							i++;
-							c = minhaRede.pacote[i];
-						}	
-						
-					}
-					
-				}
+				minhaRede.ClientInit(LOCALHOST,PORTA_PADRAO);
 				
+				if(minhaRede.clienteInit == true){
+										
+					minhaRede.ConectaServer();
+					
+					if(minhaRede.clienteConectado == true){
+					
+						if(minhaRede.RecebeDoServer() == true){
+													
+							//==============================================
+							// Análise do pacote de configuração de jogo
+							//==============================================
+							c = minhaRede.pacote[0];
+							i = 0;
+							tipoPacote = SEM_TIPO;
+							strcpy(buffer,"");
+							
+							while(c != '\0'){
+			
+								if(c == '|' && tipoPacote == SEM_TIPO){
+									
+																
+									if(strcmp(buffer,"LIDER") == 0){
+										tipoPacote = LIDER_SERV;	
+									}
+									
+									else if(strcmp(buffer,"GAMESPEED") == 0){
+										tipoPacote = GAMESPEED;
+									}
+									
+									strcpy(buffer,"");
+								} 
+								
+								else if(c == '|' && tipoPacote != SEM_TIPO){
+									
+									if(tipoPacote == LIDER_SERV){
+										strcat(liderDele,buffer);
+										
+										if(strcmp(buffer,"Stalin") == 0){
+											strcat(nomeMeuLider,"Roosevelt");
+											ladoMeuJog = LADO1;
+											ladoOutroJog = LADO2;
+										} 
+										
+										else{
+											strcat(nomeMeuLider,"Stalin");
+											ladoMeuJog = LADO2;
+											ladoOutroJog = LADO1;
+										}			
+									}
+									
+									else if(tipoPacote == GAMESPEED){
+										
+										strcat(velocidJogo,buffer);
+										
+										if(strcmp(buffer,"4") == 0)
+											gameSpeed = 4;
+										 else
+											gameSpeed = 8;										
+									}
+									
+								strcpy(buffer,"");	
+								tipoPacote = SEM_TIPO;
+								}
+								else{
+									temp[0] = c;
+									temp[1] = '\0';
+									strcat(buffer,temp);	
+								}
+								
+								i++;
+								c = minhaRede.pacote[i];
+							}				
+						}
+					}
+				} 		
+			} 
+			
+			else{
+				
+				// Mensagem de erro por falha na incialização do cliente
 			}
-		
-		}
-		
-		
+				
+		}		
 		else if(botaoVoltar.CheckClick() == true){
 			/// Talvez seja interessante enviar uma mensagem
 			// para o servidor antes de fechar o socket
@@ -1158,7 +1191,6 @@ EscolhaEmMenu MenuCliente(){
 			minhaRede.FechaSocketClient();
 			delay(150);
 		}
-			
 		
 	}
 	
@@ -1168,7 +1200,6 @@ EscolhaEmMenu MenuCliente(){
 
 EscolhaEmMenu MenuServidor(){
 	
-	bool delayParaGUI = false;	
 	char pacote[30], tempGmSpeed[2], *tempLider;
 	char buffer[15];
 	TipoPacote tipoPacote;
@@ -1255,10 +1286,11 @@ EscolhaEmMenu MenuServidor(){
 
 		
 		
-		// --------------- Processamento do botão Jogar===================
+		// ============== Processamento do botão Jogar  ===================
 		if(botaoJogar.CheckClick() == true){
 			
 			if(minhaRede.clienteOk == false){
+				setcolor(YELLOW);
 				outtextxy(TILE_W * 20, TILE_H * 16 + 8, "- Aguardando resposta do cliente...");
 				if(minhaRede.RecebeDoClient() == true){
 						c = minhaRede.pacote[0];
@@ -1311,17 +1343,14 @@ EscolhaEmMenu MenuServidor(){
 			}
 		}
 	
-		//===============Processamento do botão voltar=================
+		//===============Processamento do botão voltar =================
 		if(botaoVoltar.CheckClick() == true){
 			escolha = MENU_DOIS_JOG;
 			minhaRede.FechaSocketServer();
-			delay(100); // Delay para evitar duplo click
+			delay(100);
 		}
 		
-		if(delayParaGUI == true){
-			delay(125);
-			delayParaGUI = false;
-		}
+
 		
 		// ===============Processamento do botão Abrir servidor===============
 		if(botaoOpcaoServ.CheckClick() == true){
@@ -1357,7 +1386,6 @@ EscolhaEmMenu MenuServidor(){
 					strcat(pacote,tempGmSpeed);
 					strcat(pacote,"|");									
 					minhaRede.EnviaParaOClient(pacote);
-					delayParaGUI = true;
 				}
 			}
 
