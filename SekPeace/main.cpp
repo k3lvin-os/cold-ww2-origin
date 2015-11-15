@@ -65,7 +65,7 @@ int gameSpeed;
 Radio radioSpeed, radioLider, radioModoIP;
 Rede minhaRede;
 char logDano[100];
-char *ipDoServidor,*portaDoServidor;
+char ipDoServidor[13],portaDoServidor[7];
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -760,7 +760,6 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 				
 				else{
 					
-					cout << temp << "\n";	
 					tempCount = 0;
 					switch(danoCount){
 						case 1:
@@ -946,9 +945,7 @@ void BackgroundMenu(){
 EscolhaEmMenu MenuCliente(){
 	
 	EscolhaEmMenu escolha;
-	char ipEPorta[25];
-	char charPorta[7];
-	
+
 	
 	//==============================================
 	// Dados do display, que são mostrados após a conexão 
@@ -958,7 +955,7 @@ EscolhaEmMenu MenuCliente(){
 	
 	//===============================================
 	// Variáveis utilziadas para destrinchar o pacote que foi recebido
-	char c, temp[2], buffer[15];
+	char c, temp[2], buffer[15], ipEPorta[25];
 	TipoPacote tipoPacote;
 	int i;						
 	//================================================
@@ -1005,10 +1002,9 @@ EscolhaEmMenu MenuCliente(){
 		radioModoIP.MostraLista(&radioModoIP);
 		
 		// Processa e mostra texto
-		strcpy(ipEPorta,LOCALHOST);
+		strcpy(ipEPorta,ipDoServidor);
 		strcat(ipEPorta,":");
-		itoa(PORTA_PADRAO,charPorta,10);
-		strcat(ipEPorta,charPorta);
+		strcat(ipEPorta,portaDoServidor);
 		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "IP / Porta do Servidor: ");
 		outtextxy(TILE_W * 27 + 8, TILE_H * 10 + 24, ipEPorta);
 		outtextxy(botaoJogar.x + 8,botaoJogar.y + 24,"JOGAR");
@@ -1018,7 +1014,8 @@ EscolhaEmMenu MenuCliente(){
 			outtextxy(botaoConexao.x + 16,botaoConexao.y + 24,"CONECTAR");
 		else
 			outtextxy(botaoConexao.x + 16,botaoConexao.y + 24,"DESCONECTAR");
-	
+		
+		minhaGrd.Colocar();
 		minhaPg.Visual();
 		
 		
@@ -1103,7 +1100,7 @@ EscolhaEmMenu MenuCliente(){
 
 			if(minhaRede.clienteConectado == false){
 				
-				minhaRede.ClientInit(LOCALHOST,PORTA_PADRAO);
+				minhaRede.ClientInit(ipDoServidor,atoi(portaDoServidor));
 				
 				if(minhaRede.clienteInit == true){
 										
@@ -1403,13 +1400,12 @@ EscolhaEmMenu MenuServidor(){
 void ConfigIPEPorta(){
 
 	std::ifstream leitor;
-	char c, temp[2], buffer[20],  portaEmChar[6];
+	char c, temp[2], buffer[20];
 	LeituraIPEPorta leitura;
 	bool registra;
 	
-	ipDoServidor = LOCALHOST;
-	itoa(PORTA_PADRAO,portaEmChar,10);
-	portaDoServidor = portaEmChar;
+	strcpy(ipDoServidor,LOCALHOST);
+	itoa(PORTA_PADRAO,portaDoServidor,10);
 	
 	leitor.open("config.txt");
 	
@@ -1419,7 +1415,7 @@ void ConfigIPEPorta(){
 	
 	strcpy(buffer,"");
 	leitura = SEM_LEITURA;
-	registra = true;
+	registra = false;
 	
 	while(leitor.get(c)){
 					
@@ -1433,27 +1429,29 @@ void ConfigIPEPorta(){
 				leitura = LEITURA_PORTA;
 			}
 			
-			registra = false;
 			strcpy(buffer,"");
 		}
 		
-		else if(leitura != SEM_LEITURA &&  c == '\"'){
+		else if(c == '\"'){
 			
-			if(registra == false) // Abre aspas
+			if(registra == false){ // Abre aspas
 				registra = true;
+				strcpy(buffer,"");
+			}
 			else{
 				registra = false; // Fecha aspas
 				
 				if(leitura == LEITURA_IP)
-					ipDoServidor = buffer;
+					strcpy(ipDoServidor,buffer);
 				else if(leitura == LEITURA_PORTA)
-					portaDoServidor = buffer;	
+					strcpy(portaDoServidor,buffer);	
 				strcpy(buffer,"");
+				leitura = SEM_LEITURA;
 			}
 			
 		}
 		
-		else if(registra == true && c != '\n'){
+		else if(c != '\n' && c != ' '){
 			temp[0] = c;
 			temp[1] = '\0';
 			strcat(buffer,temp);
