@@ -65,7 +65,7 @@ int gameSpeed;
 Radio radioSpeed, radioLider, radioModoIP;
 Rede minhaRede;
 char logDano[100];
-char ipDoServidor[13],portaDoServidor[7];
+char ipDoServidor[16],portaDoServidor[7];
 //==========================================================
 
 // Funções que usam variáveis globais
