@@ -245,6 +245,10 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, CampoJogo meuCampo){
 				
 				pSold->Remove(anterior);
 				outroJog->vida -= DANO_CHEGOU;
+				
+				if(outroJog->vida < 0)
+					outroJog->vida = 0;
+					
 				outroJog->lider.Furia();
 			}
 			else{
