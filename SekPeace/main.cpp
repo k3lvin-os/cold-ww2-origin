@@ -1216,7 +1216,6 @@ EscolhaEmMenu MenuCliente(){
 			/// Talvez seja interessante enviar uma mensagem
 			// para o servidor antes de fechar o socket
 			escolha = MENU_DOIS_JOG;
-			minhaRede.FechaSocketClient();
 			delay(150);
 		}
 		
@@ -1374,7 +1373,6 @@ EscolhaEmMenu MenuServidor(){
 		//===============Processamento do botão voltar =================
 		if(botaoVoltar.CheckClick() == true){
 			escolha = MENU_DOIS_JOG;
-			minhaRede.FechaSocketServer();
 			delay(100);
 		}
 		
