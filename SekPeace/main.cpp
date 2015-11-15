@@ -59,7 +59,7 @@ TDelay gameTime;
 Grade minhaGrd;
 EscolhaEmMenu escolhaMenu;
 Botao botaoUmJog, botaoDoisJog, botaoCredit, botaoJogar, botaoVoltar,
-botaoCliente, botaoServidor, botaoConexao, botaoOpcaoServ;
+botaoCliente, botaoServidor, botaoConexao, botaoOpcaoServ, botaoAlterar ;
 char *ladoMeuJog,*ladoOutroJog;
 int gameSpeed;
 Radio radioSpeed, radioLider, radioModoIP;
@@ -101,6 +101,7 @@ int main(){
 	botaoServidor.Init(BOTAO_SERV_X,BOTAO_SERV_Y ,5,4);
 	botaoConexao.Init(TILE_W * 17,TILE_H * 12 + 8, 5,1);
 	botaoOpcaoServ.Init(TILE_W * 11,TILE_H * 14,4,2);
+	botaoAlterar.Init(TILE_W * 27 + 16, TILE_H  * 11,4,1);
 	
 	//Inicialize os radio buttons que serão usados nos menus
 	radioSpeed.prox = NULL;
@@ -945,6 +946,7 @@ void BackgroundMenu(){
 EscolhaEmMenu MenuCliente(){
 	
 	EscolhaEmMenu escolha;
+	bool ipEPortaDefault;
 
 	
 	//==============================================
@@ -966,6 +968,7 @@ EscolhaEmMenu MenuCliente(){
 	
 	escolha = SEM_ESCOLHA;
 	
+	ipEPortaDefault = true;
 	while(escolha == SEM_ESCOLHA){
 		
 		minhaPg.Troca();
@@ -1001,6 +1004,17 @@ EscolhaEmMenu MenuCliente(){
 		// Mostra radio buttons
 		radioModoIP.MostraLista(&radioModoIP);
 		
+		if(	radioModoIP.RadioChecked(&radioModoIP)->label  == "Manual" && minhaRede.clienteConectado == false ){
+			botaoAlterar.Show();
+			outtextxy(botaoAlterar.x + 16,botaoAlterar.y + 20 , "ALTERAR");
+		}
+		
+		if(radioModoIP.RadioChecked(&radioModoIP)->label == "Automático" && ipEPortaDefault == false){
+			ipEPortaDefault = true;
+			ConfigIPEPorta();
+		}
+				
+		
 		// Processa e mostra texto
 		strcpy(ipEPorta,ipDoServidor);
 		strcat(ipEPorta,":");
@@ -1015,13 +1029,32 @@ EscolhaEmMenu MenuCliente(){
 		else
 			outtextxy(botaoConexao.x + 16,botaoConexao.y + 24,"DESCONECTAR");
 		
-		minhaGrd.Colocar();
 		minhaPg.Visual();
+		
+		if(radioModoIP.RadioChecked(&radioModoIP)->label  == "Manual" && minhaRede.clienteConectado == false){
+			if(botaoAlterar.CheckClick() == true){
+				
+				ipEPortaDefault = false;
+
+				setcolor(YELLOW);
+				outtextxy(botaoVoltar.x, botaoVoltar.y + 64, "Use o modo Console para alterar o IP e a Porta");
+				cout << "\n\n\n\nALTERAÇÃO MANUAL DE IP E PORTA\n";
+				cout << "Digite o IP do Servidor: ";
+				cin >> ipDoServidor;
+				cout << "\nDigite a Porta do Servidor: ";
+				cin >> portaDoServidor;
+				cout << "Configurou-se com sucesso as seguintes informações:\nIP do Servidor:" 
+				 << ipDoServidor << "\nPorta do Servidor: " << portaDoServidor << endl; 
+			}
+		}
 		
 		
 		//Verificação de entrada nos radio buttons				
 		if(minhaRede.clienteConectado == false)
 			radioModoIP.VerificaClick(&radioModoIP);
+			
+			
+
 		
 		//===========================================================================	
 		// Verificação de entrada no botão Jogar	
@@ -1177,13 +1210,7 @@ EscolhaEmMenu MenuCliente(){
 						}
 					}
 				} 		
-			} 
-			
-			else{
-				
-				// Mensagem de erro por falha na incialização do cliente
-			}
-				
+			} 		
 		}		
 		else if(botaoVoltar.CheckClick() == true){
 			/// Talvez seja interessante enviar uma mensagem
