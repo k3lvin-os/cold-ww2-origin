@@ -66,6 +66,7 @@ Radio radioSpeed, radioLider, radioModoIP;
 Rede minhaRede;
 char logDano[100];
 char ipDoServidor[16],portaDoServidor[7];
+Sprite telaPretaE,telaPretaD;
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -117,6 +118,7 @@ int main(){
 	// A velocidade do jogo ainda não foi definida
 	gameSpeed = NULL;
 	
+	// Busca o IP e Porta definidos por padrão em um .txt
 	ConfigIPEPorta();
 
 	
@@ -132,6 +134,16 @@ int main(){
 	// Processo de carregamento dos tiles do jogo
 	minhaPg.Troca();
 	minhaPg.Ativa();
+	
+	telaPretaE.Init(32,32,32 + TILE_W * 17, 32 + TILE_H * 18 );
+	telaPretaD.image = telaPretaE.image;
+	
+	telaPretaE.x = TILE_W * 1;
+	telaPretaE.y = TILE_H * 1;
+	telaPretaD.x = TILE_W * 22 ;
+	telaPretaD.y = TILE_H * 1;
+	
+	
 	meuCampo.Init();	
 	cleardevice();
 	minhaPg.Visual();
@@ -449,6 +461,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 	
 	cleardevice();
 	
+	
 	// Atribui times aos jogadores
 	meuJog.Init(ladoMeuJog,&gameSpeed);
 	outroJog.Init(ladoOutroJog,&gameSpeed);
@@ -490,36 +503,43 @@ void Gameplay(TipoGameplay tipoGameplay){
 		
 		// Mostra campo de jogo	
 		meuCampo.Mostrar();	
+			
+		if(meuJog.vida > 0){
+			
+			// Mostra gui do jogador
+			meuJog.MostraGUI(); 
+			
+			// Verifica o input do usuário com a GUI
+			meuJog.InputGUI ();
+					
+			// Executa procedimento de colocar torre
+			meuJog.ArrastaTorre(meuCampo);
+			
+			// Rotina de defesa da torre 
+			DefesaTorre(&meuJog,&outroJog,&eixoVsMeuJog,true);
 		
-		// Mostra gui do jogador
-		meuJog.MostraGUI(); 
-	
+			// Rotina de envio de soldados do Eixo contra o jogador
+			EnviaSold(&eixoVsMeuJog,&meuJog,meuCampo);	
+		} 
+		
+		else{
+			telaPretaE.Show();
+			setcolor(RED);
+			outtextxy(TILE_W * 7 + 16, TILE_H * 8, "GAMEOVER"); // Stalin
+			putimage(TILE_W * 8  + 16 ,TILE_H * 10,eixoVsMeuJog.lider.imagens[BRAVO],0);
+		}
+		
+		if(outroJog.vida > 0){
+			
+			// Rotina de envio de soldados do jogador
+			EnviaSold(&meuJog,&outroJog,meuCampo);
+		}	
+		
 		// Verifica se é hora de enviar uma onda de soldados do Eixo
 		onda = gameTime.SoldOnda();	
 				
 		// Verifica o tipo de envio de soldados do Eixo
 		ondaVsMeuJog.Verifica(onda,meuCampo);
-
-		// Avisa momentos importantes para o jogador
-		Avisa(gameTime, eixoVsMeuJog.lider);
-			
-		// Verifica o input do usuário com a GUI
-		meuJog.InputGUI ();
-		
-		// Executa procedimento de colocar torre
-		meuJog.ArrastaTorre(meuCampo);
-						
-		// Rotina de defesa da torre 
-		DefesaTorre(&meuJog,&outroJog,&eixoVsMeuJog,true);
-						
-		// Rotina de envio de soldados o jogador
-		EnviaSold(&meuJog,&outroJog,meuCampo);
-		
-		// Rotina de envio de soldados do Eixo contra o jogador
-		EnviaSold(&eixoVsMeuJog,&meuJog,meuCampo);
-		
-		// Mostra os lideres
-		MostraLideres(&meuJog.lider,&outroJog.lider);
 		
 		// Simula a IA no Singleplayer 
 		if(tipoGameplay == SINGLEPLAYER)
@@ -534,13 +554,21 @@ void Gameplay(TipoGameplay tipoGameplay){
 		// Simula o comportamento do outro jogador	
 		SimulaOutroJog(tipoGameplay,&ondaVsOutroJog,logAtira);
 		
+		if(outroJog.vida  == 0)
+			meuJog.outroJogMorto = true;
+		
 		// Limpa campo de carregamento de imagens
 		meuCampo.LimpaD();
+			
+		// Avisa momentos importantes para o jogador
+		Avisa(gameTime, eixoVsMeuJog.lider);
+					
+		// Mostra os lideres
+		MostraLideres(&meuJog.lider,&outroJog.lider);
 							
 		//Deixa a página visual
 		minhaPg.Visual();
 
-	
 		// Delay de FPS
 		delay(FPS);	
 	}
@@ -714,6 +742,22 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 	char temp[3];
 	Soldado *danoSoldado0, *alvo;
 	
+	if(meuJog.vida > 0){
+		
+		// Envia soldados do jogador adversário contra o jogador atual
+		EnviaSold(&outroJog,&meuJog,meuCampo);
+	}
+
+	
+	if(outroJog.vida <= 0){
+		telaPretaD.Show();
+		setcolor(RED);
+		outtextxy(TILE_W * 28 + 16, TILE_H * 8, "GAMEOVER"); // Roosevelt
+		putimage(TILE_W * 29 + 16 ,TILE_H * 10,eixoVsOutroJog.lider.imagens[BRAVO],0);
+		return;
+		
+	}
+	
 	if(outroJog.qtdSoldEspera > 0){
 		
 		if(outroJog.envioSold.PassouDelay(ESPERA_DELAY) == true){
@@ -736,8 +780,7 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 	// Verifica a a onda atual para o envio de soldados do Eixo
 	ondaVsOutroJog->Verifica(onda,meuCampo);
 	
-	// Envia soldados do jogador adversário contra o jogador atual
-	EnviaSold(&outroJog,&meuJog,meuCampo);
+
 	
 	// Envia soldados nazistas contra o jogador adversário
 	EnviaSold(&eixoVsOutroJog,&outroJog,meuCampo);
