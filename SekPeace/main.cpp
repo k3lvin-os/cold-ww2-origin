@@ -83,6 +83,7 @@ void RecebePacoteJogo();
 void SimulaOutroJog(TipoGameplay tipoGameplay,OndaEixo *ondaVsOutroJog,char* logAtira);
 void EnviaPacoteJogo();
 void ConfigIPEPorta();
+void TelaGameOver(char *lado);
 
 int main(){
 	
@@ -531,10 +532,9 @@ void Gameplay(TipoGameplay tipoGameplay){
 		} 
 		
 		else{
-			telaPretaE.Show();
-			setcolor(RED);
-			outtextxy(TILE_W * 7 + 16, TILE_H * 8, "GAMEOVER"); // Stalin
-			putimage(TILE_W * 8  + 16 ,TILE_H * 10,eixoVsMeuJog.lider.imagens[BRAVO],0);
+			
+			TelaGameOver(meuJog.lado);	
+
 		}
 		
 		if(outroJog.vida > 0){
@@ -846,10 +846,7 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 		
 	
 	} else {
-		telaPretaD.Show();
-		setcolor(RED);
-		outtextxy(TILE_W * 28 + 16, TILE_H * 8, "GAMEOVER"); // Roosevelt
-		putimage(TILE_W * 29 + 16 ,TILE_H * 10,eixoVsOutroJog.lider.imagens[BRAVO],0);
+		TelaGameOver(outroJog.lado);
 	}
 	
 
@@ -1544,3 +1541,26 @@ void ConfigIPEPorta(){
 	leitor.close();
 
 }
+
+// Mostra uma tela de Gameover no lado passado como parâmetro
+void TelaGameOver(char *lado){
+	
+	if(lado == LADO1){
+		telaPretaD.Show();
+		setcolor(RED);
+		outtextxy(TILE_W * 28 + 16, TILE_H * 8, "GAMEOVER"); 
+		putimage(TILE_W * 29 + 16 ,TILE_H * 10,eixoVsOutroJog.lider.imagens[BRAVO],0);			
+	
+	} 
+	
+	else if(lado == LADO2){
+		
+		telaPretaE.Show();
+		setcolor(RED);
+		outtextxy(TILE_W * 7 + 16, TILE_H * 8, "GAMEOVER"); 
+		putimage(TILE_W * 8  + 16 ,TILE_H * 10,eixoVsMeuJog.lider.imagens[BRAVO],0);
+			
+	}
+	
+}
+
