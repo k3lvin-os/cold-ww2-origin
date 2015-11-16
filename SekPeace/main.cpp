@@ -39,7 +39,7 @@ using namespace std;
 
 
 /*Funções que utilizam as funções dos arquivos header*/
-void EnviaSold(Jogador *meuJog, Jogador *outroJog, Cenario gerenciaCenario);
+void EnviaSold(Jogador *meuJog, Jogador *outroJog, Cenario cenario);
 void Avisa(TDelay gameTime, Lider Hitler);
 void MostraLideres(Lider *meuLider, Lider *outroLider);
 void Aviso(int posX, int posY, char * msg, int color, Lider hitler);
@@ -51,7 +51,7 @@ bool SemTorrePerto(Torre *torre0, int tileCimaX,int tileCimaY);
 // Variáveis globais
 //======================================================
 Jogador meuJog,  outroJog, eixoVsMeuJog,eixoVsOutroJog;
-Cenario gerenciaCenario;
+Cenario cenario;
 char onda;			// Ceritifique-se que essas variáveis
 Pagina minhaPg;		// são inicializadas no começo de todas
 bool gameLoop;		// funções em que são utilzadas
@@ -66,7 +66,7 @@ Radio radioSpeed, radioLider, radioModoIP;
 Rede minhaRede;
 char logDano[100];
 char ipDoServidor[16],portaDoServidor[7];
-Sprite telaPretaE,telaPretaD;
+Sprite telaPretaE,telaPretaD, campoJogo, menu, limpa2Tiles;
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -121,7 +121,6 @@ int main(){
 	// Busca o IP e Porta definidos por padrão em um .txt
 	ConfigIPEPorta();
 
-	
 	// Fornece uma seed para o gerador de números pseudoaleatórios
 	srand(time(NULL));
 	
@@ -144,8 +143,21 @@ int main(){
 	telaPretaD.y = TILE_H * 1;
 	
 	
-	gerenciaCenario.Init();	
+	cenario.Init();	
+	
 	cleardevice();
+	cenario.PosLoad("menu.txt");	
+	cenario.Mostrar();
+	menu.Init(0,0,TELA_W,TELA_H);
+	
+		
+	cleardevice();	
+	cenario.PosLoad("mapa05.txt");
+	cenario.Mostrar();
+	limpa2Tiles.Init(0,0,32,64);
+	campoJogo.Init(0,0,TELA_W,TELA_H);
+
+
 	minhaPg.Visual();
 	// ======= Fim do processamento ============
 	
@@ -228,7 +240,7 @@ EscolhaEmMenu MenuDoisJog(){
 
 
 // Rotina de envio de soldados para outro jogador 
-void EnviaSold(Jogador *meuJog, Jogador *outroJog, Cenario gerenciaCenario){
+void EnviaSold(Jogador *meuJog, Jogador *outroJog, Cenario cenario){
 
 	Soldado *novoIni;
 	Soldado *pSold, *anterior;
@@ -243,7 +255,7 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, Cenario gerenciaCenario){
 	
 		if(pSold->vida > 0 && pSold->chegou != true){
 			
-			pSold->IA(gerenciaCenario, tempoEspera);
+			pSold->IA(cenario, tempoEspera);
 			pSold->Show();
 			meuHP.Show(pSold->x,pSold->y,pSold->vida,"soldado");
 			
@@ -450,16 +462,16 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 void Gameplay(TipoGameplay tipoGameplay){
 	
 	char *logAtira;
-	
 	OndaEixo ondaVsMeuJog, ondaVsOutroJog;
 	
-	minhaPg.Troca();	// Troca a página atual
-
+	// Troca a página atual
+	minhaPg.Troca();	
+	
 	// Trabalha com a página nos "bastidores"
 	minhaPg.Ativa();
 	
+	// Limpa a tela
 	cleardevice();
-	
 	
 	// Atribui times aos jogadores
 	meuJog.Init(ladoMeuJog,&gameSpeed);
@@ -471,11 +483,8 @@ void Gameplay(TipoGameplay tipoGameplay){
 	ondaVsMeuJog.Init(&eixoVsMeuJog,&gameSpeed,meuJog.lado);
 	ondaVsOutroJog.Init(&eixoVsOutroJog,&gameSpeed,outroJog.lado);
 	
-	// Inicialização do campo de jogo a partir de um arquivo de coordenadas
-	gerenciaCenario.PosLoad("mapa05.txt");
-	
-	// Mostra campo de jogo
-	gerenciaCenario.Mostrar();
+	// Mostra o campo de jogo (antes do gameplay começar)
+	campoJogo.Show();
 	
 	// Deixa a página visual
 	minhaPg.Visual();
@@ -501,7 +510,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 		cleardevice();
 		
 		// Mostra campo de jogo	
-		gerenciaCenario.Mostrar();	
+		campoJogo.Show();	
 			
 		if(meuJog.vida > 0){
 			
@@ -512,13 +521,13 @@ void Gameplay(TipoGameplay tipoGameplay){
 			meuJog.InputGUI ();
 					
 			// Executa procedimento de colocar torre
-			meuJog.ArrastaTorre(gerenciaCenario);
+			meuJog.ArrastaTorre(cenario);
 			
 			// Rotina de defesa da torre 
 			DefesaTorre(&meuJog,&outroJog,&eixoVsMeuJog,true);
 		
 			// Rotina de envio de soldados do Eixo contra o jogador
-			EnviaSold(&eixoVsMeuJog,&meuJog,gerenciaCenario);	
+			EnviaSold(&eixoVsMeuJog,&meuJog,cenario);	
 		} 
 		
 		else{
@@ -531,14 +540,14 @@ void Gameplay(TipoGameplay tipoGameplay){
 		if(outroJog.vida > 0){
 			
 			// Rotina de envio de soldados do jogador
-			EnviaSold(&meuJog,&outroJog,gerenciaCenario);
+			EnviaSold(&meuJog,&outroJog,cenario);
 		}	
 		
 		// Verifica se é hora de enviar uma onda de soldados do Eixo
 		onda = gameTime.SoldOnda();	
 				
 		// Verifica o tipo de envio de soldados do Eixo
-		ondaVsMeuJog.Verifica(onda,gerenciaCenario);
+		ondaVsMeuJog.Verifica(onda,cenario);
 		
 		// Simula a IA no Singleplayer 
 		if(tipoGameplay == SINGLEPLAYER)
@@ -557,7 +566,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 			meuJog.outroJogMorto = true;
 		
 		// Limpa campo de carregamento de imagens
-		gerenciaCenario.LimpaD();
+		limpa2Tiles.Show();
 			
 		// Avisa momentos importantes para o jogador
 		Avisa(gameTime, eixoVsMeuJog.lider);
@@ -572,7 +581,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 		delay(FPS);	
 	}
 	// Libera a memória
-	gerenciaCenario.LimpaMem();
+	cenario.LimpaMem();
 	
 	//Limpa memória alocada para os soldados
 	meuJog.soldado0->LimpaNo(meuJog.soldado0);
@@ -744,20 +753,13 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 	if(meuJog.vida > 0){
 		
 		// Envia soldados do jogador adversário contra o jogador atual
-		EnviaSold(&outroJog,&meuJog,gerenciaCenario);
+		EnviaSold(&outroJog,&meuJog,cenario);
 	}
 
 	
-	if(outroJog.vida <= 0){
-		telaPretaD.Show();
-		setcolor(RED);
-		outtextxy(TILE_W * 28 + 16, TILE_H * 8, "GAMEOVER"); // Roosevelt
-		putimage(TILE_W * 29 + 16 ,TILE_H * 10,eixoVsOutroJog.lider.imagens[BRAVO],0);
-		return;
+	if(outroJog.vida > 0){
 		
-	}
-	
-	if(outroJog.qtdSoldEspera > 0){
+			if(outroJog.qtdSoldEspera > 0){
 		
 		if(outroJog.envioSold.PassouDelay(ESPERA_DELAY) == true){
 			outroJog.envioSold.Atualiza();
@@ -777,12 +779,12 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 	}
 	
 	// Verifica a a onda atual para o envio de soldados do Eixo
-	ondaVsOutroJog->Verifica(onda,gerenciaCenario);
+	ondaVsOutroJog->Verifica(onda,cenario);
 	
 
 	
 	// Envia soldados nazistas contra o jogador adversário
-	EnviaSold(&eixoVsOutroJog,&outroJog,gerenciaCenario);
+	EnviaSold(&eixoVsOutroJog,&outroJog,cenario);
 	
 	if(tipoGameplay == SINGLEPLAYER)
 		DefesaTorre(&outroJog,&meuJog,&eixoVsOutroJog,true);
@@ -841,6 +843,16 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 		}
 		
 	}
+		
+	
+	} else {
+		telaPretaD.Show();
+		setcolor(RED);
+		outtextxy(TILE_W * 28 + 16, TILE_H * 8, "GAMEOVER"); // Roosevelt
+		putimage(TILE_W * 29 + 16 ,TILE_H * 10,eixoVsOutroJog.lider.imagens[BRAVO],0);
+	}
+	
+
 	
 }
 
@@ -968,11 +980,10 @@ void BackgroundMenu(){
 	settextjustify(LEFT_TEXT,CENTER_TEXT);
 	// Modifica texto para o tamanho do logo
 	settextstyle(BOLD_FONT,HORIZ_DIR,7);
-	
-	// Carrega o menu de jogo (imagem de fundo)
-	gerenciaCenario.PosLoad("menu.txt"); 
 								
-	gerenciaCenario.Mostrar();		 
+	// Mostra o background do menu
+	menu.Show();
+			 
 	 
 	// Logo do jogo
 	setcolor(GREEN);
