@@ -42,7 +42,6 @@ using namespace std;
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, Cenario cenario);
 void Avisa(TDelay gameTime, Lider Hitler);
 void MostraLideres(Lider *meuLider, Lider *outroLider);
-void Aviso(int posX, int posY, char * msg, int color, Lider hitler);
 void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA);
 bool SemTorrePerto(Torre *torre0, int tileCimaX,int tileCimaY);
 
@@ -297,7 +296,6 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	int gTimeInt, timer;
 	char timerChar[3];
 	
-	settextstyle(BOLD_FONT,HORIZ_DIR,5);
 	setcolor(YELLOW);
 	gTimeInt = gameTime.GameTime();
 	timer = 90 - gTimeInt;
@@ -307,31 +305,20 @@ void Avisa(TDelay gameTime, Lider Hitler){
 		setcolor(YELLOW);
 	else
 		setcolor(LIGHTRED);
-
-	outtextxy(TILE_W * 19 + 8,TILE_H * 1,timerChar);
-	
-	
-	
-	/*if(gTimeInt >= BEGIN && gTimeInt <= BEGIN + 2)
-		Aviso(550,10,"INICIO DA BATALHA",YELLOW,Hitler);
 		
-	else if (gTimeInt >= ONDA1 && gTimeInt <= ONDA1 + 2)
-		Aviso(480,30,"Cuidado! Aí vem o primeiro soldado do Eixo", YELLOW,Hitler);
-				
-	else if(gTimeInt >= ONDA2 && gTimeInt <= ONDA2 + 2)
-		Aviso(480,30,"Faltam 3 m para o ataque final do EIXO",YELLOW,Hitler);
+	settextstyle(BOLD_FONT,HORIZ_DIR,5);
 	
-	else if(gTimeInt >= ONDA5 && gTimeInt <= ONDA5 + 2)
-		Aviso(480,30,"Faltam 2 m para o ataque final do EIXO",YELLOW,Hitler);
+	if(gTimeInt >= BEGIN && gTimeInt <= BEGIN + 1)
+		outtextxy(TILE_W * 14 + 8,TILE_H * 1,"INICIO DA BATALHA");
+	else if(gTimeInt >= ONDA1 && gTimeInt <= ONDA1 + 1)
+		outtextxy(TILE_W * 19 + 8,TILE_H * 1,"Cuidado! Lá vem o primeiro soldado nazista");
+	else if(gTimeInt >= END)
+		outtextxy(TILE_W * 19 + 8,TILE_H * 1,"FIM DA BATALHA");
+	else
+		outtextxy(TILE_W * 19 + 8,TILE_H * 1,timerChar);
+	
 
-	else if(gTimeInt >= ONDA8 && gTimeInt <= ONDA8 + 2)
-		Aviso(480,30,"Falta 1 m para o ataque final do EIXO",YELLOW,Hitler);
 
-	else if(gTimeInt >= ONDA10 && gTimeInt <= ONDA10 + 2)
-		Aviso(480,30,"É hora do ataque final do EIXO...",YELLOW,Hitler);
-
-	else if(gTimeInt >= END && gTimeInt <= END + 2)
-		Aviso(590,10,"Fim de Jogo.", YELLOW, Hitler);*/
 }
 
 /*Busca uma imagem com as informações passadas por parâmetro*/
@@ -386,14 +373,6 @@ void* GetImage(char path[], int width, int height){
 	return pImg;
 }	
 
-
-/*Texto e outros recursos gráficos mostrados pela função Avisa*/
-void Aviso(int posX, int posY, char * msg, int color, Lider hitler){
-	settextjustify(LEFT_TEXT,TOP_TEXT);
-	hitler.Show();
-	setcolor(color);	
-	outtextxy(posX,posY,msg);
-}
 
 /*Procedimento de defesa da torre*/
 void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira){
