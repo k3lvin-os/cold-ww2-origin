@@ -293,11 +293,26 @@ void EnviaSold(Jogador *meuJog, Jogador *outroJog, Cenario cenario){
 
 // Mostra uma mensagem conforme o tempo de jogo
 void Avisa(TDelay gameTime, Lider Hitler){
-	int gTimeInt;
-	gTimeInt = gameTime.GameTime();
 	
+	int gTimeInt, timer;
+	char timerChar[3];
+	
+	settextstyle(BOLD_FONT,HORIZ_DIR,5);
 	setcolor(YELLOW);
-	if(gTimeInt >= BEGIN && gTimeInt <= BEGIN + 2)
+	gTimeInt = gameTime.GameTime();
+	timer = 90 - gTimeInt;
+	itoa(timer,timerChar,10);
+	
+	if(timer > 30)
+		setcolor(YELLOW);
+	else
+		setcolor(LIGHTRED);
+
+	outtextxy(TILE_W * 19 + 8,TILE_H * 1,timerChar);
+	
+	
+	
+	/*if(gTimeInt >= BEGIN && gTimeInt <= BEGIN + 2)
 		Aviso(550,10,"INICIO DA BATALHA",YELLOW,Hitler);
 		
 	else if (gTimeInt >= ONDA1 && gTimeInt <= ONDA1 + 2)
@@ -316,7 +331,7 @@ void Avisa(TDelay gameTime, Lider Hitler){
 		Aviso(480,30,"É hora do ataque final do EIXO...",YELLOW,Hitler);
 
 	else if(gTimeInt >= END && gTimeInt <= END + 2)
-		Aviso(590,10,"Fim de Jogo.", YELLOW, Hitler);
+		Aviso(590,10,"Fim de Jogo.", YELLOW, Hitler);*/
 }
 
 /*Busca uma imagem com as informações passadas por parâmetro*/
