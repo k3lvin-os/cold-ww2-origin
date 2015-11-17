@@ -306,16 +306,53 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	else
 		setcolor(LIGHTRED);
 		
-	settextstyle(BOLD_FONT,HORIZ_DIR,5);
+	settextstyle(BOLD_FONT,HORIZ_DIR,3);
 	
-	if(gTimeInt >= BEGIN && gTimeInt <= BEGIN + 1)
-		outtextxy(TILE_W * 14 + 8,TILE_H * 1,"INICIO DA BATALHA");
-	else if(gTimeInt >= ONDA1 && gTimeInt <= ONDA1 + 1)
-		outtextxy(TILE_W * 19 + 8,TILE_H * 1,"Cuidado! Lá vem o primeiro soldado nazista");
-	else if(gTimeInt >= END)
-		outtextxy(TILE_W * 19 + 8,TILE_H * 1,"FIM DA BATALHA");
-	else
+	
+	if(gTimeInt >= BEGIN && gTimeInt <= BEGIN + 1){
+		outtextxy(TILE_W * 16 + 8,TILE_H * 1,"INICIO DA BATALHA");
+		if(gTimeInt == BEGIN)
+			putimage(TILE_W * 19, TILE_H * 2,Hitler.imagens[NORMAL],COPY_PUT);
+		else
+			putimage(TILE_W * 19 , TILE_H * 2,Hitler.imagens[BRAVO],COPY_PUT);	
+	}
+		
+	else if(gTimeInt >= ONDA1 && gTimeInt <= ONDA1 + 1){
+		outtextxy(TILE_W * 11 + 8,TILE_H * 1,"Cuidado! Os nazistas estão atacando!");
+			putimage(TILE_W * 19 , TILE_H * 2,Hitler.imagens[BRAVO],COPY_PUT);
+	}
+	else if(gTimeInt >= ONDA3 && gTimeInt <= ONDA3 + 1){
+		
+		outtextxy(TILE_W * 11 + 8,TILE_H * 1,"Falta um minuto para eliminarmos Hitler!!!");
+		if(gTimeInt == ONDA3)
+			putimage(TILE_W * 19, TILE_H * 2,Hitler.imagens[NORMAL],COPY_PUT);
+		else
+			putimage(TILE_W * 19 , TILE_H * 2,Hitler.imagens[BRAVO],COPY_PUT);	
+	}
+	
+	else if(gTimeInt >= ONDA5 && gTimeInt <= ONDA5 + 1){
+		
+		outtextxy(TILE_W * 11 + 8,TILE_H * 1,"Sobreviva ao ataque final dos nazistas");
+	}
+	
+	else if(gTimeInt >= END){
+		outtextxy(TILE_W * 16 + 8,TILE_H * 1,"FIM DA BATALHA");
+		putimage(TILE_W * 19, TILE_H * 2,Hitler.imagens[MORTO],COPY_PUT);
+	}
+	
+	else{
+		settextstyle(BOLD_FONT,HORIZ_DIR,3);
 		outtextxy(TILE_W * 19 + 8,TILE_H * 1,timerChar);
+
+	}
+	
+	if(timer <= 30 && timer > 0){
+		putimage(TILE_W * 19, TILE_H * 2,Hitler.imagens[BRAVO],COPY_PUT);
+	}
+		
+
+		
+	settextstyle(BOLD_FONT,HORIZ_DIR,1);
 	
 
 
