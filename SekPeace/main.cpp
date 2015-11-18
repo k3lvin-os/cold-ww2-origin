@@ -13,7 +13,6 @@
 #pragma comment (lib, "Ws2_32.lib")
 
 // Funções que NÃO utilizam as estruturas dos arquivos header
-void Carrega(void *arrayImg, void *arrayMask, char *rPath);
 void GetImage(void** pImg, char path[], int width, int height);
 void* GetImage(char path[], int width, int height);
 
@@ -38,7 +37,7 @@ using namespace std;
 
 
 
-/*Funções que utilizam as funções dos arquivos header*/
+/*Funções que utilizam conteúdo dos arquivos header*/
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, Cenario cenario);
 void Avisa(TDelay gameTime, Lider Hitler);
 void MostraLideres(Lider *meuLider, Lider *outroLider);
@@ -84,6 +83,8 @@ void EnviaPacoteJogo();
 void ConfigIPEPorta();
 void TelaGameOver(char *lado);
 
+
+//============================================================================================
 int main(){
 	
 	// Inicializa biblioteca de conexões em rede
@@ -205,7 +206,7 @@ int main(){
 	return 0;	
 }
 
-
+//============================================================================================
 // Menu de dois jogadores
 EscolhaEmMenu MenuDoisJog(){
 	
@@ -244,7 +245,7 @@ EscolhaEmMenu MenuDoisJog(){
 }
 
 
-
+//============================================================================================
 // Rotina de envio de soldados para outro jogador 
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, Cenario cenario){
 
@@ -381,6 +382,17 @@ void GetImage(void** pImg, char path[], int width, int height){
 }
 
 
+/*Busca e retorna uma imagem com as informações passadas por parâmetro*/
+void* GetImage(char path[], int width, int height){
+		
+	void *pImg;
+	readimagefile(path,0,0,width,height); 
+	int size = imagesize(0,0,width,height);
+	pImg = malloc(size);
+	getimage(0,0,width,height,pImg); 
+	return pImg;
+}	
+
 /*Mostra os líders/ avatares dos jogadores*/
 void MostraLideres(Lider *meuLider, Lider *outroLider){
 	
@@ -405,16 +417,6 @@ void MostraLideres(Lider *meuLider, Lider *outroLider){
 	}
 }
 
-/*Busca e retorna uma imagem com as informações passadas por parâmetro*/
-void* GetImage(char path[], int width, int height){
-		
-	void *pImg;
-	readimagefile(path,0,0,width,height); 
-	int size = imagesize(0,0,width,height);
-	pImg = malloc(size);
-	getimage(0,0,width,height,pImg); 
-	return pImg;
-}	
 
 
 /*Procedimento de defesa da torre*/
@@ -639,6 +641,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 	eixoVsOutroJog.torre0->LimpaNo(eixoVsOutroJog.torre0);
 }
 
+//============================================================================================
 // Envia dados no modo multiplayer 
 void EnviaPacoteJogo(){
 	
@@ -690,12 +693,12 @@ void EnviaPacoteJogo(){
 	}		
 }
 
-
+//============================================================================================
 // Simula a IA no modo Singleplayer
 void IAOutroJog(){
 	
 }
-
+//============================================================================================
 // Recebe dados no modo multiplayyer
 void RecebePacoteJogo(){
 	
@@ -939,7 +942,7 @@ EscolhaEmMenu Menu(){
 	return escolha;
 }
 
-
+//============================================================================================
 // Menu de um jogador
 EscolhaEmMenu MenuUmJog(){
 	
@@ -1013,6 +1016,7 @@ EscolhaEmMenu MenuUmJog(){
 	return escolha;
 }
 
+//============================================================================================
 // Desenha o visual básico do menu de jogo
 void BackgroundMenu(){
 	
@@ -1038,7 +1042,7 @@ void BackgroundMenu(){
 	
 }
 
-
+//============================================================================================
 // Menu do cliente
 EscolhaEmMenu MenuCliente(){
 	
@@ -1322,6 +1326,7 @@ EscolhaEmMenu MenuCliente(){
 
 }
 
+//============================================================================================
 EscolhaEmMenu MenuServidor(){
 	
 	char pacote[30], tempGmSpeed[2], *tempLider;
@@ -1517,7 +1522,7 @@ EscolhaEmMenu MenuServidor(){
 	return escolha;	
 }
 
-
+//============================================================================================
 // Carrrega o IP e a porta definida no arquivo config.txt
 void ConfigIPEPorta(){
 
@@ -1585,6 +1590,8 @@ void ConfigIPEPorta(){
 
 }
 
+
+//============================================================================================
 // Mostra uma tela de Gameover no lado passado como parâmetro
 void TelaGameOver(char *lado){
 	
