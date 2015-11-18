@@ -192,9 +192,15 @@ int main(){
 				break;
 		}	
 	}
+		
 	
 	minhaRede.EncerraWinSock();
+
+	// Libera a memória
+	cenario.LimpaMem();
 	radioSpeed.LimpaNo(&radioSpeed);
+	radioLider.LimpaNo(&radioLider);
+	radioModoIP.LimpaNo(&radioModoIP);
 	closegraph();
 	return 0;	
 }
@@ -318,7 +324,7 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	}
 		
 	else if(gTimeInt >= ONDA1 && gTimeInt <= ONDA1 + 1){
-		outtextxy(TILE_W * 11 + 8,TILE_H * 1,"Cuidado! Os nazistas estão atacando!");
+		outtextxy(TILE_W * 12,TILE_H * 1,"Cuidado! Os nazistas estão atacando!");
 			putimage(TILE_W * 19 , TILE_H * 2,Hitler.imagens[BRAVO],COPY_PUT);
 	}
 	else if(gTimeInt >= ONDA3 && gTimeInt <= ONDA3 + 1){
@@ -342,7 +348,7 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	
 	else{
 		settextstyle(BOLD_FONT,HORIZ_DIR,3);
-		outtextxy(TILE_W * 19 + 8,TILE_H * 1,timerChar);
+		outtextxy(TILE_W * 19 + 16,TILE_H * 1,timerChar);
 
 	}
 	
@@ -526,12 +532,12 @@ void Gameplay(TipoGameplay tipoGameplay){
 	
 	// Música do gameplay 
 	PlaySound("../../Assets/Music/gameplay.wav",NULL,SND_LOOP | SND_ASYNC);	
-		
-	// Define o loop de jogo
-	gameLoop = true;
+
 			
 	//Loop do jogo
-	while(gameLoop == true){
+	do{
+		
+
 	
 		
 		// Troca e ativa uma nova página para modificações
@@ -610,10 +616,16 @@ void Gameplay(TipoGameplay tipoGameplay){
 
 		// Delay de FPS
 		delay(FPS);	
-	}
-	// Libera a memória
-	cenario.LimpaMem();
+	} while((onda != 'F') && (meuJog.vida > 0 || outroJog.vida > 0));
 	
+	PlaySound(NULL, NULL, 0); 
+	if(meuJog.vida <= 0 && outroJog.vida <= 0){
+		telaPretaD.Show();
+		telaPretaE.Show();
+	}
+	delay(2000);
+	
+
 	//Limpa memória alocada para os soldados
 	meuJog.soldado0->LimpaNo(meuJog.soldado0);
 	outroJog.soldado0->LimpaNo(outroJog.soldado0);
