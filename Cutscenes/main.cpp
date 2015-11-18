@@ -41,8 +41,16 @@ int main(){
 	
 	Cutscenes cutscenes;
 	int opcao;
+	Pagina minhaPg;
+	
 	initwindow(TELA_W,TELA_H,"Seek Of Peace: Cold WW2");
 	
+	minhaPg.Init();
+	minhaPg.Troca();
+	minhaPg.Ativa();
+	cutscenes.Carrega();
+	cleardevice();
+	minhaPg.Visual();
 	do{
 		cout << "\nCUTSCENES DO JOGO\nDigite uma das opções a seguir"
 		<< endl << "1 - Introdução" << endl << "2 - Final dos Nazistas" <<
