@@ -57,6 +57,7 @@ int main(){
 		endl << "3 - Final dos EUA" << endl << "4 - Final da URSS" <<
 		endl << "5 -Final da Guerra Fria" << endl << "6 - Sair\nOpcao: ";
 		
+		outtextxy(TELA_W /2 - 64 ,TELA_H /2,"Use o console para selecionar uma cutscene");
 		cin >> opcao;
 		
 		if(opcao == 1){

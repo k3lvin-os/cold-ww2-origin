@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=3
 CompilerSettings=0000000100000000001000000
-UnitCount=17
+UnitCount=18
 
 [VersionInfo]
 Major=1
@@ -211,7 +211,14 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit18]
-FileName=..\..\header\cenario.h
+FileName=..\..\header\cutscenes.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
 
 [Unit2]
 FileName=..\..\header\grade.h

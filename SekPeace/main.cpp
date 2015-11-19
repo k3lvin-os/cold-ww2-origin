@@ -33,6 +33,7 @@ void* GetImage(char path[], int width, int height);
 #include "..\..\header\botao.h"
 #include "..\..\header\barra_vida.h"
 #include "..\..\header\rede.h"
+#include "..\..\header\cutscenes.h"
 using namespace std;
 
 
@@ -50,9 +51,8 @@ bool SemTorrePerto(Torre *torre0, int tileCimaX,int tileCimaY);
 //======================================================
 Jogador meuJog,  outroJog, eixoVsMeuJog,eixoVsOutroJog;
 Cenario cenario;
-char onda;			// Ceritifique-se que essas variáveis
-Pagina minhaPg;		// são inicializadas no começo de todas
-bool gameLoop;		// funções em que são utilzadas
+char onda;			
+Pagina minhaPg;		
 TDelay gameTime;
 Grade minhaGrd;
 EscolhaEmMenu escolhaMenu;
@@ -65,6 +65,7 @@ Rede minhaRede;
 char logDano[100];
 char ipDoServidor[16],portaDoServidor[7];
 Sprite telaPretaE,telaPretaD, campoJogo, menu, limpa2Tiles;
+Cutscenes cutscenes;
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -145,6 +146,7 @@ int main(){
 	
 	
 	cenario.Init();	
+	cutscenes.Carrega();
 	
 	cleardevice();
 	cenario.PosLoad("menu.txt");	
@@ -503,6 +505,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 	
 	char *logAtira;
 	OndaEixo ondaVsMeuJog, ondaVsOutroJog;
+	Final meuFinal;
 	
 	// Troca a página atual
 	minhaPg.Troca();	
@@ -621,11 +624,16 @@ void Gameplay(TipoGameplay tipoGameplay){
 	} while((onda != 'F') && (meuJog.vida > 0 || outroJog.vida > 0));
 	
 	PlaySound(NULL, NULL, 0); 
+	
+	
 	if(meuJog.vida <= 0 && outroJog.vida <= 0){
 		telaPretaD.Show();
 		telaPretaE.Show();
+		meuFinal = FINAL_NAZI;
 	}
 	delay(2000);
+	cutscenes.MostraFinal(meuFinal);
+
 	
 
 	//Limpa memória alocada para os soldados
