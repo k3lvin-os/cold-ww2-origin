@@ -69,17 +69,16 @@ int main(){
 		}
 		
 		else if(opcao == 3){
-			cout << "\nEm desenvolvimento\n";
+			cutscenes.MostraFinal(FINAL_EUA);
 		}
 		
 		else if(opcao == 4){
-			cout << "\nEm desenvolvimento\n";
+			cutscenes.MostraFinal(FINAL_URSS);
 		}
 		
 		
 		else if(opcao == 5){
-			cout << "\nEm desenvolvimento\n";
-			
+			cutscenes.MostraFinal(FINAL_GUERRAFRIA);	
 		}
 		
 		else if(opcao != 6 ){

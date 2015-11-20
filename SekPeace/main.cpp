@@ -631,8 +631,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 	
 	PlaySound(NULL, NULL, 0); 
 	
-	minhaPg.Troca();
-	minhaPg.Ativa();
+
 	if(onda == 'F'){
 		if(meuJog.vida <= 0 && meuJog.lado == LADOEUA){
 			telaPretaD.Show();
@@ -655,7 +654,6 @@ void Gameplay(TipoGameplay tipoGameplay){
 		telaPretaE.Show();
 		meuFinal = FINAL_NAZI;	
 	}
-	MostraLideres(&meuJog.lider,&outroJog.lider);
 	minhaPg.Visual();
 
 	delay(2000);
