@@ -654,8 +654,9 @@ void Gameplay(TipoGameplay tipoGameplay){
 		telaPretaE.Show();
 		meuFinal = FINAL_NAZI;	
 	}
-	minhaPg.Visual();
-
+	Avisa(gameTime, eixoVsMeuJog.lider);
+	MostraLideres(&meuJog.lider,&outroJog.lider);
+	
 	delay(2000);
 	cutscenes.MostraFinal(meuFinal);
 
