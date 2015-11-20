@@ -525,8 +525,8 @@ void Gameplay(TipoGameplay tipoGameplay){
 	// Atribui times aos jogadores
 	meuJog.Init(ladoMeuJog,&gameSpeed);
 	outroJog.Init(ladoOutroJog,&gameSpeed);
-	eixoVsMeuJog.Init(LADO3,&gameSpeed);
-	eixoVsOutroJog.Init(LADO3,&gameSpeed);
+	eixoVsMeuJog.Init(LADONAZI,&gameSpeed);
+	eixoVsOutroJog.Init(LADONAZI,&gameSpeed);
 	
 	// Inicializa gerenciador de ondas do eixo
 	ondaVsMeuJog.Init(&eixoVsMeuJog,&gameSpeed,meuJog.lado);
@@ -631,16 +631,35 @@ void Gameplay(TipoGameplay tipoGameplay){
 	
 	PlaySound(NULL, NULL, 0); 
 	
-	
-	if(meuJog.vida <= 0 && outroJog.vida <= 0){
+	minhaPg.Troca();
+	minhaPg.Ativa();
+	if(onda == 'F'){
+		if(meuJog.vida <= 0 && meuJog.lado == LADOEUA){
+			telaPretaD.Show();
+			meuFinal = FINAL_URSS;
+		} else if(meuJog.vida <= 0 && meuJog.lado == LADOURSS){
+			telaPretaE.Show();
+			meuFinal = FINAL_EUA;
+		} else if(outroJog.vida <= 0 && outroJog.lado == LADOEUA){
+			telaPretaD.Show();	
+			meuFinal = FINAL_URSS;
+		} else if(outroJog.vida <= 0 && outroJog.lado == LADOURSS){
+			telaPretaD.Show();
+			meuFinal = FINAL_EUA;
+		} else{
+			meuFinal = FINAL_GUERRAFRIA;
+		}
+	}
+	else{	
 		telaPretaD.Show();
 		telaPretaE.Show();
-		meuFinal = FINAL_NAZI;
+		meuFinal = FINAL_NAZI;	
 	}
+	MostraLideres(&meuJog.lider,&outroJog.lider);
+	minhaPg.Visual();
+
 	delay(2000);
 	cutscenes.MostraFinal(meuFinal);
-
-	
 
 	//Limpa memória alocada para os soldados
 	meuJog.soldado0->LimpaNo(meuJog.soldado0);
@@ -1009,12 +1028,12 @@ EscolhaEmMenu MenuUmJog(){
 			escolha = UM_JOGADOR;			
 				
 			if( radioLider.RadioChecked(&radioLider)->label == "Roosevelt"){
-				ladoMeuJog = LADO1;
-				ladoOutroJog = LADO2;
+				ladoMeuJog = LADOEUA;
+				ladoOutroJog = LADOURSS;
 			} 
 			else{
-				ladoMeuJog = LADO2;
-				ladoOutroJog = LADO1;
+				ladoMeuJog = LADOURSS;
+				ladoOutroJog = LADOEUA;
 			}
 				
 				
@@ -1293,14 +1312,14 @@ EscolhaEmMenu MenuCliente(){
 										
 										if(strcmp(buffer,"Stalin") == 0){
 											strcat(nomeMeuLider,"Roosevelt");
-											ladoMeuJog = LADO1;
-											ladoOutroJog = LADO2;
+											ladoMeuJog = LADOEUA;
+											ladoOutroJog = LADOURSS;
 										} 
 										
 										else{
 											strcat(nomeMeuLider,"Stalin");
-											ladoMeuJog = LADO2;
-											ladoOutroJog = LADO1;
+											ladoMeuJog = LADOURSS;
+											ladoOutroJog = LADOEUA;
 										}			
 									}
 									
@@ -1517,12 +1536,12 @@ EscolhaEmMenu MenuServidor(){
 					tempLider = radioLider.RadioChecked(&radioLider)->label; 
 					
 					if( tempLider == "Roosevelt"){
-						ladoMeuJog = LADO1;
-						ladoOutroJog = LADO2;
+						ladoMeuJog = LADOEUA;
+						ladoOutroJog = LADOURSS;
 					} 
 					else{
-						ladoMeuJog = LADO2;
-						ladoOutroJog = LADO1;
+						ladoMeuJog = LADOURSS;
+						ladoOutroJog = LADOEUA;
 					}
 					
 
@@ -1613,7 +1632,7 @@ void ConfigIPEPorta(){
 // Mostra uma tela de Gameover no lado passado como parâmetro
 void TelaGameOver(char *lado){
 	
-	if(lado == LADO1){
+	if(lado == LADOEUA){
 		telaPretaD.Show();
 		setcolor(RED);
 		outtextxy(TILE_W * 28 + 16, TILE_H * 8, "GAMEOVER"); 
@@ -1621,7 +1640,7 @@ void TelaGameOver(char *lado){
 	
 	} 
 	
-	else if(lado == LADO2){
+	else if(lado == LADOURSS){
 		
 		telaPretaE.Show();
 		setcolor(RED);
