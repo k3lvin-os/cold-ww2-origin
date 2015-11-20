@@ -56,7 +56,7 @@ Pagina minhaPg;
 TDelay gameTime;
 Grade minhaGrd;
 EscolhaEmMenu escolhaMenu;
-Botao botaoUmJog, botaoDoisJog, botaoCredit, botaoJogar, botaoVoltar,
+Botao botaoUmJog, botaoDoisJog, botaoCredit, botaoJogar, botaoVoltar, botaoVoltar2,
 botaoCliente, botaoServidor, botaoConexao, botaoOpcaoServ, botaoAlterar ;
 char *ladoMeuJog,*ladoOutroJog;
 int gameSpeed;
@@ -77,12 +77,14 @@ EscolhaEmMenu MenuDoisJog();
 void BackgroundMenu();
 EscolhaEmMenu MenuCliente();
 EscolhaEmMenu MenuServidor();
+EscolhaEmMenu TelaCreditos();
 void IAOutroJog();
 void RecebePacoteJogo();
 void SimulaOutroJog(TipoGameplay tipoGameplay,OndaEixo *ondaVsOutroJog,char* logAtira);
 void EnviaPacoteJogo();
 void ConfigIPEPorta();
 void TelaGameOver(char *lado);
+
 
 
 //============================================================================================
@@ -100,6 +102,7 @@ int main(){
 	botaoCredit.Init(BOTAO3_X,BOTAO3_Y,4,4);
 	botaoJogar.Init(BOTAO_JOGAR_X,BOTAO_JOGAR_Y,3,1);
 	botaoVoltar.Init(BOTAO_VOLTAR_X,BOTAO_VOLTAR_Y,3,1);
+	botaoVoltar2.Init(TILE_W * 19, TILE_H * 20,3,1);
 	botaoCliente.Init(BOTAO_CLIENTE_X, BOTAO_CLIENTE_Y, 5,4);
 	botaoServidor.Init(BOTAO_SERV_X,BOTAO_SERV_Y ,5,4);
 	botaoConexao.Init(TILE_W * 17,TILE_H * 12 + 8, 5,1);
@@ -174,11 +177,11 @@ int main(){
 				escolhaMenu = Menu();
 				break;
 			case UM_JOGADOR:
-				escolhaMenu = MENU;
+				escolhaMenu = CREDITOS;
 				Gameplay(SINGLEPLAYER);
 				break;
 			case DOIS_JOGADORES:
-				escolhaMenu = MENU;
+				escolhaMenu = CREDITOS;
 				Gameplay(MULTIPLAYER);
 				break;
 			case MENU_UM_JOG:
@@ -192,6 +195,9 @@ int main(){
 				break;
 			case MENU_SERVIDOR:
 				escolhaMenu = MenuServidor();
+				break;
+			case CREDITOS:
+				escolhaMenu = TelaCreditos();
 				break;
 		}	
 	}
@@ -945,6 +951,10 @@ EscolhaEmMenu Menu(){
 			
 		if(botaoDoisJog.CheckClick() == true)
 			escolha = MENU_DOIS_JOG;
+			
+		if(botaoCredit.CheckClick() == true)	
+			escolha = CREDITOS;
+			
 	}
 	
 	return escolha;
@@ -1619,6 +1629,50 @@ void TelaGameOver(char *lado){
 		putimage(TILE_W * 8  + 16 ,TILE_H * 10,eixoVsMeuJog.lider.imagens[BRAVO],0);
 			
 	}
+	
+}
+
+//===================================================================================
+//Mostra a tela de créditos do jogo
+EscolhaEmMenu TelaCreditos(){
+	EscolhaEmMenu escolha;
+	
+	minhaPg.Troca();
+	minhaPg.Ativa();
+	cleardevice();
+	menu.Show();
+	botaoVoltar2.Show();
+	settextjustify(LEFT_TEXT,CENTER_TEXT);
+	setfillstyle(1,BLACK);
+	settextstyle(BOLD_FONT,HORIZ_DIR,1);
+	outtextxy(botaoVoltar2.x + 4 ,botaoVoltar2.y + 24,"VOLTAR");
+	setcolor(GREEN);
+	settextstyle(BOLD_FONT,HORIZ_DIR,5);
+	outtextxy(TILE_W * 16 + 24, TILE_H * 3, "CRÉDITOS");
+	setcolor(LIGHTGREEN);
+	settextstyle(BOLD_FONT,HORIZ_DIR,2);
+	outtextxy(TILE_W * 8 , TILE_H * 6, "GAME DESGIN / PROGRAMAÇÃO");
+	outtextxy(TILE_W * 26 , TILE_H * 6, "KELVIN OLIVEIRA");
+	outtextxy(TILE_W * 12 + 24 , TILE_H * 8, "ARTE");
+	outtextxy(TILE_W * 26 , TILE_H * 8, "CHRISTIAN MOURA");
+	outtextxy(TILE_W * 7 , TILE_H * 10, "DIVULGAÇÃO / SUPORTE EM PROG. (N3)");
+	outtextxy(TILE_W * 26 , TILE_H * 10, "ADRIANO FELIX");
+	outtextxy(TILE_W * 12 + 16 , TILE_H * 12, "MÚSICA");
+	outtextxy(TILE_W * 26, TILE_H * 12, "ANDERSON ARAUJO");
+	outtextxy(TILE_W * 15 + 16 , TILE_H * 14, "PARTICIPARAM TAMBÉM: ");
+	outtextxy(TILE_W * 9 + 16 , TILE_H * 16, "MARCELO HENRIQUE / SÉRGIO SCHAPOWAL / VICTOR AMARAL");
+
+	minhaPg.Visual();
+	
+	escolha = SEM_ESCOLHA;
+	while(escolha == SEM_ESCOLHA){
+	
+		if(botaoVoltar2.CheckClick() == true)
+			escolha = MENU;
+	}
+	
+	
+	return escolha;
 	
 }
 
