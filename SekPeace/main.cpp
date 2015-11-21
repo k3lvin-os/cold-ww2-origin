@@ -1669,7 +1669,7 @@ EscolhaEmMenu TelaCreditos(){
 	outtextxy(TILE_W * 16 + 24, TILE_H * 3, "CRÉDITOS");
 	setcolor(LIGHTGREEN);
 	settextstyle(BOLD_FONT,HORIZ_DIR,2);
-	outtextxy(TILE_W * 8 , TILE_H * 6, "GAME DESGIN / PROGRAMAÇÃO");
+	outtextxy(TILE_W * 8 , TILE_H * 6, "GAME DESIGN / PROGRAMAÇÃO");
 	outtextxy(TILE_W * 26 , TILE_H * 6, "KELVIN OLIVEIRA");
 	outtextxy(TILE_W * 12 + 24 , TILE_H * 8, "ARTE");
 	outtextxy(TILE_W * 26 , TILE_H * 8, "CHRISTIAN MOURA");
