@@ -61,7 +61,7 @@ int main(){
 		cin >> opcao;
 		
 		if(opcao == 1){
-			cout << "\nEm desenvolvimento\n";
+			cutscenes.IntroJogo();
 		} 
 		
 		else if(opcao == 2){
