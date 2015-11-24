@@ -33,7 +33,6 @@ void* GetImage(char path[], int width, int height);
 #include "..\..\header\botao.h"
 #include "..\..\header\barra_vida.h"
 #include "..\..\header\rede.h"
-#include "..\..\header\cutscenes.h"
 using namespace std;
 
 
@@ -65,7 +64,6 @@ Rede minhaRede;
 char logDano[100];
 char ipDoServidor[16],portaDoServidor[7];
 Sprite telaPretaE,telaPretaD, campoJogo, menu, limpa2Tiles;
-Cutscenes cutscenes;
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -84,6 +82,9 @@ void SimulaOutroJog(TipoGameplay tipoGameplay,OndaEixo *ondaVsOutroJog,char* log
 void EnviaPacoteJogo();
 void ConfigIPEPorta();
 void TelaGameOver(char *lado);
+
+#include "..\..\header\cutscenes.h"
+Cutscenes cutscenes;
 
 
 
@@ -538,13 +539,14 @@ void Gameplay(TipoGameplay tipoGameplay){
 	// Deixa a página visual
 	minhaPg.Visual();
 	
-	// Começa a contar o tempo de jogo
-	gameTime.Atualiza();
+	// Mostra o tutorial
+	cutscenes.Tutorial(meuJog, tipoGameplay);
 	
-	// Música do gameplay 
-	PlaySound("../../Assets/Music/gameplay.wav",NULL,SND_LOOP | SND_ASYNC);	
+	
 
-			
+	// Começa a contar o tempo de jogo
+	gameTime.Atualiza();	
+	
 	//Loop do jogo
 	do{
 		
@@ -729,6 +731,13 @@ void EnviaPacoteJogo(){
 // Simula a IA no modo Singleplayer
 void IAOutroJog(){
 	
+	if(onda == BEGIN && onda == END && onda == SEM_ONDA)
+		return;
+		
+	outroJog.qtdSoldEspera = 2;
+	
+		
+	
 }
 //============================================================================================
 // Recebe dados no modo multiplayyer
@@ -837,12 +846,12 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 	
 	if(outroJog.vida > 0){
 		
-			if(outroJog.qtdSoldEspera > 0){
+		if(outroJog.qtdSoldEspera > 0){
 		
-		if(outroJog.envioSold.PassouDelay(ESPERA_DELAY) == true){
-			outroJog.envioSold.Atualiza();
-			outroJog.soldado0->Insere(outroJog.soldado0,outroJog.lado,gameSpeed);
-			outroJog.qtdSoldEspera--;
+		    if(outroJog.envioSold.PassouDelay(ESPERA_DELAY) == true){
+		     	outroJog.envioSold.Atualiza();
+			    outroJog.soldado0->Insere(outroJog.soldado0,outroJog.lado,gameSpeed);
+			    outroJog.qtdSoldEspera--;
 		}	
 	}
 	

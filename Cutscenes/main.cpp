@@ -39,9 +39,12 @@ using namespace std;
 
 int main(){
 	
+	char *lado;
 	Cutscenes cutscenes;
-	int opcao;
+	int opcao, nLado=0;
 	Pagina minhaPg;
+	Jogador meuJog;
+	
 	
 	initwindow(TELA_W,TELA_H,"Seek Of Peace: Cold WW2");
 	
@@ -55,7 +58,9 @@ int main(){
 		cout << "\nCUTSCENES DO JOGO\nDigite uma das opções a seguir"
 		<< endl << "1 - Introdução" << endl << "2 - Final dos Nazistas" <<
 		endl << "3 - Final dos EUA" << endl << "4 - Final da URSS" <<
-		endl << "5 -Final da Guerra Fria" << endl << "6 - Sair\nOpcao: ";
+		endl << "5 - Final da Guerra Fria" << endl << "6 - Tutorial Básico" <<
+		endl << "7 - Sair\nOpcao: ";
+		
 		
 		outtextxy(TELA_W /2 - 64 ,TELA_H /2,"Use o console para selecionar uma cutscene");
 		cin >> opcao;
@@ -81,12 +86,31 @@ int main(){
 			cutscenes.MostraFinal(FINAL_GUERRAFRIA);	
 		}
 		
-		else if(opcao != 6 ){
+		else if(opcao == 6){
+			do{
+			
+				cout << "\nDigite o Lado: 1 - USA ou 2 - URSS " ;
+				cin >> nLado;							
+			}while(nLado != 1 && nLado != 2);
+			
+			minhaPg.Troca();
+			minhaPg.Ativa();
+			
+			if (nLado == 1)
+				meuJog.Init(LADOEUA,0);
+			else
+				meuJog.Init(LADOURSS,0);
+			
+			minhaPg.Visual();
+			cutscenes.Tutorial(meuJog);
+			fflush(stdin);
+		}
+		else if(opcao != 7 ){
 			cout << "\nOpção inválida\n";
 		}
 		
 		
-	}while(opcao != 6);
+	}while(opcao != 7);
 	
 	closegraph();
 	return 0;
