@@ -724,7 +724,7 @@ void EnviaPacoteJogo(){
 // Simula a IA no modo Singleplayer
 void IAOutroJog(){
 	
-	if(onda == BEGIN && onda == END && onda == SEM_ONDA)
+	if(onda == '0' || onda == 'F' || onda == SEM_ONDA)
 		return;
 		
 	outroJog.qtdSoldEspera = 2;
