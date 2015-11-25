@@ -520,9 +520,6 @@ void Gameplay(TipoGameplay tipoGameplay){
 	// Trabalha com a página nos "bastidores"
 	minhaPg.Ativa();
 	
-	// Limpa a tela
-	cleardevice();
-	
 	// Atribui times aos jogadores
 	meuJog.Init(ladoMeuJog,&gameSpeed);
 	outroJog.Init(ladoOutroJog,&gameSpeed);
@@ -533,8 +530,8 @@ void Gameplay(TipoGameplay tipoGameplay){
 	ondaVsMeuJog.Init(&eixoVsMeuJog,&gameSpeed,meuJog.lado);
 	ondaVsOutroJog.Init(&eixoVsOutroJog,&gameSpeed,outroJog.lado);
 	
-	// Mostra o campo de jogo (antes do gameplay começar)
-	campoJogo.Show();
+	// Limpa a tela
+	cleardevice();
 	
 	// Deixa a página visual
 	minhaPg.Visual();
@@ -542,15 +539,11 @@ void Gameplay(TipoGameplay tipoGameplay){
 	// Mostra o tutorial
 	cutscenes.Tutorial(meuJog, tipoGameplay);
 	
-	
-
 	// Começa a contar o tempo de jogo
 	gameTime.Atualiza();	
 	
 	//Loop do jogo
 	do{
-		
-
 	
 		
 		// Troca e ativa uma nova página para modificações
@@ -614,15 +607,15 @@ void Gameplay(TipoGameplay tipoGameplay){
 		
 		if(outroJog.vida  == 0)
 			meuJog.outroJogMorto = true;
-		
-		// Limpa campo de carregamento de imagens
-		limpa2Tiles.Show();
 			
 		// Avisa momentos importantes para o jogador
 		Avisa(gameTime, eixoVsMeuJog.lider);
 					
 		// Mostra os lideres
 		MostraLideres(&meuJog.lider,&outroJog.lider);
+		
+		// Limpa zona de carregamento de imagens
+		limpa2Tiles.Show();
 							
 		//Deixa a página visual
 		minhaPg.Visual();
