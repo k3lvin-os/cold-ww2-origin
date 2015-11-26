@@ -726,8 +726,16 @@ void IAOutroJog(){
 	
 	if(onda == '0' || onda == 'F' || onda == SEM_ONDA)
 		return;
-		
-	outroJog.qtdSoldEspera = 2;
+	
+	// Altere o valor desta variável para colocar um soldado	
+	
+	outroJog.qtdSoldEspera = 2; // Coloca dois soldados
+	
+	// Altere o valor dessas variáveis para colocar uma torre no campo do jogador
+	// controlado pela IA
+	
+	//outroJog.novaTorreXeY[0] --> eixo X
+	//outroJog.novaTorreXeY[1] --> eixo Y
 	
 		
 	
