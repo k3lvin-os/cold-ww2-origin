@@ -33,6 +33,7 @@ void* GetImage(char path[], int width, int height);
 #include "..\..\header\botao.h"
 #include "..\..\header\barra_vida.h"
 #include "..\..\header\rede.h"
+#include "..\..\header\linguagem.h"
 using namespace std;
 
 
@@ -231,9 +232,9 @@ EscolhaEmMenu MenuDoisJog(){
 	botaoCliente.Show();
 	botaoServidor.Show();	
 	botaoVoltar.Show();
-	outtextxy(botaoCliente.x + 32, botaoCliente.y + 72,"CLIENTE");
-	outtextxy(botaoServidor.x + 24,botaoServidor.y + 72,"SERVIDOR");
-	outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,"VOLTAR");
+	outtextxy(botaoCliente.x + 32, botaoCliente.y + 72,"CLIENTE"); // TEXT_01
+	outtextxy(botaoServidor.x + 24,botaoServidor.y + 72,"SERVIDOR");//TEXT_02
+	outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,"VOLTAR");//TEXT_03
 
 	minhaPg.Visual();
 	
@@ -723,6 +724,7 @@ void EnviaPacoteJogo(){
 //============================================================================================
 // Simula a IA no modo Singleplayer
 void IAOutroJog(){
+
 	
 	if(onda == '0' || onda == 'F' || onda == SEM_ONDA)
 		return;
@@ -948,8 +950,8 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 //=============================================================
 // Menu de jogo
 EscolhaEmMenu Menu(){
-
 	
+
 	EscolhaEmMenu escolha;
 	int mouseX,mouseY;
 
