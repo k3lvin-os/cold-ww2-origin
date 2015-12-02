@@ -1,3 +1,6 @@
 TEXT_01 = "CLIENT"
 TEXT_02 = "SERVER"
-TEXT_03 = "CREDITS"
+TEXT_03 = "BACK"
+TEXT_04 = "BEGIN OF BATTLE"
+TEXT_05 = "Wait... The Nazi's are attacking us!!!"
+TEXT_06 = "We need one more minute to kill Hitler!!!"
