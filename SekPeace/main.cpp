@@ -555,6 +555,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 		
 		// Mostra campo de jogo	
 		campoJogo.Show();	
+		minhaGrd.Colocar(); // TESTE
 			
 		if(meuJog.vida > 0){
 			
@@ -684,19 +685,19 @@ void EnviaPacoteJogo(){
 		meuJog.qtdSoldEspera = 0;
 	}
 	
-	if(meuJog.novaTorreXeY[0] != UNDEFINED && 
-	meuJog.novaTorreXeY[1] != UNDEFINED){
+	if(meuJog.novaTorreXeY[0][0] != UNDEFINED && 
+	meuJog.novaTorreXeY[0][1] != UNDEFINED){
 		
 		strcat(pacote,"TORRE|");
-		itoa(meuJog.novaTorreXeY[0],temp,10);
+		itoa(meuJog.novaTorreXeY[0][0],temp,10);
 		strcat(pacote,temp);
 		strcat(pacote,"|");
-		itoa(meuJog.novaTorreXeY[1],temp,10);
+		itoa(meuJog.novaTorreXeY[0][1],temp,10);
 		strcat(pacote,temp);
 		strcat(pacote,"|");
 		
-		meuJog.novaTorreXeY[0] = UNDEFINED;
-		meuJog.novaTorreXeY[1] = UNDEFINED;
+		meuJog.novaTorreXeY[0][0] = UNDEFINED;
+		meuJog.novaTorreXeY[0][1] = UNDEFINED;
 	}
 	
 	strcat(pacote,logDano);
@@ -723,23 +724,114 @@ void EnviaPacoteJogo(){
 //============================================================================================
 // Simula a IA no modo Singleplayer
 void IAOutroJog(){
+
+	int chance, qtd, posXMin, posXMax, posYMin, posYMax, tileX, tileY, meuX, meuY, i;
+	bool posValida;
 	
 	if(onda == '0' || onda == 'F' || onda == SEM_ONDA)
 		return;
+		
+	// Randomiza chance de fazer alguma coisa
+	chance = rand()%10 + 1;
 	
-	// Altere o valor desta variável para colocar um soldado	
+	/*//  TESTE
+	int teste;
+	cout << "chance = " << chance << endl;
+	cin >> teste;*/
 	
-	outroJog.qtdSoldEspera = 2; // Coloca dois soldados
+	if (chance >= 1 && chance <= 3 && meuJog.vida <= 0){
+		
+		qtd = outroJog.dinheiro / PRECO_SOLDADO;
+		
+		if (qtd>2)
+			qtd = 2;
+		
+		/*cout << "qtd = " << qtd << endl;
+		cin >> teste;*/	
+		
+		if(qtd != 0){
+			chance = rand() % qtd;
+			
+			if(chance == 0)
+				chance = 1;
+			
+			outroJog.qtdSoldEspera = chance;
+			outroJog.dinheiro -= chance * PRECO_SOLDADO;
+		}
+	}
 	
-	// Altere o valor dessas variáveis para colocar uma torre no campo do jogador
-	// controlado pela IA
+	else if ((chance >= 4 && chance <= 6) || (meuJog.vida <= 0)){
+		
+		qtd = outroJog.dinheiro / PRECO_TORRE;
+		
+		/*cout << "qtd = " << qtd << endl;
+		cin >> teste;*/
+		
+		if( qtd != 0){
+			
+			
+			
+			if(outroJog.lado == LADOEUA){
+				posXMin = 22;
+				posXMax = 38;
+				posYMin = 1; 
+				posYMax = 18;
+			} else if(outroJog.lado == LADOURSS){
+				posXMin = 1;
+				posXMax = 17;
+				posYMin = 1;
+				posYMax = 18;
+			}
+			
+			/*cout << "posXMin = " << posXMin << "| posXMax = " << posXMax 
+			 << "| posYMin = " << posYMin << "posYMax" << posYMax << endl; 
+			cin >> teste;*/
+			
+			
+			for(i = 0; i < qtd; i++){
+				
+				do{
+					tileX = rand() % posXMax + posXMin;
+					tileY = rand() % posYMax + posYMin;
+					
+					/*
+					cout << "tileX = " << tileX << " | tileY =" << tileY << endl;
+					cin >> teste;*/
+					
+					posValida = cenario.PosExist(tileX,tileY); // Problema de aumento exagerado de intervalo
+					
+					if(posValida == true){
+						
+						posValida = cenario.CheckPosTorre(tileX,tileY,outroJog.lado);
+						meuX = tileX * TILE_W;
+						meuY = tileY * TILE_H; 
+						
+						if(posValida == true){
+							posValida = outroJog.torre0->SemTorrePerto(outroJog.torre0,meuX,meuY);
+							outroJog.dinheiro -= PRECO_TORRE;
+							outroJog.novaTorreXeY[i][0] = meuX;
+							outroJog.novaTorreXeY[i][1] =  meuY;
+						}
+						
+					}
+					
+				} while(posValida == false);			
+			
+			}
+			
+
+
+		}
+			
+	}
+
+}
 	
-	//outroJog.novaTorreXeY[0] --> eixo X
-	//outroJog.novaTorreXeY[1] --> eixo Y
+
 	
 		
 	
-}
+
 //============================================================================================
 // Recebe dados no modo multiplayyer
 void RecebePacoteJogo(){
@@ -793,7 +885,7 @@ void RecebePacoteJogo(){
 				
 				if(tipoPacote == TORRE){
 					
-					outroJog.novaTorreXeY[contador] = atoi(buffer);
+					outroJog.novaTorreXeY[0][contador] = atoi(buffer);
 					contador++;
 					
 					if(contador > 1){
@@ -853,18 +945,27 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 		     	outroJog.envioSold.Atualiza();
 			    outroJog.soldado0->Insere(outroJog.soldado0,outroJog.lado,gameSpeed);
 			    outroJog.qtdSoldEspera--;
-		}	
+		}
+				
 	}
 	
-	if(outroJog.novaTorreXeY[0] != UNDEFINED
-	 && outroJog.novaTorreXeY[1] != UNDEFINED){
-	
-		outroJog.torre0->Insere(outroJog.torre0,outroJog.lado,
-		outroJog.novaTorreXeY[0],outroJog.novaTorreXeY[1]);
+	for(i = 0; i < QTD_NOVATORRE; i++){
 		
-		outroJog.novaTorreXeY[0] = UNDEFINED;
-		outroJog.novaTorreXeY[1] = UNDEFINED;	
+		if(outroJog.novaTorreXeY[i][0] != UNDEFINED
+		 && outroJog.novaTorreXeY[i][1] != UNDEFINED){
+			
+			/*cout << "novaTorre: X = " << outroJog.novaTorreXeY[i][0] << "| Y = " <<
+			outroJog.novaTorreXeY[i][1] << endl;*/
+			
+			outroJog.torre0->Insere(outroJog.torre0,outroJog.lado,
+			outroJog.novaTorreXeY[i][0],outroJog.novaTorreXeY[i][1]);
+			
+			outroJog.novaTorreXeY[i][0] = UNDEFINED;
+			outroJog.novaTorreXeY[i][1] = UNDEFINED;	
+		}
+		
 	}
+
 	
 	// Verifica a a onda atual para o envio de soldados do Eixo
 	ondaVsOutroJog->Verifica(onda,cenario);

@@ -61,7 +61,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit2]
-FileName=..\..\header\cutscenes.h
+FileName=cutscenes.h
 CompileCpp=1
 Folder=
 Compile=1

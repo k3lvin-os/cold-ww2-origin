@@ -33,7 +33,7 @@ void GetImage(void** pImg, char path[], int width, int height);
 #include "..\..\header\botao.h"
 #include "..\..\header\barra_vida.h"
 #include "..\..\header\rede.h"
-#include "..\..\header\cutscenes.h"
+#include "cutscenes.h"
 using namespace std;
 
 
@@ -44,6 +44,9 @@ int main(){
 	int opcao, nLado=0;
 	Pagina minhaPg;
 	Jogador meuJog;
+	TipoGameplay tipoGameplay;
+	
+	tipoGameplay = SINGLEPLAYER;
 	
 	
 	initwindow(TELA_W,TELA_H,"Seek Of Peace: Cold WW2");
@@ -102,7 +105,7 @@ int main(){
 				meuJog.Init(LADOURSS,0);
 			
 			minhaPg.Visual();
-			cutscenes.Tutorial(meuJog);
+			cutscenes.Tutorial(meuJog,tipoGameplay);
 			fflush(stdin);
 		}
 		else if(opcao != 7 ){
