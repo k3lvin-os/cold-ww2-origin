@@ -206,6 +206,7 @@ bool Cutscenes::EscreveDevagar(int x0, int y0, char* msg, int delayPorLetra, boo
 
 // Mostra o final dos nazistas
 void Cutscenes::FinalNazi(){
+	PlaySound("../../Assets/Music/diefahne.wav",NULL,SND_LOOP | SND_ASYNC);
 	Pagina minhaPg;
 	minhaPg.Init();
 	minhaPg.Troca();
@@ -236,7 +237,7 @@ void Cutscenes::FinalNazi(){
 	EscreveDevagar(0,510,"os Nazistas encontraram a desejada paz e, ",75,false);
 	EscreveDevagar(0,540,"agora, inimigo algum pode atrapalhar isso.",75,false);
 	
-	delay(2000);
+	delay(8000);
 	setbkcolor(BLACK);
 	cleardevice();
 }
@@ -244,6 +245,7 @@ void Cutscenes::FinalNazi(){
 
 // Final dos Eua
 void Cutscenes::FinalEua(){
+	PlaySound("../../Assets/Music/star_spangled.wav",NULL,SND_LOOP | SND_ASYNC);
 	Pagina minhaPg;
 	minhaPg.Init();
 	minhaPg.Troca();
@@ -278,13 +280,14 @@ void Cutscenes::FinalEua(){
 	EscreveDevagar(0,530,"Alcançaram a desejada paz e,",75,false);
 	EscreveDevagar(0,560,"agora, inimigo algum pode atrapalhar isso.",75,false);
 	
-	delay(2000);
+	delay(3200);
 	setbkcolor(BLACK);
 	cleardevice();
 }
 
 
 void Cutscenes::FinalUrss(){
+	PlaySound("../../Assets/Music/soviet-anthem.wav",NULL,SND_LOOP | SND_ASYNC);
 	Pagina minhaPg;
 	minhaPg.Init();
 	minhaPg.Troca();

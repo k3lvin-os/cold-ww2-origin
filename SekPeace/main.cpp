@@ -163,6 +163,7 @@ int main(){
 	cenario.Mostrar();
 	limpa2Tiles.Init(0,0,32,64);
 	campoJogo.Init(0,0,TELA_W,TELA_H);
+	cleardevice();
 
 
 	minhaPg.Visual();
@@ -555,7 +556,6 @@ void Gameplay(TipoGameplay tipoGameplay){
 		
 		// Mostra campo de jogo	
 		campoJogo.Show();	
-		minhaGrd.Colocar(); // TESTE
 			
 		if(meuJog.vida > 0){
 			
