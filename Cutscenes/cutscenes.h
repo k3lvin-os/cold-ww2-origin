@@ -68,14 +68,8 @@ void Cutscenes::Carrega(){
 			
 		itoa(indiceH,temp,10);
 		strcat(pathImg,temp);
-		
-		if(indiceH < 12)
-			strcat(pathImg,BITMAP);
-		else 
-			strcat(pathImg,JPEG);
-		
-		
-		
+		strcat(pathImg,BITMAP);
+
 		if(indiceH >= 1 && indiceH <= 3){
 			width = 513;
 			height = 720;
@@ -92,23 +86,23 @@ void Cutscenes::Carrega(){
 		}
 				
 		else if(indiceH == 12){
-			width = 717;
-			height = 476;			
+			width = 682;
+			height = 436;			
 		}
 		
 		else if(indiceH == 13){
-			width = 450;
-			height = 600;			
+			width = 420;
+			height = 573;			
 		}
 		
 		else if(indiceH == 14){
-			width = 800;
-			height = 600;
+			width = 884;
+			height = 673;
 		}
 		
 		else if(indiceH == 15)	{
-			width = 480;
-			height = 616;
+			width = 608;
+			height = 673;
 		}	
 		
 		sprites[i].Init();	
