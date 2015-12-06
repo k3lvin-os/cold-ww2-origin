@@ -33,6 +33,7 @@ void* GetImage(char path[], int width, int height);
 #include "..\..\header\botao.h"
 #include "..\..\header\barra_vida.h"
 #include "..\..\header\rede.h"
+#include "..\..\header\linguagem.h"
 using namespace std;
 
 
@@ -64,6 +65,7 @@ Rede minhaRede;
 char logDano[100];
 char ipDoServidor[16],portaDoServidor[7];
 Sprite telaPretaE,telaPretaD, campoJogo, menu, limpa2Tiles;
+Linguagem linguagem;
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -95,6 +97,9 @@ int main(){
 	minhaRede.WinSockInit();
 	
 	int iResult;
+	
+	// Carrega textos do jogo em modo default
+	linguagem.TextoDefault();
 
 	
 	// Inicialize os botões que serão usados nos menus
@@ -171,6 +176,25 @@ int main(){
 	
 	escolhaMenu = MENU;
 	
+	// ================================== SELEÇÃO DE IDIOMA =====================
+	int lingua;
+	do{
+		cout << "Escolha o idioma:\n 1 - Inglês\n 2 - Português\nidioma: ";
+		cin >> lingua;
+		
+		if(lingua != 1 && lingua != 2){
+			cout << "\nDigite um idioma válido\n";
+		}
+		
+	} while(lingua != 1 && lingua != 2);
+	
+	if(lingua == 1)
+		linguagem.Init(INGLES);
+	else
+		linguagem.Init(PORTUGUES);
+	// ================================== SELEÇÃO DE IDIOMA =====================
+
+	
 	// Loop do jogo
 	while(escolhaMenu != SAIR ){
 		
@@ -212,6 +236,7 @@ int main(){
 	radioSpeed.LimpaNo(&radioSpeed);
 	radioLider.LimpaNo(&radioLider);
 	radioModoIP.LimpaNo(&radioModoIP);
+	linguagem.LimpaMemoria();
 	closegraph();
 	return 0;	
 }
@@ -232,13 +257,14 @@ EscolhaEmMenu MenuDoisJog(){
 	botaoCliente.Show();
 	botaoServidor.Show();	
 	botaoVoltar.Show();
-	outtextxy(botaoCliente.x + 32, botaoCliente.y + 72,"CLIENTE");
-	outtextxy(botaoServidor.x + 24,botaoServidor.y + 72,"SERVIDOR");
-	outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,"VOLTAR");
+	outtextxy(botaoCliente.x + 32, botaoCliente.y + 72,linguagem.GetText(1));
+	outtextxy(botaoServidor.x + 24,botaoServidor.y + 72,linguagem.GetText(2));
+	outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,linguagem.GetText(3));
 
 	minhaPg.Visual();
 	
-	escolha = SEM_ESCOLHA;
+	escolha = SEM_ESCOLHA;	
+	
 	while(escolha == SEM_ESCOLHA){
 		
 		if(botaoCliente.CheckClick() == true)
@@ -327,7 +353,7 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	
 	
 	if(gTimeInt >= BEGIN && gTimeInt <= BEGIN + 1){
-		outtextxy(TILE_W * 16 + 8,TILE_H * 1,"INICIO DA BATALHA");
+		outtextxy(TILE_W * 16 + 8,TILE_H * 1,linguagem.GetText(4));
 		if(gTimeInt == BEGIN)
 			putimage(TILE_W * 19, TILE_H * 2,Hitler.imagens[NORMAL],COPY_PUT);
 		else
@@ -335,12 +361,12 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	}
 		
 	else if(gTimeInt >= ONDA1 && gTimeInt <= ONDA1 + 1){
-		outtextxy(TILE_W * 12,TILE_H * 1,"Cuidado! Os nazistas estão atacando!");
+		outtextxy(TILE_W * 12,TILE_H * 1,linguagem.GetText(5));
 			putimage(TILE_W * 19 , TILE_H * 2,Hitler.imagens[BRAVO],COPY_PUT);
 	}
 	else if(gTimeInt >= ONDA3 && gTimeInt <= ONDA3 + 1){
 		
-		outtextxy(TILE_W * 11 + 8,TILE_H * 1,"Falta um minuto para eliminarmos Hitler!!!");
+		outtextxy(TILE_W * 11 + 8,TILE_H * 1,linguagem.GetText(6));
 		if(gTimeInt == ONDA3)
 			putimage(TILE_W * 19, TILE_H * 2,Hitler.imagens[NORMAL],COPY_PUT);
 		else

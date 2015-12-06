@@ -1,0 +1,6 @@
+TEXT_01 = "CLIENTE"
+TEXT_02 = "SERVIDOR"
+TEXT_03 = "VOLTAR"
+TEXT_04 = "INICIO DA BATALHA"
+TEXT_05 = "Cuidado! Os nazistas estão atacando!"
+TEXT_06 = "Falta um minuto para eliminarmos Hitler!!!"
