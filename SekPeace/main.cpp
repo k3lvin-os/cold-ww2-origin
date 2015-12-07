@@ -16,6 +16,12 @@
 void GetImage(void** pImg, char path[], int width, int height);
 void* GetImage(char path[], int width, int height);
 
+// ============== ARQUIVO RESPONSÁVEL PELOS IDIOMAS DOS TEXTOS ===============
+#include "..\..\header\linguagem.h"
+Linguagem linguagem;
+// ============== ARQUIVO RESPONSÁVEL PELOS IDIOMAS DOS TEXTOS ===============
+
+
 // Bibliotecas criados pela equipe de desenvolvimento
 #include "..\..\header\radiobutton.h"
 #include "..\..\header\enumeracoes.h"
@@ -33,7 +39,7 @@ void* GetImage(char path[], int width, int height);
 #include "..\..\header\botao.h"
 #include "..\..\header\barra_vida.h"
 #include "..\..\header\rede.h"
-#include "..\..\header\linguagem.h"
+
 using namespace std;
 
 
@@ -65,7 +71,6 @@ Rede minhaRede;
 char logDano[100];
 char ipDoServidor[16],portaDoServidor[7];
 Sprite telaPretaE,telaPretaD, campoJogo, menu, limpa2Tiles;
-Linguagem linguagem;
 //==========================================================
 
 // Funções que usam variáveis globais
