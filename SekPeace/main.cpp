@@ -974,7 +974,7 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 		
 		    if(outroJog.envioSold.PassouDelay(ESPERA_DELAY) == true){
 		     	outroJog.envioSold.Atualiza();
-			    outroJog.soldado0->Insere(outroJog.soldado0,outroJog.lado,gameSpeed);
+			    outroJog.soldado0->Insere(outroJog.soldado0,&outroJog.soldGUI,gameSpeed);
 			    outroJog.qtdSoldEspera--;
 		}
 				
