@@ -540,7 +540,7 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 
 
 // Modo de um jogador
-void Gameplay(TipoGameplay tipoGameplay){
+ void Gameplay(TipoGameplay tipoGameplay){
 	
 	char *logAtira;
 	OndaEixo ondaVsMeuJog, ondaVsOutroJog;
@@ -619,7 +619,7 @@ void Gameplay(TipoGameplay tipoGameplay){
 		}	
 		
 		// Verifica se é hora de enviar uma onda de soldados do Eixo
-		onda = gameTime.SoldOnda();	
+		onda = gameTime.SoldOnda();wssddadwsadwsdawsdawsdawsda	
 				
 		// Verifica o tipo de envio de soldados do Eixo
 		ondaVsMeuJog.Verifica(onda,cenario);
