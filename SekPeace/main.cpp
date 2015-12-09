@@ -120,6 +120,25 @@ int main(){
 	botaoOpcaoServ.Init(TILE_W * 11,TILE_H * 14,4,2);
 	botaoAlterar.Init(TILE_W * 27 + 16, TILE_H  * 11,4,1);
 	
+	// ================================== SELEÇÃO DE IDIOMA =====================
+	int lingua;
+	do{
+		cout << "Escolha o idioma:\n 1 - Inglês\n 2 - Português\nidioma: ";
+		cin >> lingua;
+		
+		if(lingua != 1 && lingua != 2){
+			cout << "\nDigite um idioma válido\n";
+		}
+		
+	} while(lingua != 1 && lingua != 2);
+	
+	if(lingua == 1)
+		linguagem.Init(INGLES);
+	else
+		linguagem.Init(PORTUGUES);
+	// ================================== SELEÇÃO DE IDIOMA =====================
+	
+	
 	//Inicialize os radio buttons que serão usados nos menus
 	radioSpeed.prox = NULL;
 	radioLider.prox = NULL;
@@ -128,8 +147,8 @@ int main(){
 	radioSpeed.Insere(&radioSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	
 	radioLider.Insere(&radioLider,"Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16);
 	radioLider.Insere(&radioLider,"Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16);
-	radioModoIP.Insere(&radioModoIP,"Automático", true,TILE_W * 20 + 16, TILE_H * 10 + 16);
-	radioModoIP.Insere(&radioModoIP,"Manual", false,TILE_W * 20 + 16, TILE_H * 11 + 16);
+	radioModoIP.Insere(&radioModoIP,linguagem.GetText(20), true,TILE_W * 20 + 16, TILE_H * 10 + 16);
+	radioModoIP.Insere(&radioModoIP,linguagem.GetText(21), false,TILE_W * 20 + 16, TILE_H * 11 + 16);
 	
 	// A velocidade do jogo ainda não foi definida
 	gameSpeed = NULL;
@@ -181,23 +200,6 @@ int main(){
 	
 	escolhaMenu = MENU;
 	
-	// ================================== SELEÇÃO DE IDIOMA =====================
-	int lingua;
-	do{
-		cout << "Escolha o idioma:\n 1 - Inglês\n 2 - Português\nidioma: ";
-		cin >> lingua;
-		
-		if(lingua != 1 && lingua != 2){
-			cout << "\nDigite um idioma válido\n";
-		}
-		
-	} while(lingua != 1 && lingua != 2);
-	
-	if(lingua == 1)
-		linguagem.Init(INGLES);
-	else
-		linguagem.Init(PORTUGUES);
-	// ================================== SELEÇÃO DE IDIOMA =====================
 
 	
 	// Loop do jogo
@@ -380,11 +382,11 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	
 	else if(gTimeInt >= ONDA5 && gTimeInt <= ONDA5 + 1){
 		
-		outtextxy(TILE_W * 11 + 8,TILE_H * 1,"Sobreviva ao ataque final dos nazistas");
+		outtextxy(TILE_W * 11 + 8,TILE_H * 1,linguagem.GetText(9));
 	}
 	
 	else if(gTimeInt >= END){
-		outtextxy(TILE_W * 16 + 8,TILE_H * 1,"FIM DA BATALHA");
+		outtextxy(TILE_W * 16 + 8,TILE_H * 1,linguagem.GetText(10));
 		putimage(TILE_W * 19, TILE_H * 2,Hitler.imagens[MORTO],COPY_PUT);
 	}
 	
@@ -619,7 +621,7 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 		}	
 		
 		// Verifica se é hora de enviar uma onda de soldados do Eixo
-		onda = gameTime.SoldOnda();wssddadwsadwsdawsdawsdawsda	
+		onda = gameTime.SoldOnda();	
 				
 		// Verifica o tipo de envio de soldados do Eixo
 		ondaVsMeuJog.Verifica(onda,cenario);
@@ -1095,11 +1097,11 @@ EscolhaEmMenu Menu(){
 	botaoDoisJog.Show(); 
 	botaoCredit.Show();
 	
-	outtextxy(BOTAO1_X + 48  ,BOTAO1_Y + (TILE_H * 2), "UM"); 
-	outtextxy(BOTAO1_X + 8 ,BOTAO1_Y + (TILE_W * 2) + 16, "JOGADOR"); 
-	outtextxy(BOTAO2_X + 56  ,BOTAO2_Y + (TILE_H * 2), "DOIS"); 
-	outtextxy(BOTAO2_X  + 16,BOTAO2_Y + (TILE_W * 2) + 16, "JOGADORES");
-	outtextxy(BOTAO3_X + 8  ,BOTAO3_Y + 72 , "CRÉDITOS"); 
+	outtextxy(BOTAO1_X + 48  ,BOTAO1_Y + (TILE_H * 2), linguagem.GetText(11)); 
+	outtextxy(BOTAO1_X + 8 ,BOTAO1_Y + (TILE_W * 2) + 16, linguagem.GetText(12)); 
+	outtextxy(BOTAO2_X + 56  ,BOTAO2_Y + (TILE_H * 2), linguagem.GetText(13)); 
+	outtextxy(BOTAO2_X  + 16,BOTAO2_Y + (TILE_W * 2) + 16,linguagem.GetText(14));
+	outtextxy(BOTAO3_X + 8  ,BOTAO3_Y + 72 , linguagem.GetText(15)); 
 			
 	minhaPg.Visual(); 
 	
@@ -1152,10 +1154,10 @@ EscolhaEmMenu MenuUmJog(){
 		radioLider.MostraLista(&radioLider);
 		
 		// Mostra o texto dos botões 
-		outtextxy(TILE_W * 11, TILE_H * 12 + 16,"Lider:" );
-		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "Velocidade do jogo");
-		outtextxy(BOTAO_JOGAR_X + 8,BOTAO_JOGAR_Y + 24,"JOGAR");
-		outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,"VOLTAR");
+		outtextxy(TILE_W * 11, TILE_H * 12 + 16,linguagem.GetText(16));
+		outtextxy(TILE_W * 11, TILE_H * 10 + 24, linguagem.GetText(17));
+		outtextxy(BOTAO_JOGAR_X + 8,BOTAO_JOGAR_Y + 24,linguagem.GetText(18));
+		outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,linguagem.GetText(19));
 		
 		minhaPg.Visual();
 		
@@ -1241,9 +1243,9 @@ EscolhaEmMenu MenuCliente(){
 	int i;						
 	//================================================
 	
-	strcpy(nomeMeuLider, "Meu Lider: ");
-	strcpy(liderDele, "Outro Lider: ");
-	strcpy(velocidJogo, "Velocidade do Jogo: ");
+	strcpy(nomeMeuLider, linguagem.GetText(49));
+	strcpy(liderDele, linguagem.GetText(50));
+	strcpy(velocidJogo, linguagem.GetText(17));
 	
 	escolha = SEM_ESCOLHA;
 	
@@ -1283,12 +1285,12 @@ EscolhaEmMenu MenuCliente(){
 		// Mostra radio buttons
 		radioModoIP.MostraLista(&radioModoIP);
 		
-		if(	radioModoIP.RadioChecked(&radioModoIP)->label  == "Manual" && minhaRede.clienteConectado == false ){
+		if(	radioModoIP.RadioChecked(&radioModoIP)->label  == linguagem.GetText(21) && minhaRede.clienteConectado == false ){
 			botaoAlterar.Show();
-			outtextxy(botaoAlterar.x + 16,botaoAlterar.y + 20 , "ALTERAR");
+			outtextxy(botaoAlterar.x + 16,botaoAlterar.y + 20 , linguagem.GetText(22));
 		}
 		
-		if(radioModoIP.RadioChecked(&radioModoIP)->label == "Automático" && ipEPortaDefault == false){
+		if(radioModoIP.RadioChecked(&radioModoIP)->label == linguagem.GetText(20) && ipEPortaDefault == false){
 			ipEPortaDefault = true;
 			ConfigIPEPorta();
 		}
@@ -1298,32 +1300,32 @@ EscolhaEmMenu MenuCliente(){
 		strcpy(ipEPorta,ipDoServidor);
 		strcat(ipEPorta,":");
 		strcat(ipEPorta,portaDoServidor);
-		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "IP / Porta do Servidor: ");
+		outtextxy(TILE_W * 11, TILE_H * 10 + 24, linguagem.GetText(23));
 		outtextxy(TILE_W * 27 + 8, TILE_H * 10 + 24, ipEPorta);
-		outtextxy(botaoJogar.x + 8,botaoJogar.y + 24,"JOGAR");
-		outtextxy(botaoVoltar.x + 4,botaoVoltar.y + 24,"VOLTAR");
+		outtextxy(botaoJogar.x + 8,botaoJogar.y + 24,linguagem.GetText(18));
+		outtextxy(botaoVoltar.x + 4,botaoVoltar.y + 24,linguagem.GetText(19));
 		
 		if(minhaRede.clienteConectado == false)
-			outtextxy(botaoConexao.x + 16,botaoConexao.y + 24,"CONECTAR");
+			outtextxy(botaoConexao.x + 16,botaoConexao.y + 24,linguagem.GetText(24));
 		else
-			outtextxy(botaoConexao.x + 16,botaoConexao.y + 24,"DESCONECTAR");
+			outtextxy(botaoConexao.x + 16,botaoConexao.y + 24,linguagem.GetText(25));
 		
 		minhaPg.Visual();
 		
-		if(radioModoIP.RadioChecked(&radioModoIP)->label  == "Manual" && minhaRede.clienteConectado == false){
+		if(radioModoIP.RadioChecked(&radioModoIP)->label  == linguagem.GetText(21) && minhaRede.clienteConectado == false){
 			if(botaoAlterar.CheckClick() == true){
 				
 				ipEPortaDefault = false;
 
 				setcolor(YELLOW);
-				outtextxy(botaoVoltar.x, botaoVoltar.y + 64, "Use o modo Console para alterar o IP e a Porta");
-				cout << "\n\n\n\nALTERAÇÃO MANUAL DE IP E PORTA\n";
-				cout << "Digite o IP do Servidor: ";
+				outtextxy(botaoVoltar.x, botaoVoltar.y + 64, linguagem.GetText(26));
+				cout << endl << endl << endl <<
+				linguagem.GetText(27) << endl << linguagem.GetText(28);
 				cin >> ipDoServidor;
-				cout << "\nDigite a Porta do Servidor: ";
+				cout << linguagem.GetText(29);
 				cin >> portaDoServidor;
-				cout << "Configurou-se com sucesso as seguintes informações:\nIP do Servidor:" 
-				 << ipDoServidor << "\nPorta do Servidor: " << portaDoServidor << endl; 
+				cout << linguagem.GetText(30) << endl << linguagem.GetText(31) <<
+				ipDoServidor << endl << linguagem.GetText(32) << portaDoServidor << endl; 
 			}
 		}
 		
@@ -1344,7 +1346,7 @@ EscolhaEmMenu MenuCliente(){
 				if(minhaRede.EnviaParaOServer("CLIENT_OK|true|") == true){
 					
 					setcolor(YELLOW);
-					outtextxy(botaoVoltar.x, botaoVoltar.y + 64, "Aguardando servidor iniciar a partida...");
+					outtextxy(botaoVoltar.x, botaoVoltar.y + 64, linguagem.GetText(33));
 					delay(750);
 					
 					if(minhaRede.RecebeDoServer() == true){
@@ -1400,7 +1402,7 @@ EscolhaEmMenu MenuCliente(){
 			}
 			 else{
 				setcolor(LIGHTRED);
-				outtextxy(botaoVoltar.x, botaoVoltar.y + 64, "Conecte-se ao servidor para iniciar uma partida");
+				outtextxy(botaoVoltar.x, botaoVoltar.y + 64, linguagem.GetText(34));
 				delay(750);
 			}
 		}
@@ -1550,36 +1552,36 @@ EscolhaEmMenu MenuServidor(){
 		radioLider.MostraLista(&radioLider);
 		
 		// Mostra o texto dos botões 
-		outtextxy(TILE_W * 11, TILE_H * 12 + 16,"Lider:" );
-		outtextxy(TILE_W * 11, TILE_H * 10 + 24, "Velocidade do jogo");
-		outtextxy(BOTAO_JOGAR_X + 8,BOTAO_JOGAR_Y + 24,"JOGAR");
-		outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,"VOLTAR");
+		outtextxy(TILE_W * 11, TILE_H * 12 + 16,linguagem.GetText(16) );
+		outtextxy(TILE_W * 11, TILE_H * 10 + 24,linguagem.GetText(17));
+		outtextxy(BOTAO_JOGAR_X + 8,BOTAO_JOGAR_Y + 24,linguagem.GetText(18));
+		outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,linguagem.GetText(19));
 		
 		
 		// Alteração da opção de conexão
 		if(minhaRede.clienteConectado == false){
-			outtextxy(botaoOpcaoServ.x + 24,botaoOpcaoServ.y + 24, "ABRIR");
-			outtextxy(botaoOpcaoServ.x + 8,botaoOpcaoServ.y + 40,"SERVIDOR");
+			outtextxy(botaoOpcaoServ.x + 24,botaoOpcaoServ.y + 24, linguagem.GetText(35));
+			outtextxy(botaoOpcaoServ.x + 8,botaoOpcaoServ.y + 40,linguagem.GetText(43));
 		} else{
-			outtextxy(botaoOpcaoServ.x + 24,botaoOpcaoServ.y + 24, "FECHAR");
-			outtextxy(botaoOpcaoServ.x + 8,botaoOpcaoServ.y + 40,"SERVIDOR");
+			outtextxy(botaoOpcaoServ.x + 24,botaoOpcaoServ.y + 24, linguagem.GetText(36));
+			outtextxy(botaoOpcaoServ.x + 8,botaoOpcaoServ.y + 40,linguagem.GetText(43));
 		}
 
 		
 		// Primeira mensagem do log
 		if(minhaRede.servidorInit == true){
 			setcolor(LIGHTGREEN);
-			outtextxy(TILE_W * 20, TILE_H * 14 + 16, "- Click em \"Abrir Servidor\".");
+			outtextxy(TILE_W * 20, TILE_H * 14 + 16, linguagem.GetText(37));
 		} else{
 			setcolor(LIGHTRED);
-			outtextxy(TILE_W * 20, TILE_H * 14 + 16, "- Falha na inicialização do servidor.");
+			outtextxy(TILE_W * 20, TILE_H * 14 + 16, linguagem.GetText(38));
 		}
 		
 		
 		// Segunda mensagem do log
 		if(minhaRede.clienteConectado == true){
 			setcolor(LIGHTBLUE);
-			outtextxy(TILE_W * 20, TILE_H * 15 + 8, "- Cliente está conectado!");
+			outtextxy(TILE_W * 20, TILE_H * 15 + 8, linguagem.GetText(39));
 		} 
 		
 		minhaPg.Visual();
@@ -1598,7 +1600,7 @@ EscolhaEmMenu MenuServidor(){
 			
 			if(minhaRede.clienteOk == false){
 				setcolor(YELLOW);
-				outtextxy(TILE_W * 20, TILE_H * 16 + 8, "- Aguardando resposta do cliente...");
+				outtextxy(TILE_W * 20, TILE_H * 16 + 8, linguagem.GetText(40));
 				if(minhaRede.RecebeDoClient() == true){
 						c = minhaRede.pacote[0];
 						i = 0;
@@ -1666,9 +1668,9 @@ EscolhaEmMenu MenuServidor(){
 		
 			else if(minhaRede.clienteConectado == false){
 			
-				outtextxy(TILE_W * 20, TILE_H * 14 + 16, "_________Servidor aberto_________");
+				outtextxy(TILE_W * 20, TILE_H * 14 + 16, linguagem.GetText(41));
 				setcolor(YELLOW);
-				outtextxy(TILE_W * 20, TILE_H * 15 + 8, "- Aguardando cliente...");
+				outtextxy(TILE_W * 20, TILE_H * 15 + 8, linguagem.GetText(42));
 			
 				if(minhaRede.AceitaConexaoClient() == true){
 					
@@ -1805,21 +1807,21 @@ EscolhaEmMenu TelaCreditos(){
 	settextjustify(LEFT_TEXT,CENTER_TEXT);
 	setfillstyle(1,BLACK);
 	settextstyle(BOLD_FONT,HORIZ_DIR,1);
-	outtextxy(botaoVoltar2.x + 4 ,botaoVoltar2.y + 24,"VOLTAR");
+	outtextxy(botaoVoltar2.x + 4 ,botaoVoltar2.y + 24,linguagem.GetText(3));
 	setcolor(GREEN);
 	settextstyle(BOLD_FONT,HORIZ_DIR,5);
-	outtextxy(TILE_W * 16 + 24, TILE_H * 3, "CRÉDITOS");
+	outtextxy(TILE_W * 16 + 24, TILE_H * 3, linguagem.GetText(15));
 	setcolor(LIGHTGREEN);
 	settextstyle(BOLD_FONT,HORIZ_DIR,2);
-	outtextxy(TILE_W * 8 , TILE_H * 6, "GAME DESIGN / PROGRAMAÇÃO");
+	outtextxy(TILE_W * 8 , TILE_H * 6, linguagem.GetText(44));
 	outtextxy(TILE_W * 26 , TILE_H * 6, "KELVIN OLIVEIRA");
-	outtextxy(TILE_W * 12 + 24 , TILE_H * 8, "ARTE");
+	outtextxy(TILE_W * 12 + 24 , TILE_H * 8, linguagem.GetText(45));
 	outtextxy(TILE_W * 26 , TILE_H * 8, "CHRISTIAN MOURA");
-	outtextxy(TILE_W * 7 , TILE_H * 10, "DIVULGAÇÃO / SUPORTE EM PROG. (N3)");
+	outtextxy(TILE_W * 7 , TILE_H * 10, linguagem.GetText(46));
 	outtextxy(TILE_W * 26 , TILE_H * 10, "ADRIANO FELIX");
-	outtextxy(TILE_W * 12 + 16 , TILE_H * 12, "MÚSICA");
+	outtextxy(TILE_W * 12 + 16 , TILE_H * 12, linguagem.GetText(47));
 	outtextxy(TILE_W * 26, TILE_H * 12, "ANDERSON ARAUJO");
-	outtextxy(TILE_W * 15 + 16 , TILE_H * 14, "PARTICIPARAM TAMBÉM: ");
+	outtextxy(TILE_W * 15 + 16 , TILE_H * 14, linguagem.GetText(48));
 	outtextxy(TILE_W * 9 + 16 , TILE_H * 16, "MARCELO HENRIQUE / SÉRGIO SCHAPOWAL / VICTOR AMARAL");
 
 	minhaPg.Visual();
