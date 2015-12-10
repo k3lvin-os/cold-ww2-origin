@@ -15,6 +15,11 @@
 void* GetImage(char path[], int width, int height);
 void GetImage(void** pImg, char path[], int width, int height);
 
+#include "linguagem.h"
+Linguagem linguagem;
+
+void RecebePacoteJogo();
+void EnviaPacoteJogo();
 
 // Bibliotecas criados pela equipe de desenvolvimento
 #include "..\..\header\radiobutton.h"
@@ -41,7 +46,7 @@ int main(){
 	
 	char *lado;
 	Cutscenes cutscenes;
-	int opcao, nLado=0;
+	char opcao, nLado=0;
 	Pagina minhaPg;
 	Jogador meuJog;
 	TipoGameplay tipoGameplay;
@@ -57,63 +62,57 @@ int main(){
 	cutscenes.Carrega();
 	cleardevice();
 	minhaPg.Visual();
+	
+	// ================================== SELEÇÃO DE IDIOMA =====================
+	int lingua;
 	do{
-		cout << "\nCUTSCENES DO JOGO\nDigite uma das opções a seguir"
-		<< endl << "1 - Introdução" << endl << "2 - Final dos Nazistas" <<
-		endl << "3 - Final dos EUA" << endl << "4 - Final da URSS" <<
-		endl << "5 - Final da Guerra Fria" << endl << "6 - Tutorial Básico" <<
-		endl << "7 - Sair\nOpcao: ";
+		cout << "Escolha o idioma:\n 1 - Inglês\n 2 - Português\nidioma: ";
+		cin >> lingua;
 		
+		if(lingua != 1 && lingua != 2){
+			cout << "\nDigite um idioma válido\n";
+		}
+		
+	} while(lingua != 1 && lingua != 2);
+	
+	if(lingua == 1)
+		linguagem.Init(INGLES);
+	else
+		linguagem.Init(PORTUGUES);
+	// ================================== SELEÇÃO DE IDIOMA =====================
+	
+	
+	do{
+		cout << endl << endl <<  "FINAIS DO JOGO" << endl << "Digite uma das opções a seguir:" << endl
+		<< "1 - Final dos Nazistas" << endl << "2 - Final dos EUA" << endl << "3 - Final da URSS" <<
+		endl << "4 - Final da Guerra Fria" << endl <<  "5 - Sair" << endl << "Opcao: ";
 		
 		outtextxy(TELA_W /2 - 64 ,TELA_H /2,"Use o console para selecionar uma cutscene");
 		cin >> opcao;
-		
-		if(opcao == 1){
-			cutscenes.IntroJogo();
-		} 
-		
-		else if(opcao == 2){
+	
+		if(opcao == '1'){
 			cutscenes.MostraFinal(FINAL_NAZI);
 		}
 		
-		else if(opcao == 3){
+		else if(opcao == '2'){
 			cutscenes.MostraFinal(FINAL_EUA);
 		}
 		
-		else if(opcao == 4){
+		else if(opcao == '3'){
 			cutscenes.MostraFinal(FINAL_URSS);
 		}
 		
 		
-		else if(opcao == 5){
+		else if(opcao == '4'){
 			cutscenes.MostraFinal(FINAL_GUERRAFRIA);	
 		}
 		
-		else if(opcao == 6){
-			do{
-			
-				cout << "\nDigite o Lado: 1 - USA ou 2 - URSS " ;
-				cin >> nLado;							
-			}while(nLado != 1 && nLado != 2);
-			
-			minhaPg.Troca();
-			minhaPg.Ativa();
-			
-			if (nLado == 1)
-				meuJog.Init(LADOEUA,0);
-			else
-				meuJog.Init(LADOURSS,0);
-			
-			minhaPg.Visual();
-			cutscenes.Tutorial(meuJog,tipoGameplay);
-			fflush(stdin);
-		}
-		else if(opcao != 7 ){
+		else if(opcao != '5'){
 			cout << "\nOpção inválida\n";
 		}
 		
 		
-	}while(opcao != 7);
+	}while(opcao != '5');
 	
 	closegraph();
 	return 0;
@@ -148,3 +147,5 @@ void* GetImage(char path[], int width, int height){
 	getimage(0,0,width,height,pImg); 
 	return pImg;
 }		
+
+

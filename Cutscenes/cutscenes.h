@@ -43,10 +43,7 @@ struct Cutscenes{
 	void FinalUrss();
 	void FinalNazi();
 	void FinalGuerraFria();
-	void IntroJogo();
 	bool EscreveDevagar(int x0, int y0, char* msg, int delayPorLetra, bool checkClick);
-	void Tutorial(Jogador meuJog, TipoGameplay tipoGameplay);
-	
 	
 };
 
@@ -124,11 +121,11 @@ void Cutscenes::MostraFinal(Final meuFinal){
 		setcolor(WHITE);
 		settextstyle(BOLD_FONT,HORIZ_DIR,3);
 		if(meuFinal == FINAL_NAZI)
-			outtextxy(TELA_W / 2 - 80,TELA_H / 2,"FINAL DOS NAZISTAS");
+			outtextxy(TELA_W / 2 - 80,TELA_H / 2,linguagem.GetText(63));
 		else if(meuFinal == FINAL_EUA)
-			outtextxy(TELA_W / 2 - 80,TELA_H / 2,"FINAL DOS EUA");
+			outtextxy(TELA_W / 2 - 80,TELA_H / 2,linguagem.GetText(64));
 		else if(meuFinal == FINAL_URSS)
-			outtextxy(TELA_W / 2 - 80,TELA_H / 2, "FINAL DA URSS");
+			outtextxy(TELA_W / 2 - 80,TELA_H / 2,linguagem.GetText(65));
 		settextstyle(BOLD_FONT,HORIZ_DIR,1);
 	}
 	
@@ -215,21 +212,21 @@ void Cutscenes::FinalNazi(){
 	sprites[ESTATUA_HITLER].Show();
 	delay(1500);
 	
-	EscreveDevagar(0,80,"Nem União Soviética,nem Estados Unidos \.\.\.",75,false);
-	EscreveDevagar(0,160,"Eles não imaginavam que o poderio nazista",75,false);
-	EscreveDevagar(0,190,"era tão forte\.",75,false);
+	EscreveDevagar(0,80,linguagem.GetText(66),75,false);
+	EscreveDevagar(0,160,linguagem.GetText(67),75,false);
+	EscreveDevagar(0,190,linguagem.GetText(68),75,false);
 	delay(100);
 	
-	EscreveDevagar(0,270,"Derrotando os dois inimigos, ",75,false);
-	EscreveDevagar(0,300,"Hitler implantou um único regime",75,false);
-	EscreveDevagar(0,330,"onde todas nações obedecem aos Nazistas,",75,false);
-	EscreveDevagar(0,360,"isso com posições vantajosas para aqueles",75,false);
-	EscreveDevagar(0,390,"que pertenceram ao Eixo (Itália e Japão).",75,false);
+	EscreveDevagar(0,270,linguagem.GetText(69),75,false);
+	EscreveDevagar(0,300,linguagem.GetText(70),75,false);
+	EscreveDevagar(0,330,linguagem.GetText(71),75,false);
+	EscreveDevagar(0,360,linguagem.GetText(72),75,false);
+	EscreveDevagar(0,390,linguagem.GetText(73),75,false);
 	delay(200);
 	
-	EscreveDevagar(0,480,"Com a supremacia da raça ariana,",75,false);
-	EscreveDevagar(0,510,"os Nazistas encontraram a desejada paz e, ",75,false);
-	EscreveDevagar(0,540,"agora, inimigo algum pode atrapalhar isso.",75,false);
+	EscreveDevagar(0,480,linguagem.GetText(74),75,false);
+	EscreveDevagar(0,510,linguagem.GetText(75),75,false);
+	EscreveDevagar(0,540,linguagem.GetText(76),75,false);
 	
 	delay(8000);
 	setbkcolor(BLACK);
@@ -255,26 +252,26 @@ void Cutscenes::FinalEua(){
 	sprites[ESTATUA_TIOSAM].Show();
 	delay(1500);
 	
-	EscreveDevagar(0,80,"Os Estados Unidos derrotaram os Nazistas",75,false);
-	EscreveDevagar(0,110,"em uma última batalha.",75,false);
+	EscreveDevagar(0,80,linguagem.GetText(77),75,false);
+	EscreveDevagar(0,110,linguagem.GetText(78),75,false);
 	delay(100);
 
 	
-	EscreveDevagar(0,200,"A União Soviética não resistiu ao ",75,false);
-	EscreveDevagar(0,230,"embate e acabou se rendendo aos ",75,false);
-	EscreveDevagar(0,260,"americanos devido a superioridade",75,false);
-	EscreveDevagar(0,290,"desses no campo de batalha.",75,false); 
+	EscreveDevagar(0,200,linguagem.GetText(79),75,false);
+	EscreveDevagar(0,230,linguagem.GetText(80),75,false);
+	EscreveDevagar(0,260,linguagem.GetText(81),75,false);
+	EscreveDevagar(0,290,linguagem.GetText(82),75,false); 
 	delay(200);
 
-	EscreveDevagar(0,380,"Dessa forma, os americanos tiveram ",75,false);
-	EscreveDevagar(0,410,"plena liberdade para implantar o",75,false);
-	EscreveDevagar(0,440,"capitalismo em todas nações do oriente.",75,false);
+	EscreveDevagar(0,380,linguagem.GetText(83),75,false);
+	EscreveDevagar(0,410,linguagem.GetText(84),75,false);
+	EscreveDevagar(0,440,linguagem.GetText(85),75,false);
 	
 	delay(200);
-	EscreveDevagar(0,530,"Alcançaram a desejada paz e,",75,false);
-	EscreveDevagar(0,560,"agora, inimigo algum pode atrapalhar isso.",75,false);
+	EscreveDevagar(0,530,linguagem.GetText(86),75,false);
+	EscreveDevagar(0,560,linguagem.GetText(76),75,false);
 	
-	delay(3200);
+	delay(2800);
 	setbkcolor(BLACK);
 	cleardevice();
 }
@@ -297,23 +294,23 @@ void Cutscenes::FinalUrss(){
 	sprites[ESTATUA_LENIN].Show();
 	delay(1500);
 		
-	EscreveDevagar(0,80,"A União Soviética derrotou os Nazistas",75,false);
-	EscreveDevagar(0,110,"em uma última batalha.",75,false);
+	EscreveDevagar(0,80,linguagem.GetText(87),75,false);
+	EscreveDevagar(0,110,linguagem.GetText(78),75,false);
 	delay(100);
 	
-	EscreveDevagar(0,200,"Os Estados Unidos não resistiram ao ",75,false);
-	EscreveDevagar(0,230,"embate e acabaram se rendendo aos ",75,false);
-	EscreveDevagar(0,260,"soviéticos devido a superioridade",75,false);
-	EscreveDevagar(0,290,"desses no campo de batalha.",75,false); 
+	EscreveDevagar(0,200,linguagem.GetText(88),75,false);
+	EscreveDevagar(0,230,linguagem.GetText(80),75,false);
+	EscreveDevagar(0,260,linguagem.GetText(89),75,false);
+	EscreveDevagar(0,290,linguagem.GetText(82),75,false); 
 	delay(200);
 
-	EscreveDevagar(0,380,"Dessa forma, os soviéticos tiveram ",75,false);
-	EscreveDevagar(0,410,"plena liberdade para implantar o ",75,false);
-	EscreveDevagar(0,440,"comunismo em todas nações do ocidente.",75,false);
+	EscreveDevagar(0,380, linguagem.GetText(90),75,false);
+	EscreveDevagar(0,410, linguagem.GetText(91),75,false);
+	EscreveDevagar(0,440, linguagem.GetText(92),75,false);
 	
 	delay(200);
-	EscreveDevagar(0,530,"Alcançaram a desejada paz e,",75,false);
-	EscreveDevagar(0,560,"agora, inimigo algum pode atrapalhar isso.",75,false);
+	EscreveDevagar(0,530,linguagem.GetText(86),75,false);
+	EscreveDevagar(0,560,linguagem.GetText(76),75,false);
 
 
 	
@@ -378,96 +375,6 @@ void Cutscenes::FinalGuerraFria(){
 
 	delay(30);
 	cleardevice();
-}
-
-// Introdução mostrada na inicialização do jogo
-void Cutscenes::IntroJogo(){
-	cleardevice();
-	settextstyle(BOLD_FONT,HORIZ_DIR,2);
-	setcolor(WHITE);
-	if (EscreveDevagar(0, TILE_H * 17, "Não podemos ficar parados. Não depois dos ataque dos japoneses,",40,true) == true ){
-		if(EscreveDevagar(30,TILE_W * 17 + 30,"e da União Soviética estar tão perto de derrotar os Nazistas.",40,true) == true){
-			sprites[ROOSEV_QUADRO].GoTo(0,0);
-			sprites[ROOSEV_QUADRO].Show();
-			delay(100);
-			outtextxy(TELA_W / 2 - 150,500,"Franklin D. Roosevelt");
-			delay(1500);
-		}
-	}
-	cleardevice();
-
-}
-
-// Tutorial do Jogo
-void Cutscenes::Tutorial(Jogador meuJog, TipoGameplay tipoGameplay){
-	
-	Grade minhaGrd;
-	Pagina minhaPg;
-	minhaPg.Init();
-	minhaPg.Troca();
-	minhaPg.Ativa();	
-	cleardevice();
-	minhaPg.Visual();
-	setcolor(WHITE);
-	settextstyle(BOLD_FONT, HORIZ_DIR, 2);
-	EscreveDevagar(TILE_W * 10, TILE_H * 10, "A paz no mundo será definida agora.",75,false);
-	delay(2000);
-	cleardevice();
-//	minhaGrd.Colocar();
-	if (meuJog.lado == LADOEUA){
-		EscreveDevagar( TILE_W * 12, TILE_H * 2, "E depende de você, Roosevelt!", 75, false);
-		sprites[ROOSEV_QUADRO].GoTo( TILE_W * 15, TILE_H * 3);
-		sprites[ROOSEV_QUADRO].Show();
-	}
-	else
-	{
-		EscreveDevagar( TILE_W * 13, TILE_H * 2, "E depende de você, Stalin!", 75, false);
-		sprites[STALIN_QUADRO].GoTo( TILE_W * 15, TILE_H * 3);
-		sprites[STALIN_QUADRO].Show();
-	}	
-	
-	delay(3000);
-	
-	cleardevice();
-	
-	meuJog.torreGUI.MostraTorre();
-	EscreveDevagar( TILE_W * 2, TILE_H * 14, "Arraste torres para que elas defendam  o seu cam po de batalha.", 75, false);
-	
-	delay (1000);
-	cleardevice();
-	
-	meuJog.soldGUI.x = meuJog.torreGUI.x;
-	meuJog.soldGUI.y = meuJog.torreGUI.y;
-	meuJog.soldGUI.Show();
-	if(meuJog.lado == LADOEUA){
-		meuJog.soldGUI.x = GUI_EUA_X;
-		meuJog.soldGUI.y = GUI_EUA_Y;
-	}
-	else
-	{
-		meuJog.soldGUI.x = GUI_URSS_X;
-		meuJog.soldGUI.y = GUI_URSS_Y;
-	}
-	EscreveDevagar( TILE_W * 4, TILE_H * 14, "Envie soldados para atrapalhar os planos do outro jogador.", 75, false);
-	
-	delay(1000);
-	
-	if(tipoGameplay == MULTIPLAYER){
-//		EnviaPacoteJogo();
-//		RecebePacoteJogo();
-	}
-	
-	cleardevice();
-	
-	PlaySound("../../Assets/Music/gameplay.wav",NULL,SND_LOOP | SND_ASYNC);	
-	
-	EscreveDevagar( TILE_W * 15, TILE_H * 10, "Alcance sua PAZ !!!", 75, false);
-	
-	
-	delay(3000);
-	cleardevice();
-	
-	
 }
 
 
