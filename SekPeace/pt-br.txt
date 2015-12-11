@@ -85,11 +85,25 @@ TEXT_84 = "plena liberdade para implantar o"
 TEXT_85 = "capitalismo em todas nações do oriente."
 TEXT_86 = "Alcançaram a desejada paz e,"
 TEXT_87 = "A União Soviética derrotou os Nazistas",
-TEXT_88 = "embate e acabaram se rendendo aos "
+TEXT_88 = "Os Estados Unidos não resistiram ao "
 TEXT_89 = "soviéticos devido a superioridade"
 TEXT_90 = "Dessa forma, os soviéticos tiveram "
 TEXT_91 = "plena liberdade para implantar o "
 TEXT_92 = "comunismo em todas nações do ocidente."
+TEXT_93 = "A derrota dos Nazistas não foi o suficiente para encerrar a"
+TEXT_94 = "Segunda Guerra Mundial..."
+TEXT_95 = "Ela só foi encerrada em  Agosto de 1945"
+TEXT_96 = "com  o lançam ento das duas bom bas atôm icas"
+TEXT_97 =  "em  Hiroshim a e em  Nagasaki."
+TEXT_98 =  "Esta foto foi tirada alguns m eses antes disso,na conferência de Yalta, "
+TEXT_99 =  "evento esse que foi uma reunião entre as duas potências mundiais "
+TEXT_100 =  "que pariciparam do conflito armado."
+TEXT_101 =  "O lhando para ela, parece até "
+TEXT_102 =  "que, o que se procedeu, foi um "
+TEXT_103 =  "período de paz entre as duas nações."
+TEXT_104 =  "Mas, o que realmente veio depois foi um conflito longo "
+TEXT_105 = "e indireto que foi cham ado de Guerra Fria."
+
 
 
 
