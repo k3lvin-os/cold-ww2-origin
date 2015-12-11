@@ -63,7 +63,7 @@ TDelay gameTime;
 Grade minhaGrd;
 EscolhaEmMenu escolhaMenu;
 Botao botaoUmJog, botaoDoisJog, botaoCredit, botaoJogar, botaoVoltar, botaoVoltar2,
-botaoCliente, botaoServidor, botaoConexao, botaoOpcaoServ, botaoAlterar ;
+botaoCliente, botaoServidor, botaoConexao, botaoOpcaoServ, botaoAlterar, botaoPtBr, botaoEnglish ;
 char *ladoMeuJog,*ladoOutroJog;
 int gameSpeed;
 Radio radioSpeed, radioLider, radioModoIP;
@@ -100,12 +100,25 @@ int main(){
 	
 	// Inicializa biblioteca de conexões em rede
 	minhaRede.WinSockInit();
-	
-	int iResult;
-	
+		
 	// Carrega textos do jogo em modo default
 	linguagem.TextoDefault();
+	
+	// Inicializa a estrutura página
+	minhaPg.Init();	
+	
+	// Inicializa a janela gráfica
+	initwindow(TELA_W,TELA_H, "Seek Of Peace: Cold WW2");
+	
+	// A velocidade do jogo ainda não foi definida
+	gameSpeed = NULL;
+	
+	// Busca o IP e Porta definidos por padrão em um .txt
+	ConfigIPEPorta();
 
+	// Fornece uma seed para o gerador de números pseudoaleatórios
+	srand(time(NULL));	
+	
 	
 	// Inicialize os botões que serão usados nos menus
 	botaoUmJog.Init(BOTAO1_X,BOTAO1_Y,4,4);
@@ -119,53 +132,14 @@ int main(){
 	botaoConexao.Init(TILE_W * 17,TILE_H * 12 + 8, 5,1);
 	botaoOpcaoServ.Init(TILE_W * 11,TILE_H * 14,4,2);
 	botaoAlterar.Init(TILE_W * 27 + 16, TILE_H  * 11,4,1);
-	
-	// ================================== SELEÇÃO DE IDIOMA =====================
-	int lingua;
-	do{
-		cout << "Escolha o idioma:\n 1 - Inglês\n 2 - Português\nidioma: ";
-		cin >> lingua;
-		
-		if(lingua != 1 && lingua != 2){
-			cout << "\nDigite um idioma válido\n";
-		}
-		
-	} while(lingua != 1 && lingua != 2);
-	
-	if(lingua == 1)
-		linguagem.Init(INGLES);
-	else
-		linguagem.Init(PORTUGUES);
-	// ================================== SELEÇÃO DE IDIOMA =====================
-	
-	
-	//Inicialize os radio buttons que serão usados nos menus
-	radioSpeed.prox = NULL;
-	radioLider.prox = NULL;
-	radioModoIP.prox = NULL;
-	radioSpeed.Insere(&radioSpeed,"4",false,TILE_W * 20 + 16, TILE_H * 10 + 16);
-	radioSpeed.Insere(&radioSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	
-	radioLider.Insere(&radioLider,"Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16);
-	radioLider.Insere(&radioLider,"Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16);
-	radioModoIP.Insere(&radioModoIP,linguagem.GetText(20), true,TILE_W * 20 + 16, TILE_H * 10 + 16);
-	radioModoIP.Insere(&radioModoIP,linguagem.GetText(21), false,TILE_W * 20 + 16, TILE_H * 11 + 16);
-	
-	// A velocidade do jogo ainda não foi definida
-	gameSpeed = NULL;
-	
-	// Busca o IP e Porta definidos por padrão em um .txt
-	ConfigIPEPorta();
+	botaoEnglish.Init(TILE_W * 18, TILE_H * 13,4,1);
+	botaoPtBr.Init(TILE_W * 17 , TILE_H * 15 ,6,1);
 
-	// Fornece uma seed para o gerador de números pseudoaleatórios
-	srand(time(NULL));
 	
-	// Inicializa a estrutura página
-	minhaPg.Init();	
+	// ============ FUNÇÕES QUE CARREGAM IMAGENS NA TELA ====================
+	//* Já que carregam imagens, deve-se carrega-las nos "bastidores" do jogo,
+	// sem a visualização do jogador
 	
-	// Inicializa a janela gráfica
-	initwindow(TELA_W,TELA_H, "Seek Of Peace: Cold WW2");
-	
-	// Processo de carregamento dos tiles do jogo
 	minhaPg.Troca();
 	minhaPg.Ativa();
 	
@@ -193,14 +167,55 @@ int main(){
 	limpa2Tiles.Init(0,0,32,64);
 	campoJogo.Init(0,0,TELA_W,TELA_H);
 	cleardevice();
-
+	// ===========================================================================
 
 	minhaPg.Visual();
-	// ======= Fim do processamento ============
 	
-	escolhaMenu = MENU;
+	// ================================== SELEÇÃO DE IDIOMA =====================
+	BackgroundMenu();
+	settextstyle(BOLD_FONT,HORIZ_DIR,3);
+	outtextxy(TILE_W * 15, TILE_H * 11, "CHOOSE YOUR LANGUAGE");
+	settextstyle(BOLD_FONT,HORIZ_DIR,1);
 	
+	botaoEnglish.Show();
+	botaoPtBr.Show();
+	
+	outtextxy(botaoEnglish.x + 16,botaoEnglish.y + 24,"ENGLISH");
+	outtextxy(botaoPtBr.x + 6,botaoPtBr.y + 24, "PORTUGUÊS(BR)");
+		
+	Idioma idioma = SEM_IDIOMA;
+	
+	while(idioma == SEM_IDIOMA){
+		
+		if(botaoEnglish.CheckClick() == true){
+		 	idioma = INGLES;
+		}
+		
+		else if (botaoPtBr.CheckClick() == true){
+			idioma = PORTUGUES;
+		}
+	}
+	
+	if(idioma == INGLES)
+		linguagem.Init(INGLES);
+	else
+		linguagem.Init(PORTUGUES);	
+	
+	delay(125);
+	// ========================================================================
+	
+	//Inicialize os radio buttons que serão usados nos menus
+	radioSpeed.prox = NULL;
+	radioLider.prox = NULL;
+	radioModoIP.prox = NULL;
+	radioSpeed.Insere(&radioSpeed,"4",false,TILE_W * 20 + 16, TILE_H * 10 + 16);
+	radioSpeed.Insere(&radioSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	
+	radioLider.Insere(&radioLider,"Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16);
+	radioLider.Insere(&radioLider,"Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16);
+	radioModoIP.Insere(&radioModoIP,linguagem.GetText(20), true,TILE_W * 20 + 16, TILE_H * 10 + 16);
+	radioModoIP.Insere(&radioModoIP,linguagem.GetText(21), false,TILE_W * 20 + 16, TILE_H * 11 + 16);
 
+	escolhaMenu = MENU;
 	
 	// Loop do jogo
 	while(escolhaMenu != SAIR ){
