@@ -8,6 +8,7 @@
 #include <stdio.h>	  // Para trabalhar com funlções da linguagem C
 #include <windows.h> // Para trabalhar com funções de som do Windows
 #include <graphics.h>
+#include <vector>
 
 // Para usar a biblioteca Winsock (comunicação em rede)
 #pragma comment (lib, "Ws2_32.lib")
@@ -24,6 +25,7 @@ Linguagem linguagem;
 
 // Bibliotecas criados pela equipe de desenvolvimento
 #include "..\..\header\radiobutton.h"
+#include "..\..\header\radiolist.h"
 #include "..\..\header\enumeracoes.h"
 #include "..\..\header\td_defines.h"
 #include "..\..\header\sprite.h"
@@ -50,6 +52,7 @@ void Avisa(TDelay gameTime, Lider Hitler);
 void MostraLideres(Lider *meuLider, Lider *outroLider);
 void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA);
 bool SemTorrePerto(Torre *torre0, int tileCimaX,int tileCimaY);
+Radio* RadioChecked(vector<Radio> radioList)
 
 
 
@@ -205,15 +208,15 @@ int main(){
 	// ========================================================================
 	
 	//Inicialize os radio buttons que serão usados nos menus
-	radioSpeed.prox = NULL;
-	radioLider.prox = NULL;
-	radioModoIP.prox = NULL;
-	radioSpeed.Insere(&radioSpeed,"4",false,TILE_W * 20 + 16, TILE_H * 10 + 16);
-	radioSpeed.Insere(&radioSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	
-	radioLider.Insere(&radioLider,"Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16);
-	radioLider.Insere(&radioLider,"Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16);
-	radioModoIP.Insere(&radioModoIP,linguagem.GetText(20), true,TILE_W * 20 + 16, TILE_H * 10 + 16);
-	radioModoIP.Insere(&radioModoIP,linguagem.GetText(21), false,TILE_W * 20 + 16, TILE_H * 11 + 16);
+	radioSpeed.next = NULL;
+	radioLider.next = NULL;
+	radioModoIP.next = NULL;
+	radioSpeed.Inserts(&radioSpeed,"4",false,TILE_W * 20 + 16, TILE_H * 10 + 16);
+	radioSpeed.Inserts(&radioSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	
+	radioLider.Inserts(&radioLider,"Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16);
+	radioLider.Inserts(&radioLider,"Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16);
+	radioModoIP.Inserts(&radioModoIP,linguagem.GetText(20), true,TILE_W * 20 + 16, TILE_H * 10 + 16);
+	radioModoIP.Inserts(&radioModoIP,linguagem.GetText(21), false,TILE_W * 20 + 16, TILE_H * 11 + 16);
 
 	escolhaMenu = MENU;
 	
@@ -255,9 +258,9 @@ int main(){
 
 	// Libera a memória
 	cenario.LimpaMem();
-	radioSpeed.LimpaNo(&radioSpeed);
-	radioLider.LimpaNo(&radioLider);
-	radioModoIP.LimpaNo(&radioModoIP);
+	radioSpeed.ClearNode(&radioSpeed);
+	radioLider.ClearNode(&radioLider);
+	radioModoIP.ClearNode(&radioModoIP);
 	linguagem.LimpaMemoria();
 	closegraph();
 	return 0;	
@@ -1165,8 +1168,8 @@ EscolhaEmMenu MenuUmJog(){
 		botaoVoltar.Show();
 				
 		// Mostra botões radio
-		radioSpeed.MostraLista(&radioSpeed);
-		radioLider.MostraLista(&radioLider);
+		radioSpeed.ShowList(&radioSpeed);
+		radioLider.ShowList(&radioLider);
 		
 		// Mostra o texto dos botões 
 		outtextxy(TILE_W * 11, TILE_H * 12 + 16,linguagem.GetText(16));
@@ -1177,8 +1180,8 @@ EscolhaEmMenu MenuUmJog(){
 		minhaPg.Visual();
 		
 		// Verifica clicks nos botões rádio
-		radioSpeed.VerificaClick(&radioSpeed);
-		radioLider.VerificaClick(&radioLider);
+		radioSpeed.CheckClick(&radioSpeed);
+		radioLider.CheckClick(&radioLider);
 		
 		
 		// --------------- Processamento do botão Jogar===================
@@ -1298,7 +1301,7 @@ EscolhaEmMenu MenuCliente(){
 		botaoConexao.Show();
 		
 		// Mostra radio buttons
-		radioModoIP.MostraLista(&radioModoIP);
+		radioModoIP.ShowList(&radioModoIP);
 		
 		if(	radioModoIP.RadioChecked(&radioModoIP)->label  == linguagem.GetText(21) && minhaRede.clienteConectado == false ){
 			botaoAlterar.Show();
@@ -1347,7 +1350,7 @@ EscolhaEmMenu MenuCliente(){
 		
 		//Verificação de entrada nos radio buttons				
 		if(minhaRede.clienteConectado == false)
-			radioModoIP.VerificaClick(&radioModoIP);
+			radioModoIP.CheckClick(&radioModoIP);
 			
 			
 
@@ -1563,8 +1566,8 @@ EscolhaEmMenu MenuServidor(){
 		botaoOpcaoServ.Show();
 				
 		// Mostra botões radio
-		radioSpeed.MostraLista(&radioSpeed);
-		radioLider.MostraLista(&radioLider);
+		radioSpeed.ShowList(&radioSpeed);
+		radioLider.ShowList(&radioLider);
 		
 		// Mostra o texto dos botões 
 		outtextxy(TILE_W * 11, TILE_H * 12 + 16,linguagem.GetText(16) );
@@ -1604,8 +1607,8 @@ EscolhaEmMenu MenuServidor(){
 		
 		// Verifica clicks nos botões rádio (funcionam apenas antes do cliente se conectar)
 		if(minhaRede.clienteConectado == false){
-			radioSpeed.VerificaClick(&radioSpeed);
-			radioLider.VerificaClick(&radioLider);
+			radioSpeed.CheckClick(&radioSpeed);
+			radioLider.CheckClick(&radioLider);
 		}
 
 		
@@ -1852,4 +1855,8 @@ EscolhaEmMenu TelaCreditos(){
 	return escolha;
 	
 }
+
+
+
+
 
