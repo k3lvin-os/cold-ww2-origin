@@ -52,7 +52,6 @@ void Avisa(TDelay gameTime, Lider Hitler);
 void MostraLideres(Lider *meuLider, Lider *outroLider);
 void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA);
 bool SemTorrePerto(Torre *torre0, int tileCimaX,int tileCimaY);
-Radio* RadioChecked(vector<Radio> radioList)
 
 
 
@@ -69,7 +68,7 @@ Botao botaoUmJog, botaoDoisJog, botaoCredit, botaoJogar, botaoVoltar, botaoVolta
 botaoCliente, botaoServidor, botaoConexao, botaoOpcaoServ, botaoAlterar, botaoPtBr, botaoEnglish ;
 char *ladoMeuJog,*ladoOutroJog;
 int gameSpeed;
-Radio radioSpeed, radioLider, radioModoIP;
+RadioList radioSpeed, radioLider, radioModoIP;
 Rede minhaRede;
 char logDano[100];
 char ipDoServidor[16],portaDoServidor[7];
@@ -208,15 +207,16 @@ int main(){
 	// ========================================================================
 	
 	//Inicialize os radio buttons que serão usados nos menus
-	radioSpeed.next = NULL;
-	radioLider.next = NULL;
-	radioModoIP.next = NULL;
-	radioSpeed.Inserts(&radioSpeed,"4",false,TILE_W * 20 + 16, TILE_H * 10 + 16);
-	radioSpeed.Inserts(&radioSpeed,"8",true,TILE_W * 22 + 16, TILE_H * 10 + 16);	
-	radioLider.Inserts(&radioLider,"Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16);
-	radioLider.Inserts(&radioLider,"Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16);
-	radioModoIP.Inserts(&radioModoIP,linguagem.GetText(20), true,TILE_W * 20 + 16, TILE_H * 10 + 16);
-	radioModoIP.Inserts(&radioModoIP,linguagem.GetText(21), false,TILE_W * 20 + 16, TILE_H * 11 + 16);
+	//Inicialize os radio buttons que serão usados nos menus
+	radioSpeed = RadioList();
+	radioLider = RadioList();
+	radioModoIP = RadioList();
+	radioSpeed.list.push_back(Radio("4",false,TILE_W * 20 + 16, TILE_H * 10 + 16));
+	radioSpeed.list.push_back(Radio("8",true,TILE_W * 22 + 16, TILE_H * 10 + 16));
+	radioLider.list.push_back(Radio("Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16));
+	radioLider.list.push_back(Radio("Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16));
+	radioModoIP.list.push_back(Radio(linguagem.GetText(20), true,TILE_W * 20 + 16, TILE_H * 10 + 16));
+	radioModoIP.list.push_back(Radio(linguagem.GetText(21), false,TILE_W * 20 + 16, TILE_H * 11 + 16));
 
 	escolhaMenu = MENU;
 	
@@ -258,9 +258,6 @@ int main(){
 
 	// Libera a memória
 	cenario.LimpaMem();
-	radioSpeed.ClearNode(&radioSpeed);
-	radioLider.ClearNode(&radioLider);
-	radioModoIP.ClearNode(&radioModoIP);
 	linguagem.LimpaMemoria();
 	closegraph();
 	return 0;	
@@ -1168,8 +1165,8 @@ EscolhaEmMenu MenuUmJog(){
 		botaoVoltar.Show();
 				
 		// Mostra botões radio
-		radioSpeed.ShowList(&radioSpeed);
-		radioLider.ShowList(&radioLider);
+		radioSpeed.ShowList();
+		radioLider.ShowList();
 		
 		// Mostra o texto dos botões 
 		outtextxy(TILE_W * 11, TILE_H * 12 + 16,linguagem.GetText(16));
@@ -1180,15 +1177,15 @@ EscolhaEmMenu MenuUmJog(){
 		minhaPg.Visual();
 		
 		// Verifica clicks nos botões rádio
-		radioSpeed.CheckClick(&radioSpeed);
-		radioLider.CheckClick(&radioLider);
+		radioSpeed.CheckClick();
+		radioLider.CheckClick();
 		
 		
 		// --------------- Processamento do botão Jogar===================
 		if(botaoJogar.CheckClick() == true){
 			escolha = UM_JOGADOR;			
 				
-			if( radioLider.RadioChecked(&radioLider)->label == "Roosevelt"){
+			if( radioLider.RadioChecked()->label == "Roosevelt"){
 				ladoMeuJog = LADOEUA;
 				ladoOutroJog = LADOURSS;
 			} 
@@ -1198,7 +1195,7 @@ EscolhaEmMenu MenuUmJog(){
 			}
 				
 				
-			if(radioSpeed.RadioChecked(&radioSpeed)->label == "4")
+			if(radioSpeed.RadioChecked()->label == "4")
 				gameSpeed = 4;
 			else
 				gameSpeed = 8;
@@ -1301,14 +1298,14 @@ EscolhaEmMenu MenuCliente(){
 		botaoConexao.Show();
 		
 		// Mostra radio buttons
-		radioModoIP.ShowList(&radioModoIP);
+		radioModoIP.ShowList();
 		
-		if(	radioModoIP.RadioChecked(&radioModoIP)->label  == linguagem.GetText(21) && minhaRede.clienteConectado == false ){
+		if(	radioModoIP.RadioChecked()->label  == linguagem.GetText(21) && minhaRede.clienteConectado == false ){
 			botaoAlterar.Show();
 			outtextxy(botaoAlterar.x + 16,botaoAlterar.y + 20 , linguagem.GetText(22));
 		}
 		
-		if(radioModoIP.RadioChecked(&radioModoIP)->label == linguagem.GetText(20) && ipEPortaDefault == false){
+		if(radioModoIP.RadioChecked()->label == linguagem.GetText(20) && ipEPortaDefault == false){
 			ipEPortaDefault = true;
 			ConfigIPEPorta();
 		}
@@ -1330,7 +1327,7 @@ EscolhaEmMenu MenuCliente(){
 		
 		minhaPg.Visual();
 		
-		if(radioModoIP.RadioChecked(&radioModoIP)->label  == linguagem.GetText(21) && minhaRede.clienteConectado == false){
+		if(radioModoIP.RadioChecked()->label  == linguagem.GetText(21) && minhaRede.clienteConectado == false){
 			if(botaoAlterar.CheckClick() == true){
 				
 				ipEPortaDefault = false;
@@ -1350,7 +1347,7 @@ EscolhaEmMenu MenuCliente(){
 		
 		//Verificação de entrada nos radio buttons				
 		if(minhaRede.clienteConectado == false)
-			radioModoIP.CheckClick(&radioModoIP);
+			radioModoIP.CheckClick();
 			
 			
 
@@ -1566,8 +1563,8 @@ EscolhaEmMenu MenuServidor(){
 		botaoOpcaoServ.Show();
 				
 		// Mostra botões radio
-		radioSpeed.ShowList(&radioSpeed);
-		radioLider.ShowList(&radioLider);
+		radioSpeed.ShowList();
+		radioLider.ShowList();
 		
 		// Mostra o texto dos botões 
 		outtextxy(TILE_W * 11, TILE_H * 12 + 16,linguagem.GetText(16) );
@@ -1607,8 +1604,8 @@ EscolhaEmMenu MenuServidor(){
 		
 		// Verifica clicks nos botões rádio (funcionam apenas antes do cliente se conectar)
 		if(minhaRede.clienteConectado == false){
-			radioSpeed.CheckClick(&radioSpeed);
-			radioLider.CheckClick(&radioLider);
+			radioSpeed.CheckClick();
+			radioLider.CheckClick();
 		}
 
 		
@@ -1692,9 +1689,9 @@ EscolhaEmMenu MenuServidor(){
 			
 				if(minhaRede.AceitaConexaoClient() == true){
 					
-					strcpy(tempGmSpeed ,radioSpeed.RadioChecked(&radioSpeed)->label);
+					strcpy(tempGmSpeed ,radioSpeed.RadioChecked()->label);
 					gameSpeed = atoi(tempGmSpeed);
-					tempLider = radioLider.RadioChecked(&radioLider)->label; 
+					tempLider = radioLider.RadioChecked()->label; 
 					
 					if( tempLider == "Roosevelt"){
 						ladoMeuJog = LADOEUA;
