@@ -72,7 +72,7 @@ RadioList radioSpeed, radioLider, radioModoIP;
 Rede minhaRede;
 char logDano[100];
 char ipDoServidor[16],portaDoServidor[7];
-Sprite telaPretaE,telaPretaD, campoJogo, menu, limpa2Tiles;
+Sprite telaPretaE,telaPretaD, campoJogo, menu, limpa2Tiles, logoEMenu, textoCreditos;
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -81,7 +81,7 @@ EscolhaEmMenu MenuUmJogador();
 EscolhaEmMenu Menu();
 EscolhaEmMenu MenuUmJog();
 EscolhaEmMenu MenuDoisJog();
-void BackgroundMenu();
+void CarregaLogoMenu();
 EscolhaEmMenu MenuCliente();
 EscolhaEmMenu MenuServidor();
 EscolhaEmMenu TelaCreditos();
@@ -91,6 +91,8 @@ void SimulaOutroJog(TipoGameplay tipoGameplay,OndaEixo *ondaVsOutroJog,char* log
 void EnviaPacoteJogo();
 void ConfigIPEPorta();
 void TelaGameOver(char *lado);
+void TextoCreditos();
+
 
 #include "..\..\header\cutscenes.h"
 Cutscenes cutscenes;
@@ -170,14 +172,14 @@ int main(){
 	campoJogo.Init(0,0,TELA_W,TELA_H);
 	cleardevice();
 	// ===========================================================================
+	CarregaLogoMenu();
+	logoEMenu.Init(0,0,TELA_W,TELA_H);
 
 	minhaPg.Visual();
 	
 	// ================================== SELEÇÃO DE IDIOMA =====================
-	BackgroundMenu();
-	settextstyle(BOLD_FONT,HORIZ_DIR,3);
+	
 	outtextxy(TILE_W * 15, TILE_H * 11, "CHOOSE YOUR LANGUAGE");
-	settextstyle(BOLD_FONT,HORIZ_DIR,1);
 	
 	botaoEnglish.Show();
 	botaoPtBr.Show();
@@ -205,8 +207,11 @@ int main(){
 	
 	delay(125);
 	// ========================================================================
-	
-	//Inicialize os radio buttons que serão usados nos menus
+	minhaPg.Troca();
+	minhaPg.Ativa();
+	TextoCreditos();
+
+
 	//Inicialize os radio buttons que serão usados nos menus
 	radioSpeed = RadioList();
 	radioLider = RadioList();
@@ -273,7 +278,7 @@ EscolhaEmMenu MenuDoisJog(){
 	minhaPg.Ativa();
 	
 	cleardevice();
-	BackgroundMenu();
+	logoEMenu.Show();
 	
 
 	botaoCliente.Show();
@@ -371,7 +376,7 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	else
 		setcolor(LIGHTRED);
 		
-	settextstyle(BOLD_FONT,HORIZ_DIR,3);
+	//settextstyle(BOLD_FONT,HORIZ_DIR,3);
 	
 	
 	if(gTimeInt >= BEGIN && gTimeInt <= BEGIN + 1){
@@ -406,7 +411,7 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	}
 	
 	else{
-		settextstyle(BOLD_FONT,HORIZ_DIR,3);
+		//settextstyle(BOLD_FONT,HORIZ_DIR,3);
 		outtextxy(TILE_W * 19 + 16,TILE_H * 1,timerChar);
 
 	}
@@ -417,7 +422,6 @@ void Avisa(TDelay gameTime, Lider Hitler){
 		
 
 		
-	settextstyle(BOLD_FONT,HORIZ_DIR,1);
 	
 
 
@@ -715,6 +719,9 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 	outroJog.torre0->LimpaNo(outroJog.torre0);
 	eixoVsMeuJog.torre0->LimpaNo(eixoVsMeuJog.torre0);
 	eixoVsOutroJog.torre0->LimpaNo(eixoVsOutroJog.torre0);
+	
+	settextjustify(LEFT_TEXT,CENTER_TEXT);
+
 }
 
 //============================================================================================
@@ -1105,7 +1112,7 @@ EscolhaEmMenu Menu(){
 	minhaPg.Troca();
 	minhaPg.Ativa();
 	
-	BackgroundMenu();
+	logoEMenu.Show();
 	
 	// Botoões do menu
 	botaoUmJog.Show();
@@ -1152,7 +1159,7 @@ EscolhaEmMenu MenuUmJog(){
 		cleardevice();
 		
 		// Desenha o background básico do menu
-		BackgroundMenu();
+		logoEMenu.Show();
 				
 		// Barras de contraste para os botões radio
 		setfillstyle(1,BLACK);
@@ -1212,8 +1219,8 @@ EscolhaEmMenu MenuUmJog(){
 }
 
 //============================================================================================
-// Desenha o visual básico do menu de jogo
-void BackgroundMenu(){
+// Desenha o logo e menu
+void CarregaLogoMenu(){
 	
 	
 	settextjustify(LEFT_TEXT,CENTER_TEXT);
@@ -1233,8 +1240,7 @@ void BackgroundMenu(){
 	
 	// Modifica texto para tamanho usual
 	settextstyle(BOLD_FONT,HORIZ_DIR,1);
-	setcolor(LIGHTGREEN);
-	
+	setcolor(LIGHTGREEN);	
 }
 
 //============================================================================================
@@ -1273,7 +1279,7 @@ EscolhaEmMenu MenuCliente(){
 		cleardevice();
 		
 		// Desenha o background básico do menu
-		BackgroundMenu();
+		logoEMenu.Show();
 				
 		// Barras de contraste para os botões radio
 		setfillstyle(1,BLACK);
@@ -1548,7 +1554,7 @@ EscolhaEmMenu MenuServidor(){
 		cleardevice();
 		
 		// Desenha o background básico do menu
-		BackgroundMenu();
+		logoEMenu.Show();
 				
 		// Barras de contraste para os botões radio
 		setfillstyle(1,BLACK);
@@ -1819,15 +1825,13 @@ EscolhaEmMenu TelaCreditos(){
 	cleardevice();
 	menu.Show();
 	botaoVoltar2.Show();
-	settextjustify(LEFT_TEXT,CENTER_TEXT);
 	setfillstyle(1,BLACK);
-	settextstyle(BOLD_FONT,HORIZ_DIR,1);
+	
 	outtextxy(botaoVoltar2.x + 4 ,botaoVoltar2.y + 24,linguagem.GetText(3));
-	setcolor(GREEN);
-	settextstyle(BOLD_FONT,HORIZ_DIR,5);
-	outtextxy(TILE_W * 16 + 24, TILE_H * 3, linguagem.GetText(15));
+	textoCreditos.GoTo(TILE_W  * 16 + 16 , TILE_H * 1);
+	textoCreditos.Show();
+	
 	setcolor(LIGHTGREEN);
-	settextstyle(BOLD_FONT,HORIZ_DIR,2);
 	outtextxy(TILE_W * 8 , TILE_H * 6, linguagem.GetText(44));
 	outtextxy(TILE_W * 26 , TILE_H * 6, "KELVIN OLIVEIRA");
 	outtextxy(TILE_W * 12 + 24 , TILE_H * 8, linguagem.GetText(45));
@@ -1841,6 +1845,7 @@ EscolhaEmMenu TelaCreditos(){
 
 	minhaPg.Visual();
 	
+	
 	escolha = SEM_ESCOLHA;
 	while(escolha == SEM_ESCOLHA){
 	
@@ -1851,6 +1856,19 @@ EscolhaEmMenu TelaCreditos(){
 	
 	return escolha;
 	
+}
+
+// Mostra o título da tela de créidtos
+void TextoCreditos()
+{
+	cleardevice();
+	setcolor(GREEN);
+	settextjustify(LEFT_TEXT,TOP_TEXT);
+	settextstyle(BOLD_FONT,HORIZ_DIR,5);
+	outtextxy(2, 0, linguagem.GetText(15));
+	textoCreditos.Init(0,0,TILE_W * 8,TILE_H * 1 + 16);
+	settextstyle(BOLD_FONT,HORIZ_DIR,1);
+	settextjustify(LEFT_TEXT,CENTER_TEXT);
 }
 
 
