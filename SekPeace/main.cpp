@@ -179,7 +179,7 @@ int main(){
 	
 	// ================================== SELEÇÃO DE IDIOMA =====================
 	
-	outtextxy(TILE_W * 15, TILE_H * 11, "CHOOSE YOUR LANGUAGE");
+	outtextxy(TILE_W * 15 + 24, TILE_H * 11, "CHOOSE YOUR LANGUAGE");
 	
 	botaoEnglish.Show();
 	botaoPtBr.Show();
@@ -368,7 +368,7 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	
 	setcolor(YELLOW);
 	gTimeInt = gameTime.GameTime();
-	timer = 90 - gTimeInt;
+	timer = 92 - gTimeInt;
 	itoa(timer,timerChar,10);
 	
 	if(timer > 30)
@@ -376,11 +376,10 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	else
 		setcolor(LIGHTRED);
 		
-	//settextstyle(BOLD_FONT,HORIZ_DIR,3);
 	
 	
 	if(gTimeInt >= BEGIN && gTimeInt <= BEGIN + 1){
-		outtextxy(TILE_W * 16 + 8,TILE_H * 1,linguagem.GetText(4));
+		outtextxy(TILE_W * 17 + 8,TILE_H * 1,linguagem.GetText(4));
 		if(gTimeInt == BEGIN)
 			putimage(TILE_W * 19, TILE_H * 2,Hitler.imagens[NORMAL],COPY_PUT);
 		else
@@ -388,12 +387,12 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	}
 		
 	else if(gTimeInt >= ONDA1 && gTimeInt <= ONDA1 + 1){
-		outtextxy(TILE_W * 12,TILE_H * 1,linguagem.GetText(5));
+		outtextxy(TILE_W * 14,TILE_H * 1,linguagem.GetText(5));
 			putimage(TILE_W * 19 , TILE_H * 2,Hitler.imagens[BRAVO],COPY_PUT);
 	}
 	else if(gTimeInt >= ONDA3 && gTimeInt <= ONDA3 + 1){
 		
-		outtextxy(TILE_W * 11 + 8,TILE_H * 1,linguagem.GetText(6));
+		outtextxy(TILE_W * 13 + 8,TILE_H * 1,linguagem.GetText(6));
 		if(gTimeInt == ONDA3)
 			putimage(TILE_W * 19, TILE_H * 2,Hitler.imagens[NORMAL],COPY_PUT);
 		else
@@ -402,17 +401,22 @@ void Avisa(TDelay gameTime, Lider Hitler){
 	
 	else if(gTimeInt >= ONDA5 && gTimeInt <= ONDA5 + 1){
 		
-		outtextxy(TILE_W * 11 + 8,TILE_H * 1,linguagem.GetText(9));
+		setcolor(LIGHTRED);
+		outtextxy(TILE_W * 15 ,TILE_H * 1,linguagem.GetText(9));
+		putimage(TILE_W * 19 , TILE_H * 2,Hitler.imagens[BRAVO],COPY_PUT);	
+
 	}
 	
 	else if(gTimeInt >= END){
-		outtextxy(TILE_W * 16 + 8,TILE_H * 1,linguagem.GetText(10));
+		outtextxy(TILE_W * 17 + 8,TILE_H * 1,linguagem.GetText(10));
 		putimage(TILE_W * 19, TILE_H * 2,Hitler.imagens[MORTO],COPY_PUT);
 	}
 	
 	else{
-		//settextstyle(BOLD_FONT,HORIZ_DIR,3);
-		outtextxy(TILE_W * 19 + 16,TILE_H * 1,timerChar);
+		if(timer < 10)
+			outtextxy(TILE_W * 19 + 28,TILE_H * 1,timerChar);
+		else
+			outtextxy(TILE_W * 19 + 20,TILE_H * 1,timerChar);
 
 	}
 	
@@ -762,17 +766,17 @@ void EnviaPacoteJogo(){
 	
 	if(minhaRede.clienteOuServidor == "cliente"){
 	
-		do{
+		//do{
 			enviei = minhaRede.EnviaParaOServer(pacote);
-		} while(enviei == false);
+		//} while(enviei == false);*/
 
 	}
 		
 	else if(minhaRede.clienteOuServidor == "servidor"){
 		
-		do{
+		//do{
 			enviei = minhaRede.EnviaParaOClient(pacote);
-		} while(enviei == false);
+		//} while(enviei == false);
 	}		
 }
 
@@ -794,12 +798,12 @@ void IAOutroJog(){
 	cout << "chance = " << chance << endl;
 	cin >> teste;*/
 	
-	if (chance >= 1 && chance <= 3 && meuJog.vida <= 0){
+	if ((chance >= 1 && chance <= 3) || (meuJog.vida <= 0)){
 		
 		qtd = outroJog.dinheiro / PRECO_SOLDADO;
 		
-		if (qtd>2)
-			qtd = 2;
+		if (qtd > 3)
+			qtd = 3;
 		
 		/*cout << "qtd = " << qtd << endl;
 		cin >> teste;*/	
@@ -807,8 +811,10 @@ void IAOutroJog(){
 		if(qtd != 0){
 			chance = rand() % qtd;
 			
-			if(chance == 0)
-				chance = 1;
+			if(chance == 3)
+				chance = 2;
+			
+			chance++;
 			
 			outroJog.qtdSoldEspera = chance;
 			outroJog.dinheiro -= chance * PRECO_SOLDADO;
