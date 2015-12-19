@@ -105,7 +105,7 @@ TEXT_104 =  "Mas, o que realmente veio depois foi um conflito longo "
 TEXT_105 = "e indireto que foi cham ado de Guerra Fria."
 TEXT_106 = "EUA"
 TEXT_107 = "URSS"
-
+TEXT_108 = "SPLITSCREEN"
 
 
 

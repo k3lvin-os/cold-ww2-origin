@@ -105,4 +105,5 @@ TEXT_104 = "However, what really came after was a long and "
 TEXT_105 = "indirect conflict that was called Cold W ar."
 TEXT_106 = "USA"
 TEXT_107 = "USSR"
+TEXT_108 = "SPLITSCREEN"
 

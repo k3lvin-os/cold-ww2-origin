@@ -41,6 +41,7 @@ Linguagem linguagem;
 #include "..\..\header\botao.h"
 #include "..\..\header\barra_vida.h"
 #include "..\..\header\rede.h"
+#include "..\..\header\cursor.h"
 
 using namespace std;
 
@@ -65,26 +66,29 @@ TDelay gameTime;
 Grade minhaGrd;
 EscolhaEmMenu escolhaMenu;
 Botao botaoUmJog, botaoDoisJog, botaoCredit, botaoJogar, botaoVoltar, botaoVoltar2,
-botaoCliente, botaoServidor, botaoConexao, botaoOpcaoServ, botaoAlterar, botaoPtBr, botaoEnglish ;
+botaoCliente, botaoServidor, botaoConexao, botaoOpcaoServ, botaoAlterar, botaoPtBr,
+botaoEnglish, botaoLocalMulti ;
 char *ladoMeuJog,*ladoOutroJog;
 int gameSpeed;
 RadioList radioSpeed, radioLider, radioModoIP;
 Rede minhaRede;
 char logDano[100];
 char ipDoServidor[16],portaDoServidor[7];
-Sprite telaPretaE,telaPretaD, campoJogo, menu, limpa2Tiles, logoEMenu, textoCreditos;
+Sprite telaPretaE,telaPretaD, campoJogo, menu, 
+limpa2Tiles, logoEMenu, textoCreditos, splitscreen, botaoJog, imgCursor1, imgCursor2;
 //==========================================================
 
 // Funções que usam variáveis globais
-void Gameplay(TipoGameplay tipoGameplay);
 EscolhaEmMenu MenuUmJogador();
 EscolhaEmMenu Menu();
 EscolhaEmMenu MenuUmJog();
 EscolhaEmMenu MenuDoisJog();
-void CarregaLogoMenu();
 EscolhaEmMenu MenuCliente();
 EscolhaEmMenu MenuServidor();
 EscolhaEmMenu TelaCreditos();
+EscolhaEmMenu MenuSplitscreen();
+void Gameplay(TipoGameplay tipoGameplay);
+void CarregaLogoMenu();
 void IAOutroJog();
 void RecebePacoteJogo();
 void SimulaOutroJog(TipoGameplay tipoGameplay,OndaEixo *ondaVsOutroJog,char* logAtira);
@@ -92,7 +96,8 @@ void EnviaPacoteJogo();
 void ConfigIPEPorta();
 void TelaGameOver(char *lado);
 void TextoCreditos();
-
+void Logo(int tileYSeek);
+void CarregaSplitsceen();
 
 #include "..\..\header\cutscenes.h"
 Cutscenes cutscenes;
@@ -133,6 +138,7 @@ int main(){
 	botaoVoltar2.Init(TILE_W * 19, TILE_H * 20,3,1);
 	botaoCliente.Init(BOTAO_CLIENTE_X, BOTAO_CLIENTE_Y, 5,4);
 	botaoServidor.Init(BOTAO_SERV_X,BOTAO_SERV_Y ,5,4);
+	botaoLocalMulti.Init(LOCALMULTI_X, LOCALMULTI_Y,5,4);
 	botaoConexao.Init(TILE_W * 17,TILE_H * 12 + 8, 5,1);
 	botaoOpcaoServ.Init(TILE_W * 11,TILE_H * 14,4,2);
 	botaoAlterar.Init(TILE_W * 27 + 16, TILE_H  * 11,4,1);
@@ -170,12 +176,23 @@ int main(){
 	cenario.Mostrar();
 	limpa2Tiles.Init(0,0,32,64);
 	campoJogo.Init(0,0,TELA_W,TELA_H);
-	cleardevice();
 	// ===========================================================================
 	CarregaLogoMenu();
 	logoEMenu.Init(0,0,TELA_W,TELA_H);
-
+	
+	CarregaSplitsceen();
+	splitscreen.Init(0,0,TELA_W,TELA_H);
+	
+	setfillstyle(1,LIGHTGRAY);
+	bar(0,0,TILE_W / 2,TILE_W / 2);
+	setfillstyle
+	
+	botaoJog.Init(0,0,TILE_W / 2,TILE_W / 2);
 	minhaPg.Visual();
+
+	
+	cleardevice();
+	logoEMenu.Show();
 	
 	// ================================== SELEÇÃO DE IDIOMA =====================
 	
@@ -252,6 +269,9 @@ int main(){
 			case MENU_SERVIDOR:
 				escolhaMenu = MenuServidor();
 				break;
+			case SPLITSCREEN:
+				escolhaMenu = MenuSplitscreen();
+				break;	
 			case CREDITOS:
 				escolhaMenu = TelaCreditos();
 				break;
@@ -274,6 +294,7 @@ EscolhaEmMenu MenuDoisJog(){
 	
 	EscolhaEmMenu escolha;
 
+	delay(250);
 	minhaPg.Troca();
 	minhaPg.Ativa();
 	
@@ -282,11 +303,13 @@ EscolhaEmMenu MenuDoisJog(){
 	
 
 	botaoCliente.Show();
-	botaoServidor.Show();	
+	botaoServidor.Show();
+	botaoLocalMulti.Show();	
 	botaoVoltar.Show();
 	outtextxy(botaoCliente.x + 32, botaoCliente.y + 72,linguagem.GetText(1));
 	outtextxy(botaoServidor.x + 24,botaoServidor.y + 72,linguagem.GetText(2));
 	outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,linguagem.GetText(3));
+	outtextxy(botaoLocalMulti.x + 8, botaoLocalMulti.y + 72 , linguagem.GetText(108));
 
 	minhaPg.Visual();
 	
@@ -302,6 +325,10 @@ EscolhaEmMenu MenuDoisJog(){
 			
 		if(botaoVoltar.CheckClick() == true)
 			escolha = MENU;
+		
+		if(botaoLocalMulti.CheckClick() == true)
+			escolha = SPLITSCREEN;	
+		
 	}
 		
 	return escolha;
@@ -1227,24 +1254,22 @@ EscolhaEmMenu MenuUmJog(){
 //============================================================================================
 // Desenha o logo e menu
 void CarregaLogoMenu(){
-	
-	
-	settextjustify(LEFT_TEXT,CENTER_TEXT);
-	// Modifica texto para o tamanho do logo
-	settextstyle(BOLD_FONT,HORIZ_DIR,7);
-								
-	// Mostra o background do menu
 	menu.Show();
-			 
-	 
-	// Logo do jogo
+	Logo(LOGOY1);
+}
+
+
+//===================================================================================================
+// Mostra o logo do jogo
+void Logo(int tileYSeek)
+{
+	settextjustify(LEFT_TEXT,CENTER_TEXT);
+	settextstyle(BOLD_FONT,HORIZ_DIR,7);
 	setcolor(GREEN);
-	outtextxy(LOGO_X,LOGO_Y,"SEEK OF PEACE");
+	outtextxy(LOGO_X,tileYSeek,"SEEK OF PEACE");
 	setcolor(DARKGRAY);
-	outtextxy(LOGO2_X,LOGO2_Y,"COLD WW2");
+	outtextxy(LOGO2_X,tileYSeek + TILE_H  * 3 - 16,"COLD WW2");
 	setfillstyle(1,LIGHTGRAY);
-	
-	// Modifica texto para tamanho usual
 	settextstyle(BOLD_FONT,HORIZ_DIR,1);
 	setcolor(LIGHTGREEN);	
 }
@@ -1857,8 +1882,10 @@ EscolhaEmMenu TelaCreditos(){
 	
 		if(botaoVoltar2.CheckClick() == true)
 			escolha = MENU;
+			
+		if(botaoLocalMulti.CheckClick() == true)
+			escolha = SPLITSCREEN;
 	}
-	
 	
 	return escolha;
 	
@@ -1877,7 +1904,105 @@ void TextoCreditos()
 	settextjustify(LEFT_TEXT,CENTER_TEXT);
 }
 
+// Menu do jogo para o modo splitscreen
+EscolhaEmMenu MenuSplitscreen()
+{
+	EscolhaEmMenu escolha = SEM_ESCOLHA;
+	Pagina pg;
+	pg.Init();
+
+	Botao cimaP1,baixoP1,direitaP1,esquerdaP1;
+	
+
+	setfillstyle(1,BLACK);
+	
+	int cursorX,cursorY, meuX, meuY;
+
+	cursorX = 30;
+	cursorY = 10;
+	
+	while(escolha == SEM_ESCOLHA)
+	{
+		
+		pg.Troca();
+		pg.Ativa();
+		cleardevice();
+		splitscreen.Show();
+		
+		setcolor(YELLOW);
+		outtextxy(TILE_W * 27, TILE_H * 20,"Aguardando Roosevelt...");
+		outtextxy(TILE_W * 6, TILE_H * 20, "Aguardando Stalin...");
+	
+		
+
+		
+		if(GetKeyState(VK_LEFT) & 0x80)
+		{
+			cursorX--;
+		}
+		
+		if(GetKeyState(VK_RIGHT) & 0x80)
+		{
+			cursorX++;
+		}
+		
+		if(GetKeyState(VK_DOWN) & 0X80)
+		{
+			cursorY++;
+		}
+		
+		if(GetKeyState(VK_UP) & 0x80)
+		{
+			cursorY--;
+		}
+		
+		if(cursorX < 1 )
+			cursorX = 1;
+		else if(cursorX > 38)
+			cursorX = 38;
+		
+		if(cursorY < 1)
+			cursorY = 1;
+		else if(cursorY > 18)
+			cursorY = 18;
+		
+		meuX = cursorX * TILE_W; 
+		meuY = cursorY * TILE_H;
+		
+		cenario.tipoTile[4].GoTo(meuX,meuY);
+		cenario.tipoTile[4].Show();
+		setcolor(LIGHTGREEN);
+
+		botaoJog.GoTo(meuX + 64,meuY);
+		botaoJog.Show();
+		outtextxy(meuX + 64,meuY + 16,">");
+		
+		botaoJog.GoTo(meuX - 64,meuY);
+		botaoJog.Show();
+		outtextxy(meuX - 64,meuY + 16,"<");
+		
+		botaoJog.GoTo(meuX + 8,meuY + 64);
+		botaoJog.Show();
+		outtextxy(meuX + 8,meuY + 80,"v");
+		
+		botaoJog.GoTo(meuX + 8,meuY - 64);
+		botaoJog.Show();
+		outtextxy(meuX + 8 ,meuY - 48,"^");
+				
+		outtextxy(meuX,meuY,"P1");
+		pg.Visual();
+		delay(FPS);
+		
+	}
+	
+	return escolha;
+}
 
 
-
+// Carrega a tela de splitscreen
+void CarregaSplitsceen()
+{		
+	campoJogo.Show();
+	Logo(LOGOY2);		
+}
 
