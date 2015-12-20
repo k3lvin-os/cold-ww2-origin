@@ -75,7 +75,9 @@ Rede minhaRede;
 char logDano[100];
 char ipDoServidor[16],portaDoServidor[7];
 Sprite telaPretaE,telaPretaD, campoJogo, menu, 
-limpa2Tiles, logoEMenu, textoCreditos, splitscreen, botaoJog, imgCursor1, imgCursor2;
+limpa2Tiles, logoEMenu, textoCreditos, splitscreen, botaoJog, 
+imgCursor1, imgCursor2;
+Cursor cursorP1, cursorP2;
 //==========================================================
 
 // Funções que usam variáveis globais
@@ -176,23 +178,31 @@ int main(){
 	cenario.Mostrar();
 	limpa2Tiles.Init(0,0,32,64);
 	campoJogo.Init(0,0,TELA_W,TELA_H);
-	// ===========================================================================
+	
+	setfillstyle(1,LIGHTGRAY);
+	bar(0,0,TILE_W / 2,TILE_W / 2);	
+	botaoJog.Init(0,0,TILE_W / 2,TILE_W / 2);
+	
+
+
+	
+/*	imgCursor1.Init(0,0,32,32);
+	cenario.tipoTile[2].Show();
+	imgCursor2.Init(0,0,32,32);
+	
+*/	// ===========================================================================
 	CarregaLogoMenu();
 	logoEMenu.Init(0,0,TELA_W,TELA_H);
 	
 	CarregaSplitsceen();
 	splitscreen.Init(0,0,TELA_W,TELA_H);
 	
-	setfillstyle(1,LIGHTGRAY);
-	bar(0,0,TILE_W / 2,TILE_W / 2);
-	setfillstyle
-	
-	botaoJog.Init(0,0,TILE_W / 2,TILE_W / 2);
+	cleardevice();
+	logoEMenu.Show();
+
 	minhaPg.Visual();
 
 	
-	cleardevice();
-	logoEMenu.Show();
 	
 	// ================================== SELEÇÃO DE IDIOMA =====================
 	
@@ -222,7 +232,6 @@ int main(){
 	else
 		linguagem.Init(PORTUGUES);	
 	
-	delay(125);
 	// ========================================================================
 	minhaPg.Troca();
 	minhaPg.Ativa();
@@ -240,11 +249,13 @@ int main(){
 	radioModoIP.list.push_back(Radio(linguagem.GetText(20), true,TILE_W * 20 + 16, TILE_H * 10 + 16));
 	radioModoIP.list.push_back(Radio(linguagem.GetText(21), false,TILE_W * 20 + 16, TILE_H * 11 + 16));
 
+	
 	escolhaMenu = MENU;
 	
 	// Loop do jogo
 	while(escolhaMenu != SAIR ){
 		
+		delay(DELAY_TELA);
 		switch(escolhaMenu){
 			case MENU:
 				escolhaMenu = Menu();
@@ -294,7 +305,6 @@ EscolhaEmMenu MenuDoisJog(){
 	
 	EscolhaEmMenu escolha;
 
-	delay(250);
 	minhaPg.Troca();
 	minhaPg.Ativa();
 	
@@ -1907,90 +1917,42 @@ void TextoCreditos()
 // Menu do jogo para o modo splitscreen
 EscolhaEmMenu MenuSplitscreen()
 {
-	EscolhaEmMenu escolha = SEM_ESCOLHA;
-	Pagina pg;
-	pg.Init();
+	EscolhaEmMenu escolha;
 
-	Botao cimaP1,baixoP1,direitaP1,esquerdaP1;
+	gameSpeed = 8;
 	
-
-	setfillstyle(1,BLACK);
+	minhaPg.Troca();
+	minhaPg.Ativa();
+	meuJog.Init(LADOURSS,&gameSpeed);
+	outroJog.Init(LADOEUA,&gameSpeed);
+	minhaPg.Visual();
 	
-	int cursorX,cursorY, meuX, meuY;
-
-	cursorX = 30;
-	cursorY = 10;
+	
+	cursorP1.Init(LADOURSS,cenario.tipoTile[2], &botaoJog, &meuJog.soldGUI, &meuJog.torreGUI);
+	cursorP2.Init(LADOEUA,cenario.tipoTile[4],&botaoJog, &outroJog.soldGUI, &outroJog.torreGUI);
+	
+	
+	cursorP1.helpMode = true;
+	cursorP2.helpMode = true;
+	
+	escolha = SEM_ESCOLHA;
 	
 	while(escolha == SEM_ESCOLHA)
 	{
-		
-		pg.Troca();
-		pg.Ativa();
+		minhaPg.Troca();
+		minhaPg.Ativa();
 		cleardevice();
 		splitscreen.Show();
+
+		cursorP1.Show();
+		cursorP2.Show();
 		
 		setcolor(YELLOW);
-		outtextxy(TILE_W * 27, TILE_H * 20,"Aguardando Roosevelt...");
-		outtextxy(TILE_W * 6, TILE_H * 20, "Aguardando Stalin...");
-	
+		outtextxy(TILE_W * 13, TILE_H * 20,"Coloque uma torre e um soldado para começar a partida.");
 		
-
-		
-		if(GetKeyState(VK_LEFT) & 0x80)
-		{
-			cursorX--;
-		}
-		
-		if(GetKeyState(VK_RIGHT) & 0x80)
-		{
-			cursorX++;
-		}
-		
-		if(GetKeyState(VK_DOWN) & 0X80)
-		{
-			cursorY++;
-		}
-		
-		if(GetKeyState(VK_UP) & 0x80)
-		{
-			cursorY--;
-		}
-		
-		if(cursorX < 1 )
-			cursorX = 1;
-		else if(cursorX > 38)
-			cursorX = 38;
-		
-		if(cursorY < 1)
-			cursorY = 1;
-		else if(cursorY > 18)
-			cursorY = 18;
-		
-		meuX = cursorX * TILE_W; 
-		meuY = cursorY * TILE_H;
-		
-		cenario.tipoTile[4].GoTo(meuX,meuY);
-		cenario.tipoTile[4].Show();
-		setcolor(LIGHTGREEN);
-
-		botaoJog.GoTo(meuX + 64,meuY);
-		botaoJog.Show();
-		outtextxy(meuX + 64,meuY + 16,">");
-		
-		botaoJog.GoTo(meuX - 64,meuY);
-		botaoJog.Show();
-		outtextxy(meuX - 64,meuY + 16,"<");
-		
-		botaoJog.GoTo(meuX + 8,meuY + 64);
-		botaoJog.Show();
-		outtextxy(meuX + 8,meuY + 80,"v");
-		
-		botaoJog.GoTo(meuX + 8,meuY - 64);
-		botaoJog.Show();
-		outtextxy(meuX + 8 ,meuY - 48,"^");
-				
-		outtextxy(meuX,meuY,"P1");
-		pg.Visual();
+		cursorP1.CheckInput();
+		cursorP2.CheckInput();
+		minhaPg.Visual();
 		delay(FPS);
 		
 	}
