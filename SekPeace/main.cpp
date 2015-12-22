@@ -648,7 +648,6 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 	//Loop do jogo
 	do{
 	
-		
 		// Troca e ativa uma nova página para modificações
 		minhaPg.Troca();
 		minhaPg.Ativa();
@@ -661,9 +660,12 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 			
 		if(meuJog.vida > 0){
 			
+			if(tipoGameplay == MULTIPLAYER_SPLIT)
+				cursor[0].Show();
+			
 			// Mostra gui do jogador
 			meuJog.MostraGUI(tipoGameplay); 
-			
+						
 			if(tipoGameplay != MULTIPLAYER_SPLIT)
 			{
 		
@@ -676,7 +678,7 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 			
 			else
 			{
-				outroJog.MostraGUI(tipoGameplay);
+				meuJog.MostraGUI(tipoGameplay);
 			}
 
 			// Rotina de defesa da torre 
@@ -697,9 +699,7 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 			// Rotina de envio de soldados do jogador
 			EnviaSold(&meuJog,&outroJog,cenario);
 		}	
-		
-		RotinaItemSplitscreen(jogNSold,jogNTorre);
-		
+				
 		// Verifica se é hora de enviar uma onda de soldados do Eixo
 		onda = gameTime.SoldOnda();	
 				
@@ -718,6 +718,11 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 					
 		// Simula o comportamento do outro jogador	
 		SimulaOutroJog(tipoGameplay,&ondaVsOutroJog,logAtira);
+		
+		// Faz verificações de entrada no modo splitscreen
+		if(tipoGameplay == MULTIPLAYER_SPLIT)
+			RotinaItemSplitscreen(jogNSold,jogNTorre);
+
 		
 		if(outroJog.vida  == 0)
 			meuJog.outroJogMorto = true;
@@ -964,6 +969,7 @@ void RecebePacoteJogo(){
 		
 	if(recebi == true){
 		
+		
 		c = minhaRede.pacote[0];
 		i = 0;
 		tipoPacote =  SEM_TIPO;
@@ -1040,111 +1046,120 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 	
 	if(meuJog.vida > 0){
 		
-		// Envia soldados do jogador adversário contra o jogador atual
 		EnviaSold(&outroJog,&meuJog,cenario);
 	}
 
 	
-	if(outroJog.vida > 0){
+	if(outroJog.vida > 0)
+	{
+		
+		if(tipoGameplay == MULTIPLAYER_SPLIT){
+			cursor[1].Show();
+			outroJog.MostraGUI(MULTIPLAYER_SPLIT);
+		}
 		
 		if(outroJog.qtdSoldEspera > 0){
 		
-		    if(outroJog.envioSold.PassouDelay(ESPERA_DELAY) == true){
+		    if(outroJog.envioSold.PassouDelay(ESPERA_DELAY) == true)
+			{
 		     	outroJog.envioSold.Atualiza();
 			    outroJog.soldado0->Insere(outroJog.soldado0,&outroJog.soldGUI,gameSpeed);
 			    outroJog.qtdSoldEspera--;
+			}
+				
 		}
-				
-	}
 	
-	for(i = 0; i < QTD_NOVATORRE; i++){
+		for(i = 0; i < QTD_NOVATORRE; i++){
 		
-		if(outroJog.novaTorreXeY[i][0] != UNDEFINED
-		 && outroJog.novaTorreXeY[i][1] != UNDEFINED){
+			if(outroJog.novaTorreXeY[i][0] != UNDEFINED
+	 		&& outroJog.novaTorreXeY[i][1] != UNDEFINED)
+		   {
 
-			outroJog.torre0->Insere(outroJog.torre0,outroJog.lado,
-			outroJog.novaTorreXeY[i][0],outroJog.novaTorreXeY[i][1]);
-			
-			outroJog.novaTorreXeY[i][0] = UNDEFINED;
-			outroJog.novaTorreXeY[i][1] = UNDEFINED;	
+				outroJog.torre0->Insere(outroJog.torre0,outroJog.lado,
+				outroJog.novaTorreXeY[i][0],outroJog.novaTorreXeY[i][1]);
+				outroJog.novaTorreXeY[i][0] = UNDEFINED;
+				outroJog.novaTorreXeY[i][1] = UNDEFINED;	
+			}
+		
 		}
-		
-	}
 
-	
-	// Verifica a a onda atual para o envio de soldados do Eixo
-	ondaVsOutroJog->Verifica(onda,cenario);
-	
-
-	
-	// Envia soldados nazistas contra o jogador adversário
-	EnviaSold(&eixoVsOutroJog,&outroJog,cenario);
-	
-	if(tipoGameplay != MULTIPLAYER_ONLINE)
-		DefesaTorre(&outroJog,&meuJog,&eixoVsOutroJog,true);
-	else{
-		DefesaTorre(&outroJog,&meuJog,&eixoVsOutroJog,false);
+		ondaVsOutroJog->Verifica(onda,cenario);
 		
-		if(strcmp(logDano,"") != 0){
+		EnviaSold(&eixoVsOutroJog,&outroJog,cenario);
+	
+		if(tipoGameplay != MULTIPLAYER_ONLINE)
+			DefesaTorre(&outroJog,&meuJog,&eixoVsOutroJog,true);
+		else
+		{
+			DefesaTorre(&outroJog,&meuJog,&eixoVsOutroJog,false);
 			
-			c = logDano[0];
-			danoCount = 1;
-			tempCount = 0;
-			i = 0;
-			strcpy(temp,"");
-								
-			while(c != '\0'){
+			if(strcmp(logDano,"") != 0)
+			{
 				
-				if(c != '|'){
-					temp[tempCount] = c;
-					temp[tempCount + 1] = '\0';
-					tempCount++;
-				} 
 				
-				else{
+				c = logDano[0];
+				danoCount = 1;
+				tempCount = 0;
+				i = 0;
+				strcpy(temp,"");
+									
+				while(c != '\0')
+				{
 					
-					tempCount = 0;
-					switch(danoCount){
-						case 1:
-							
-							if(strcmp(temp,EIXO_ID) == 0){
-								danoSoldado0 = eixoVsOutroJog.soldado0;
-							} else{
-								danoSoldado0 = meuJog.soldado0;
-							}
-							danoCount = 2;
-							break;
-							
-						case 2:
-							id =  atoi(temp);
-							alvo = alvo->GetSoldById(danoSoldado0,id);
-							danoCount = 3;
-							break;
-						case 3:
-							dano = atoi(temp);
-							if(alvo != NULL)
-								alvo->vida -= dano;
-							danoCount = 1;
-							break;	
+					if(c != '|')
+					{
+						temp[tempCount] = c;
+						temp[tempCount + 1] = '\0';
+						tempCount++;
+					} 
+					
+					else
+					{
+						
+						tempCount = 0;
+						switch(danoCount)
+						{				
+							case 1:
+								
+								if(strcmp(temp,EIXO_ID) == 0)
+									danoSoldado0 = eixoVsOutroJog.soldado0;
+								else	
+								{
+									danoSoldado0 = meuJog.soldado0;
+									danoCount = 2;
+								}
+								break;
+								
+							case 2:
+								id =  atoi(temp);
+								alvo = alvo->GetSoldById(danoSoldado0,id);
+								danoCount = 3;
+								break;
+							case 3:
+								dano = atoi(temp);
+								if(alvo != NULL)
+									alvo->vida -= dano;
+								danoCount = 1;
+								break;	
+						}
+						strcpy(temp,"");
 					}
-					strcpy(temp,"");
-				}
+					
 				
-			
-				i++;
-				c = logDano[i];
-			}	
+					i++;
+					c = logDano[i];
+				}	
+			}
+		
 		}
 		
 	}
-		
-	
-	} else {
+	 
+	else 
+	{
 		TelaGameOver(outroJog.lado);
 	}
-	
-
-	
+		
 }
 
 
@@ -1928,12 +1943,8 @@ EscolhaEmMenu MenuSplitscreen()
 	int i, jogNSold[2], jogNTorre[2];
 	bool badPos;
 	EscolhaEmMenu escolha;
-
 	
-
-
 	gameSpeed = 8;
-	
 	minhaPg.Troca();
 	minhaPg.Ativa();
 	
@@ -1973,32 +1984,39 @@ EscolhaEmMenu MenuSplitscreen()
 		EnviaSold(&meuJog,&outroJog,cenario);
 		EnviaSold(&outroJog,&meuJog,cenario);
 		
+		meuJog.MostraGUI(MULTIPLAYER_SPLIT);
+		outroJog.MostraGUI(MULTIPLAYER_SPLIT);
 		setcolor(YELLOW);
-		outtextxy(TILE_W * 13, TILE_H * 20,"Coloque uma torre e um soldado para começar a partida.");
-
-		RotinaItemSplitscreen(jogNSold,jogNTorre);
+		outtextxy(TILE_W * 11, TILE_H * 19  + 8,"Coloque uma torre e um soldado para começar a partida");
+	
 		
 		for(i = 0; i < 2; i++)
 		{
+			cursor[i].Show();
+			
 			if(jogNTorre[i] >= 1 && jogNSold[i] >= 1)
 			{
 				
 				cursor[i].meuJog->lider.Show();
 
-				cout << cursor[i].meuJog->lado << " está pronto\n";
 				if(cursor[i].meuJog->lado == LADOEUA)
 				{
 					setcolor(LIGHTGREEN);
-					outtextxy(outroJog.lider.x - 200 ,outroJog.lider.y,"Roosevelt está pronto");
+					outtextxy(outroJog.lider.x - 180 ,outroJog.lider.y - 20,"Roosevelt está pronto");
 				}
 				
 				else
 				{
 					setcolor(WHITE);
-					outtextxy(meuJog.lider.x + 20,meuJog.lider.y,"Stalin está pronto");			
+					outtextxy(meuJog.lider.x + 20,meuJog.lider.y - 20,"Stalin está pronto");			
 				}
+				
 			}
+			
 		}
+		
+		RotinaItemSplitscreen(jogNSold,jogNTorre);
+
 		
 		limpa2Tiles.Show();
 		minhaPg.Visual();
@@ -2011,9 +2029,15 @@ EscolhaEmMenu MenuSplitscreen()
 			escolha = SPLITSCREEN;
 		}
 		
+		
+		
 	}
 	
 	LimpaMemoria();
+	
+	cursor[0].Init(&cenario, &meuJog,&imgCursor1);
+	cursor[1].Init(&cenario,&outroJog,&imgCursor2);
+	
 
 	
 	return escolha;
@@ -2043,7 +2067,6 @@ void RotinaItemSplitscreen(int *qtdSold, int *qtdTorre)
 	
 	for(i = 0; i < 2; i++)
 	{
-		cursor[i].Show();
 		cursor[i].CheckInput();
 					
 		if(cursor[i].AnyItemWasUsed())
@@ -2052,15 +2075,21 @@ void RotinaItemSplitscreen(int *qtdSold, int *qtdTorre)
 			if(cursor[i].tipo == C_SOLDADO)
 			{
 				if(cursor[i].meuJog->envioSold.PassouDelay(ESPERA_DELAY) == true)
-				{
-					cursor[i].meuJog->envioSold.Atualiza();
-					
+				{				
 					if(cursor[i].meuJog->Compra(PRECO_SOLDADO) == true)
 					{
+						
+						cursor[i].meuJog->envioSold.Atualiza();
+
 						cursor[i].meuJog->soldado0->Insere(cursor[i].meuJog->soldado0,
 						&cursor[i].meuJog->soldGUI,gameSpeed);
 						qtdSold[i]++;
 					}
+					
+					else
+					{
+						cursor[i].faltaDinSold = true;
+					}					
 				}			
 			}
 				
@@ -2072,32 +2101,38 @@ void RotinaItemSplitscreen(int *qtdSold, int *qtdTorre)
 				{
 					
 					if(cursor[i].meuJog->torre0->SemTorrePerto(cursor[i].meuJog->torre0,
-					cursor[i].meuX, cursor[i].meuY))
+					cursor[i].meuX, cursor[i].meuY) == true)
 					{
-						cursor[i].meuJog->torre0->Insere(cursor[i].meuJog->torre0,
-						cursor[i].meuJog->lado,cursor[i].meuX,cursor[i].meuY);
-						qtdTorre[i]++;			
+						
+						if(cursor[i].meuJog->Compra(PRECO_TORRE))
+						{
+							cursor[i].meuJog->torre0->Insere(cursor[i].meuJog->torre0,
+							cursor[i].meuJog->lado,cursor[i].meuX,cursor[i].meuY);
+							qtdTorre[i]++;		
+						}
+						else
+						{
+							cursor[i].faltaDinTorre = true;
+						}
+	
 					}
 					
 					else
 					{
-						setcolor(LIGHTRED);
-						outtextxy(cursor[i].meuX - 25 , cursor[i].meuY + 90, "Posição");
-						outtextxy(cursor[i].meuX - 10, cursor[i].meuY + 115, "Inválida");
+						cursor[i].posInvalid = true;
 					}
 			
 				}
 				
 				else
 				{
-					setcolor(LIGHTRED);
-					outtextxy(cursor[i].meuX - 25 , cursor[i].meuY + 90, "Posição");
-					outtextxy(cursor[i].meuX - 10, cursor[i].meuY + 115, "Inválida");
+					cursor[i].posInvalid = true;
 				}
 				
 			}
 				
 		}
+		
 	}
 }
 
