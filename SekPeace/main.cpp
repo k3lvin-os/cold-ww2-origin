@@ -1124,10 +1124,8 @@ void SimulaOutroJog(TipoGameplay tipoGameplay, OndaEixo *ondaVsOutroJog,char* lo
 								if(strcmp(temp,EIXO_ID) == 0)
 									danoSoldado0 = eixoVsOutroJog.soldado0;
 								else	
-								{
-									danoSoldado0 = meuJog.soldado0;
-									danoCount = 2;
-								}
+									danoSoldado0 = meuJog.soldado0;							
+								danoCount = 2;
 								break;
 								
 							case 2:
