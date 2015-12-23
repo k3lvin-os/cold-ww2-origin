@@ -1892,20 +1892,20 @@ EscolhaEmMenu TelaCreditos(){
 	setfillstyle(1,BLACK);
 	
 	outtextxy(botaoVoltar2.x + 4 ,botaoVoltar2.y + 24,linguagem.GetText(3));
-	textoCreditos.GoTo(TILE_W  * 16 + 16 , TILE_H * 1);
+	textoCreditos.GoTo(TILE_W  * 16 + 16 , TILE_H * 2 + 16);
 	textoCreditos.Show();
 	
 	setcolor(LIGHTGREEN);
-	outtextxy(TILE_W * 8 , TILE_H * 6, linguagem.GetText(44));
-	outtextxy(TILE_W * 26 , TILE_H * 6, "KELVIN OLIVEIRA");
-	outtextxy(TILE_W * 12 + 24 , TILE_H * 8, linguagem.GetText(45));
-	outtextxy(TILE_W * 26 , TILE_H * 8, "CHRISTIAN MOURA");
-	outtextxy(TILE_W * 7 , TILE_H * 10, linguagem.GetText(46));
-	outtextxy(TILE_W * 26 , TILE_H * 10, "ADRIANO FELIX");
-	outtextxy(TILE_W * 12 + 16 , TILE_H * 12, linguagem.GetText(47));
-	outtextxy(TILE_W * 26, TILE_H * 12, "ANDERSON ARAUJO");
-	outtextxy(TILE_W * 15 + 16 , TILE_H * 14, linguagem.GetText(48));
-	outtextxy(TILE_W * 9 + 16 , TILE_H * 16, "MARCELO HENRIQUE / SÉRGIO SCHAPOWAL / VICTOR AMARAL");
+	outtextxy(16 , TILE_H * 6, linguagem.GetText(44));
+	outtextxy(TILE_W * 13 , TILE_H * 6, "KELVIN OLIVEIRA");
+	outtextxy(TILE_W * 3 + 16 , TILE_H * 8, linguagem.GetText(45));
+	outtextxy(TILE_W * 13 , TILE_H * 8, "CHRISTIAN MOURA");
+	outtextxy(TILE_W * 3 , TILE_H * 10, linguagem.GetText(47));
+	outtextxy(TILE_W * 13, TILE_H * 10, "ANDERSON ARAUJO");
+	outtextxy(TILE_W * 1 + 16  , TILE_H * 12, linguagem.GetText(46));
+	outtextxy(TILE_W * 13, TILE_H * 12, " THE STAR SPANGLED BANNER / DIE FAHNE HOCH / SOVIET UNION ANTHEM ");
+	outtextxy(TILE_W * 15 + 16 , TILE_H * 15, linguagem.GetText(48));
+	outtextxy(TILE_W * 5 + 16 , TILE_H * 17, "ADRIANO FELIX / MARCELO HENRIQUE / SÉRGIO SCHAPOWAL / VICTOR AMARAL");
 
 	minhaPg.Visual();
 	
@@ -1915,9 +1915,6 @@ EscolhaEmMenu TelaCreditos(){
 	
 		if(botaoVoltar2.CheckClick() == true)
 			escolha = MENU;
-			
-		if(botaoLocalMulti.CheckClick() == true)
-			escolha = SPLITSCREEN;
 	}
 	
 	return escolha;

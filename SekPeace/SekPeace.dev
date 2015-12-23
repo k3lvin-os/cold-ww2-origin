@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=5
 CompilerSettings=0000000100000000101000000
-UnitCount=24
+UnitCount=23
 
 [VersionInfo]
 Major=1
@@ -270,16 +270,6 @@ BuildCmd=
 
 [Unit23]
 FileName=..\..\header\cursor.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit24]
-FileName=..\..\header\fps.h
 CompileCpp=1
 Folder=
 Compile=1
