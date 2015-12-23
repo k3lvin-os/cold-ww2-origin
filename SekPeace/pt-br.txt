@@ -108,7 +108,19 @@ TEXT_107 = "URSS"
 TEXT_108 = "SPLITSCREEN"
 TEXT_109 = "Depende de você,Stalin,"
 TEXT_110 = "e depende de você, Roosevelt."
-
-
-
+TEXT_111 = "Stalin está pronto"
+TEXT_112 = "Roosevelt está pronto"
+TEXT_113 = "Coloque uma torre e envie um soldado para começar"
+TEXT_114 = "Colocar"
+TEXT_115 = "Torre"
+TEXT_116 = "Posição"
+TEXT_117 = "Inválida"
+TEXT_118 = "Dinheiro"
+TEXT_119 = "Insuficiente"
+TEXT_120 = "Soldado Enviado!"
+TEXT_121 = "Dinheiro insuficiente"
+TEXT_122 = "NUMPAD_0 - Troca Item"
+TEXT_123 = "RCTRL - Usa Item"
+TEXT_124 = "ESPAÇO - Troca Item"
+TEXT_125 = "RCTRL = Usa Item"
 

@@ -31,6 +31,7 @@ Linguagem linguagem;
 #include "..\..\header\sprite.h"
 #include "..\..\header\cenario.h"
 #include "..\..\header\tdelay.h"
+#include "..\..\header\fps.h"
 #include "..\..\header\soldado.h"
 #include "..\..\header\pagina.h"
 #include "..\..\header\lider.h"
@@ -250,7 +251,7 @@ int main(){
 	radioSpeed = RadioList();
 	radioLider = RadioList();
 	radioModoIP = RadioList();
-	radioSpeed.list.push_back(Radio("4",false,TILE_W * 20 + 16, TILE_H * 10 + 16));
+	radioSpeed.list.push_back(Radio("16",false,TILE_W * 20 + 16, TILE_H * 10 + 16));
 	radioSpeed.list.push_back(Radio("8",true,TILE_W * 22 + 16, TILE_H * 10 + 16));
 	radioLider.list.push_back(Radio("Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16));
 	radioLider.list.push_back(Radio("Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16));
@@ -742,7 +743,10 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 		minhaPg.Visual();
 
 		// Delay de FPS
-		delay(FPS);	
+		if(gameSpeed == 8)
+			delay(FPS);
+		else
+			delay(FPS2);	
 	} while((onda != 'F') && (meuJog.vida > 0 || outroJog.vida > 0));
 	
 	PlaySound(NULL, NULL, 0); 
@@ -1267,8 +1271,8 @@ EscolhaEmMenu MenuUmJog(){
 			}
 				
 				
-			if(radioSpeed.RadioChecked()->label == "4")
-				gameSpeed = 4;
+			if(radioSpeed.RadioChecked()->label == "16")
+				gameSpeed = 16;
 			else
 				gameSpeed = 8;
 		}
@@ -1987,7 +1991,7 @@ EscolhaEmMenu MenuSplitscreen()
 		meuJog.MostraGUI(MULTIPLAYER_SPLIT);
 		outroJog.MostraGUI(MULTIPLAYER_SPLIT);
 		setcolor(YELLOW);
-		outtextxy(TILE_W * 11, TILE_H * 19  + 8,"Coloque uma torre e um soldado para começar a partida");
+		outtextxy(TILE_W * 11, TILE_H * 19  + 8,linguagem.GetText(113));
 	
 		
 		for(i = 0; i < 2; i++)
@@ -2002,13 +2006,13 @@ EscolhaEmMenu MenuSplitscreen()
 				if(cursor[i].meuJog->lado == LADOEUA)
 				{
 					setcolor(LIGHTGREEN);
-					outtextxy(outroJog.lider.x - 180 ,outroJog.lider.y - 20,"Roosevelt está pronto");
+					outtextxy(outroJog.lider.x - 180 ,outroJog.lider.y - 20,linguagem.GetText(112));
 				}
 				
 				else
 				{
 					setcolor(WHITE);
-					outtextxy(meuJog.lider.x + 20,meuJog.lider.y - 20,"Stalin está pronto");			
+					outtextxy(meuJog.lider.x + 20,meuJog.lider.y - 20,linguagem.GetText(111));			
 				}
 				
 			}
