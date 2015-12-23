@@ -47,7 +47,6 @@ Linguagem linguagem;
 using namespace std;
 
 
-
 /*Funções que utilizam conteúdo dos arquivos header*/
 void EnviaSold(Jogador *meuJog, Jogador *outroJog, Cenario cenario);
 void Avisa(TDelay gameTime, Lider Hitler);
@@ -617,10 +616,11 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 
 // Modo de um jogador
  void Gameplay(TipoGameplay tipoGameplay){
-	
+	milliseconds ms;
 	char *logAtira;
 	OndaEixo ondaVsMeuJog, ondaVsOutroJog;
 	Final meuFinal;
+	FPSController fps(30);
 	
 	// Troca a página atual
 	minhaPg.Troca();	
@@ -646,6 +646,8 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 	
 	// Mostra o tutorial
 	cutscenes.Tutorial(meuJog, tipoGameplay);
+	
+	fps.Start();
 	
 	// Começa a contar o tempo de jogo
 	gameTime.Atualiza();	
@@ -741,12 +743,15 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 							
 		//Deixa a página visual
 		minhaPg.Visual();
-
-		// Delay de FPS
+		
+		/*
 		if(gameSpeed == 8)
 			delay(FPS);
 		else
-			delay(FPS2);	
+			delay(FPS2);*/
+		fps.CheckFPS();
+			
+				
 	} while((onda != 'F') && (meuJog.vida > 0 || outroJog.vida > 0));
 	
 	PlaySound(NULL, NULL, 0); 
