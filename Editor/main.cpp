@@ -9,7 +9,7 @@
 /*Bibliotecas do projeto TowerDefense*/
 #include "..\..\header\td_defines.h"
 #include "..\..\header\sprite.h"
-#include "..\..\header\campojogo.h"
+#include "..\..\header\cenario.h"
 #include "..\..\header\grade.h"
 // Última atualização: 18 de set. 2015
 
@@ -19,13 +19,13 @@
 #include "gui.h"
 
 // Menu de escolha do pincel
-void Pincel(CampoJogo *meuCampo);
+void Pincel(Cenario *meuCampo);
 
 // Menu de salvar campo de jogo
-void Salva(CampoJogo meuCampo);
+void Salva(Cenario meuCampo);
 
 // Procedimento de carregar um arquivo de coordenadas
-void Carrega(CampoJogo *meuCampo, Grade minhaGrd);
+void Carrega(Cenario *meuCampo, Grade minhaGrd);
 
 // Opcção de sair do programa
 void Sair(int opcao, bool *editLoop);
@@ -34,10 +34,10 @@ void Sair(int opcao, bool *editLoop);
 void MainMenu(int &opcao);
 
 // Menu de edição no console
-void Edita(CampoJogo *meuCampo, Grade minhaGrd);
+void Edita(Cenario *meuCampo, Grade minhaGrd);
 
 // Mostra campo e grade na tela
-void CampoGrad(CampoJogo *meuCampo, Grade minhaGrd);
+void CampoGrad(Cenario *meuCampo, Grade minhaGrd);
 
 
 int main(){
@@ -62,7 +62,7 @@ int main(){
 		
 	// Declaração de variáveis
 	Grade minhaGrd;
- 	CampoJogo meuCampo;
+ 	Cenario meuCampo;
 	
 	// Define se o programa continua em execução ou nõa
 	bool editLoop = true;
@@ -118,7 +118,7 @@ int main(){
 
 
 // Funcionalidade de salvar o campo de jogo em um arquivo de coordenadas
-void Salva(CampoJogo meuCampo){
+void Salva(Cenario meuCampo){
 	
 	char nomeArq[20];
 	
@@ -136,7 +136,7 @@ void Salva(CampoJogo meuCampo){
 	meuCampo.Arquiva((char *)nomeArq);
 }
 
-void Carrega(CampoJogo *meuCampo, Grade minhaGrd){
+void Carrega(Cenario *meuCampo, Grade minhaGrd){
 
 	bool sucesso;
 	char nomeArq[8];
@@ -198,7 +198,7 @@ void Sair(int opcao, bool *editLoop){
 
 
 // Funcionalidade de escolha o pincel de tiles
-void Pincel(CampoJogo *meuCampo, int *pincel){
+void Pincel(Cenario *meuCampo, int *pincel){
 	
 	// Contador
 	int i;
@@ -229,7 +229,7 @@ void Pincel(CampoJogo *meuCampo, int *pincel){
 }
 
 // Menu de edição no console
-void Edita(CampoJogo *meuCampo, Grade minhaGrd){
+void Edita(Cenario *meuCampo, Grade minhaGrd){
 	
 	// Primeira "cor" do pincel de tiles
 	const int TILE_EUA = 5;
@@ -472,7 +472,7 @@ void Edita(CampoJogo *meuCampo, Grade minhaGrd){
 }
 
 // Mostra o campo e a grade na tela
-void CampoGrad(CampoJogo *meuCampo, Grade minhaGrd){
+void CampoGrad(Cenario *meuCampo, Grade minhaGrd){
 	
 	// Limpa a tela
 	cleardevice();

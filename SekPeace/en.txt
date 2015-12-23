@@ -106,4 +106,6 @@ TEXT_105 = "indirect conflict that was called Cold W ar."
 TEXT_106 = "USA"
 TEXT_107 = "USSR"
 TEXT_108 = "SPLITSCREEN"
+TEXT_109 = "Depends on you,Stalin,"
+TEXT_110 = "and depends on you, Roosevelt."
 

@@ -76,7 +76,7 @@ char logDano[100];
 char ipDoServidor[16],portaDoServidor[7];
 Sprite telaPretaE,telaPretaD, campoJogo, menu, 
 limpa2Tiles, logoEMenu, textoCreditos, splitscreen, botaoJog, 
-imgCursor1, imgCursor2;
+imgCursor1, imgCursor2, fundoTorre;
 Cursor cursor[2];
 int jogNSold[2], jogNTorre[2];
 //==========================================================
@@ -101,7 +101,7 @@ void TelaGameOver(char *lado);
 void TextoCreditos();
 void Logo(int tileYSeek);
 void CarregaSplitsceen();
-void LimpaMemoria();
+void LimpaMemoria(TipoGameplay tipoGm);
 void RotinaItemSplitscreen(int *qtdSold, int *qtdTorre);
 
 #include "..\..\header\cutscenes.h"
@@ -174,6 +174,10 @@ int main(){
 	cenario.PosLoad("menu.txt");	
 	cenario.Mostrar();
 	menu.Init(0,0,TELA_W,TELA_H);
+	
+	cenario.PosLoad("tower.txt");
+	cenario.Mostrar();
+	fundoTorre.Init(0,0,TELA_W,TELA_H);
 	
 		
 	cleardevice();	
@@ -660,8 +664,6 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 			
 		if(meuJog.vida > 0){
 			
-			if(tipoGameplay == MULTIPLAYER_SPLIT)
-				cursor[0].Show();
 			
 			// Mostra gui do jogador
 			meuJog.MostraGUI(tipoGameplay); 
@@ -678,7 +680,7 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 			
 			else
 			{
-				meuJog.MostraGUI(tipoGameplay);
+				cursor[0].Show();
 			}
 
 			// Rotina de defesa da torre 
@@ -774,7 +776,7 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 	delay(2000);
 	cutscenes.MostraFinal(meuFinal);
 
-	LimpaMemoria();
+	LimpaMemoria(tipoGameplay);
 	
 	settextjustify(LEFT_TEXT,CENTER_TEXT);
 
@@ -2011,6 +2013,10 @@ EscolhaEmMenu MenuSplitscreen()
 				
 			}
 			
+			if(GetKeyState(VK_ESCAPE) & 0x80){
+				escolha = MENU_DOIS_JOG;
+			}
+			
 		}
 		
 		RotinaItemSplitscreen(jogNSold,jogNTorre);
@@ -2031,28 +2037,32 @@ EscolhaEmMenu MenuSplitscreen()
 		
 	}
 	
-	LimpaMemoria();
+	LimpaMemoria(TUTORIAL_SPLIT);
 	
 	cursor[0].Init(&cenario, &meuJog,&imgCursor1);
 	cursor[1].Init(&cenario,&outroJog,&imgCursor2);
 	
-
+	settextjustify(LEFT_TEXT,CENTER_TEXT);
 	
 	return escolha;
 }
 
 
 // Limpa a memória alocada dinamicamente
-void LimpaMemoria()
+void LimpaMemoria(TipoGameplay tipoGm)
 {
+	
 	meuJog.soldado0->LimpaNo(meuJog.soldado0);
 	outroJog.soldado0->LimpaNo(outroJog.soldado0);
-	eixoVsMeuJog.soldado0->LimpaNo(eixoVsMeuJog.soldado0);
-	eixoVsOutroJog.soldado0->LimpaNo(eixoVsOutroJog.soldado0);
 	meuJog.torre0->LimpaNo(meuJog.torre0);
 	outroJog.torre0->LimpaNo(outroJog.torre0);
-	eixoVsMeuJog.torre0->LimpaNo(eixoVsMeuJog.torre0);
-	eixoVsOutroJog.torre0->LimpaNo(eixoVsOutroJog.torre0);
+
+	
+	if(tipoGm != TUTORIAL_SPLIT )
+	{	
+		eixoVsMeuJog.soldado0->LimpaNo(eixoVsMeuJog.soldado0);
+		eixoVsOutroJog.soldado0->LimpaNo(eixoVsOutroJog.soldado0);	
+	}
 }
 
 

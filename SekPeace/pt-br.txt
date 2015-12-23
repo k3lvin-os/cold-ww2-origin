@@ -106,7 +106,8 @@ TEXT_105 = "e indireto que foi cham ado de Guerra Fria."
 TEXT_106 = "EUA"
 TEXT_107 = "URSS"
 TEXT_108 = "SPLITSCREEN"
-
+TEXT_109 = "Depende de você,Stalin,"
+TEXT_110 = "e depende de você, Roosevelt."
 
 
 
