@@ -31,7 +31,6 @@ Linguagem linguagem;
 #include "..\..\header\sprite.h"
 #include "..\..\header\cenario.h"
 #include "..\..\header\tdelay.h"
-#include "..\..\header\fps.h"
 #include "..\..\header\soldado.h"
 #include "..\..\header\pagina.h"
 #include "..\..\header\lider.h"
@@ -250,7 +249,7 @@ int main(){
 	radioSpeed = RadioList();
 	radioLider = RadioList();
 	radioModoIP = RadioList();
-	radioSpeed.list.push_back(Radio("16",false,TILE_W * 20 + 16, TILE_H * 10 + 16));
+	radioSpeed.list.push_back(Radio("4",false,TILE_W * 20 + 16, TILE_H * 10 + 16));
 	radioSpeed.list.push_back(Radio("8",true,TILE_W * 22 + 16, TILE_H * 10 + 16));
 	radioLider.list.push_back(Radio("Stalin",true,TILE_W * 20 + 16, TILE_H * 12 + 16));
 	radioLider.list.push_back(Radio("Roosevelt",false,TILE_W * 23 + 16,TILE_H * 12 + 16));
@@ -616,11 +615,9 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 
 // Modo de um jogador
  void Gameplay(TipoGameplay tipoGameplay){
-	milliseconds ms;
 	char *logAtira;
 	OndaEixo ondaVsMeuJog, ondaVsOutroJog;
 	Final meuFinal;
-	FPSController fps(30);
 	
 	// Troca a página atual
 	minhaPg.Troca();	
@@ -646,9 +643,7 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 	
 	// Mostra o tutorial
 	cutscenes.Tutorial(meuJog, tipoGameplay);
-	
-	fps.Start();
-	
+		
 	// Começa a contar o tempo de jogo
 	gameTime.Atualiza();	
 	
@@ -744,13 +739,10 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 		//Deixa a página visual
 		minhaPg.Visual();
 		
-		/*
 		if(gameSpeed == 8)
 			delay(FPS);
 		else
-			delay(FPS2);*/
-		fps.CheckFPS();
-			
+			delay(FPS2);	
 				
 	} while((onda != 'F') && (meuJog.vida > 0 || outroJog.vida > 0));
 	
@@ -1276,8 +1268,8 @@ EscolhaEmMenu MenuUmJog(){
 			}
 				
 				
-			if(radioSpeed.RadioChecked()->label == "16")
-				gameSpeed = 16;
+			if(radioSpeed.RadioChecked()->label == "4")
+				gameSpeed = 4;
 			else
 				gameSpeed = 8;
 		}
