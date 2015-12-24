@@ -91,7 +91,7 @@ EscolhaEmMenu TelaCreditos();
 EscolhaEmMenu MenuSplitscreen();
 void Gameplay(TipoGameplay tipoGameplay);
 void CarregaLogoMenu();
-void IAOutroJog();
+void IAOutroJog(int enviaSold);
 void RecebePacoteJogo();
 void SimulaOutroJog(TipoGameplay tipoGameplay,OndaEixo *ondaVsOutroJog,char* logAtira);
 void EnviaPacoteJogo();
@@ -618,6 +618,10 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 	char *logAtira;
 	OndaEixo ondaVsMeuJog, ondaVsOutroJog;
 	Final meuFinal;
+	int enviaSold;
+	
+	if(tipoGameplay == SINGLEPLAYER)
+		enviaSold = rand() % 2;
 	
 	// Troca a página atual
 	minhaPg.Troca();	
@@ -708,7 +712,7 @@ void DefesaTorre(Jogador *meuJog, Jogador *outroJog, Jogador *eixoIA, bool atira
 		
 		// Simula a IA no Singleplayer 
 		if(tipoGameplay == SINGLEPLAYER)
-			IAOutroJog();
+			IAOutroJog(enviaSold);
 		
 		//Ou recebe/envia dados no Multiplayer
 		else if(tipoGameplay == MULTIPLAYER_ONLINE){
@@ -835,111 +839,81 @@ void EnviaPacoteJogo(){
 	}		
 }
 
-//============================================================================================
 // Simula a IA no modo Singleplayer
-void IAOutroJog(){
+void IAOutroJog(int enviaSold){
 
 	int chance, qtd, posXMin, posXMax, posYMin, posYMax, tileX, tileY, meuX, meuY, i;
 	bool posValida;
 	
-	if(onda == '0' || onda == 'F' || onda == SEM_ONDA)
+	if(onda == '0' || onda == 'F' || onda == SEM_ONDA || outroJog.vida <= 0)
 		return;
 		
-	// Randomiza chance de fazer alguma coisa
 	chance = rand()%10 + 1;
-	
-	/*//  TESTE
-	int teste;
-	cout << "chance = " << chance << endl;
-	cin >> teste;*/
-	
-	if ((chance >= 1 && chance <= 3) || (meuJog.vida <= 0)){
-		
-		qtd = outroJog.dinheiro / PRECO_SOLDADO;
-		
-		if (qtd > 3)
-			qtd = 3;
-		
-		/*cout << "qtd = " << qtd << endl;
-		cin >> teste;*/	
-		
-		if(qtd != 0){
-			chance = rand() % qtd;
 			
-			if(chance == 3)
-				chance = 2;
-			
-			chance++;
-			
-			outroJog.qtdSoldEspera = chance;
-			outroJog.dinheiro -= chance * PRECO_SOLDADO;
-		}
-	}
-	
-	else if ((chance >= 4 && chance <= 6) || (meuJog.vida <= 0)){
+	if ((chance >= 1  && chance <= 3) || (meuJog.vida <= 0))
+	{
 		
 		qtd = outroJog.dinheiro / PRECO_TORRE;
-		
-		/*cout << "qtd = " << qtd << endl;
-		cin >> teste;*/
-		
-		if( qtd != 0){
+				
+		if(qtd != 0)
+		{
 			
+
 			
-			
-			if(outroJog.lado == LADOEUA){
-				posXMin = 22;
-				posXMax = 38;
-				posYMin = 1; 
+			if(outroJog.lado == LADOEUA)
+			{
+				posXMin = 23;
+				posXMax = 37;
+				posYMin = 2; 
 				posYMax = 18;
-			} else if(outroJog.lado == LADOURSS){
-				posXMin = 1;
-				posXMax = 17;
-				posYMin = 1;
+			} 
+			
+			else if(outroJog.lado == LADOURSS)
+			{
+				posXMin = 2;
+				posXMax = 16;
+				posYMin = 2;
 				posYMax = 18;
 			}
 			
-			/*cout << "posXMin = " << posXMin << "| posXMax = " << posXMax 
-			 << "| posYMin = " << posYMin << "posYMax" << posYMax << endl; 
-			cin >> teste;*/
+			for(i = 0; i < qtd; i++)
+			{
 			
-			
-			for(i = 0; i < qtd; i++){
-				
 				do{
 					tileX = rand() % posXMax + posXMin;
 					tileY = rand() % posYMax + posYMin;
+					posValida = cenario.PosExist(tileX,tileY); 
 					
-					/*
-					cout << "tileX = " << tileX << " | tileY =" << tileY << endl;
-					cin >> teste;*/
-					
-					posValida = cenario.PosExist(tileX,tileY); // Problema de aumento exagerado de intervalo
-					
-					if(posValida == true){
+					if(posValida == true)
+					{
 						
 						posValida = cenario.CheckPosTorre(tileX,tileY,outroJog.lado);
 						meuX = tileX * TILE_W;
 						meuY = tileY * TILE_H; 
 						
-						if(posValida == true){
+						if(posValida == true)
+						{
 							posValida = outroJog.torre0->SemTorrePerto(outroJog.torre0,meuX,meuY);
-							outroJog.dinheiro -= PRECO_TORRE;
+							outroJog.Compra(PRECO_TORRE);
 							outroJog.novaTorreXeY[i][0] = meuX;
-							outroJog.novaTorreXeY[i][1] =  meuY;
+							outroJog.novaTorreXeY[i][1] = meuY;
 						}
 						
 					}
 					
-				} while(posValida == false);			
-			
+				} while(posValida == false);
 			}
 			
 
-
-		}
-			
+		}			
+	}	
+		
+	else if (enviaSold != 0 && chance == 4){
+		
+		if(outroJog.Compra(PRECO_SOLDADO) == true);
+			outroJog.qtdSoldEspera++;
 	}
+
 
 }
 	
