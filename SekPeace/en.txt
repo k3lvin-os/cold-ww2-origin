@@ -123,6 +123,6 @@ TEXT_122 = "NUMPAD 0 - Switch Item"
 TEXT_123 = "RCTRL - Use Item"
 TEXT_124 = "SPACE BAR - Switch Item"
 TEXT_125 = "RCTRL = Use Item"
-
+TEXT_126 = "ESC skip the tutorial"
 
 

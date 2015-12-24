@@ -123,4 +123,4 @@ TEXT_122 = "NUMPAD 0 - Troca Item"
 TEXT_123 = "RCTRL - Usa Item"
 TEXT_124 = "ESPAÇO - Troca Item"
 TEXT_125 = "RCTRL = Usa Item"
-
+TEXT_126 = "ESC pula o tutorial"
