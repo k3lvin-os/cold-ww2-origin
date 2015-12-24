@@ -1579,8 +1579,7 @@ EscolhaEmMenu MenuCliente(){
 			} 		
 		}		
 		else if(botaoVoltar.CheckClick() == true){
-			/// Talvez seja interessante enviar uma mensagem
-			// para o servidor antes de fechar o socket
+
 			escolha = MENU_DOIS_JOG;
 			delay(150);
 		}
@@ -1604,7 +1603,7 @@ EscolhaEmMenu MenuServidor(){
 	// Inicializa as flags e o servidor
 	minhaRede.FlagsInit();
 	
-	minhaRede.ServerInit(PORTA_PADRAO);
+	minhaRede.ServerInit(atoi(portaDoServidor));
 	
 	EscolhaEmMenu escolha;
 	escolha = SEM_ESCOLHA;
@@ -1813,11 +1812,11 @@ void ConfigIPEPorta(){
 					
 		if(c == '=' && leitura == SEM_LEITURA ){
 			
-			if(strcmp(buffer,"IP_DO_SERVIDOR ") == 0){
+			if(strcmp(buffer,"IP") == 0){
 				leitura = LEITURA_IP;
 			}
 			
-			else if(strcmp(buffer,"PORTA_DO_SERVIDOR ") == 0){
+			else if(strcmp(buffer,"PORT") == 0){
 				leitura = LEITURA_PORTA;
 			}
 			
@@ -1846,7 +1845,7 @@ void ConfigIPEPorta(){
 		else if(c != '\n' && c != ' '){
 			temp[0] = c;
 			temp[1] = '\0';
-			strcat(buffer,temp);
+ 			strcat(buffer,temp);
 		}
 			
 	}
@@ -1900,7 +1899,7 @@ EscolhaEmMenu TelaCreditos(){
 	outtextxy(TILE_W * 13 , TILE_H * 6, "KELVIN OLIVEIRA");
 	outtextxy(TILE_W * 3 + 16 , TILE_H * 8, linguagem.GetText(45));
 	outtextxy(TILE_W * 13 , TILE_H * 8, "CHRISTIAN MOURA");
-	outtextxy(TILE_W * 3 , TILE_H * 10, linguagem.GetText(47));
+	outtextxy(TILE_W * 3 + 4 , TILE_H * 10, linguagem.GetText(47));
 	outtextxy(TILE_W * 13, TILE_H * 10, "ANDERSON ARAUJO");
 	outtextxy(TILE_W * 1 + 16  , TILE_H * 12, linguagem.GetText(46));
 	outtextxy(TILE_W * 13, TILE_H * 12, " THE STAR SPANGLED BANNER / DIE FAHNE HOCH / SOVIET UNION ANTHEM ");
