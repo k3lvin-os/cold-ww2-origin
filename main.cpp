@@ -17,31 +17,27 @@
 void GetImage(void** pImg, char path[], int width, int height);
 void* GetImage(char path[], int width, int height);
 
-// ============== ARQUIVO RESPONSÁVEL PELOS IDIOMAS DOS TEXTOS ===============
-#include "..\..\header\linguagem.h"
-Linguagem linguagem;
-// ============== ARQUIVO RESPONSÁVEL PELOS IDIOMAS DOS TEXTOS ===============
-
-
 // Bibliotecas criados pela equipe de desenvolvimento
-#include "..\..\header\radiobutton.h"
-#include "..\..\header\radiolist.h"
-#include "..\..\header\enumeracoes.h"
-#include "..\..\header\td_defines.h"
-#include "..\..\header\sprite.h"
-#include "..\..\header\cenario.h"
-#include "..\..\header\tdelay.h"
-#include "..\..\header\soldado.h"
-#include "..\..\header\pagina.h"
-#include "..\..\header\lider.h"
-#include "..\..\header\torre.h"
-#include "..\..\header\jogador.h"
-#include "..\..\header\ondaeixo.h"
-#include "..\..\header\grade.h"
-#include "..\..\header\botao.h"
-#include "..\..\header\barra_vida.h"
-#include "..\..\header\rede.h"
-#include "..\..\header\cursor.h"
+#include "header\td_defines.h"
+#include "header\linguagem.h"
+Linguagem linguagem;	// Variável que precisa ser inicializada aqui
+#include "header\radiobutton.h"
+#include "header\radiolist.h"
+#include "header\enumeracoes.h"
+#include "header\sprite.h"
+#include "header\cenario.h"
+#include "header\tdelay.h"
+#include "header\soldado.h"
+#include "header\pagina.h"
+#include "header\lider.h"
+#include "header\torre.h"
+#include "header\jogador.h"
+#include "header\ondaeixo.h"
+#include "header\grade.h"
+#include "header\botao.h"
+#include "header\barra_vida.h"
+#include "header\rede.h"
+#include "header\cursor.h"
 
 using namespace std;
 
@@ -103,7 +99,7 @@ void CarregaSplitsceen();
 void LimpaMemoria(TipoGameplay tipoGm);
 void RotinaItemSplitscreen(int *qtdSold, int *qtdTorre);
 
-#include "..\..\header\cutscenes.h"
+#include "header\cutscenes.h"
 Cutscenes cutscenes;
 
 
@@ -1772,7 +1768,7 @@ void ConfigIPEPorta(){
 	strcpy(ipDoServidor,LOCALHOST);
 	itoa(PORTA_PADRAO,portaDoServidor,10);
 	
-	leitor.open("config.txt");
+	leitor.open("txt/config.txt");
 	
 	if(!leitor.is_open())
 		return;

@@ -1,0 +1,9 @@
+Assets/
+header/
+*.win
+*.layout
+SekPeace_private.h
+SekPeace_private.rc
+SekPeace_private.res
+txt/
+*.o

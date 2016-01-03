@@ -27,9 +27,9 @@ CommandLine=
 Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
-CompilerSet=5
-CompilerSettings=0000000100000000101000000
-UnitCount=23
+CompilerSet=3
+CompilerSettings=0000000100000000001000000
+UnitCount=21
 
 [VersionInfo]
 Major=1
@@ -60,8 +60,18 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit2]
+FileName=header\barra_vida.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
 [Unit3]
-FileName=..\..\header\jogador.h
+FileName=header\botao.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -71,7 +81,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit4]
-FileName=..\..\header\lider.h
+FileName=header\cenario.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -81,7 +91,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit5]
-FileName=..\..\header\ondaeixo.h
+FileName=header\cursor.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -91,7 +101,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit6]
-FileName=..\..\header\pagina.h
+FileName=header\cutscenes.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -101,7 +111,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit7]
-FileName=..\..\header\soldado.h
+FileName=header\enumeracoes.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -111,7 +121,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
-FileName=..\..\header\sprite.h
+FileName=header\grade.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -121,7 +131,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit9]
-FileName=..\..\header\td_defines.h
+FileName=header\jogador.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -131,7 +141,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit10]
-FileName=..\..\header\tdelay.h
+FileName=header\lider.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -141,7 +151,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit11]
-FileName=..\..\header\barra_vida.h
+FileName=header\linguagem.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -151,7 +161,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit12]
-FileName=..\..\header\torre.h
+FileName=header\ondaeixo.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -161,7 +171,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit13]
-FileName=..\..\header\enumeracoes.h
+FileName=header\pagina.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -171,7 +181,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit14]
-FileName=..\..\header\radiobutton.h
+FileName=header\radiobutton.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -181,7 +191,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit15]
-FileName=..\..\header\botao.h
+FileName=header\radiolist.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -191,7 +201,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit16]
-FileName=..\..\header\rede.h
+FileName=header\rede.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -201,7 +211,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit17]
-FileName=..\..\header\cenario.h
+FileName=header\soldado.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -211,17 +221,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit18]
-FileName=..\..\header\cutscenes.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit2]
-FileName=..\..\header\grade.h
+FileName=header\sprite.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -231,7 +231,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit19]
-FileName=..\..\header\linguagem.h
+FileName=header\td_defines.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -241,25 +241,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit20]
-FileName=pt-br.txt
-Folder=
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit21]
-FileName=en.txt
-Folder=
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit22]
-FileName=..\..\header\radiolist.h
+FileName=header\tdelay.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -268,8 +250,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit23]
-FileName=..\..\header\cursor.h
+[Unit21]
+FileName=header\torre.h
 CompileCpp=1
 Folder=
 Compile=1
