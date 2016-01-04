@@ -1,0 +1,40 @@
+Seek Of Peace v. 1.0
+
+Site oficial: https://coldww2.wordpress.com/
+Site em português: https://coldww2ptbr.wordpress.com/
+
+================================================================		
+		INFORMAÇÕES SOBRE O MODO MULTIPLAYER ONLINE
+
+-Como o modo multiplayer online possui detalhes que podem não ser
+  tão faceís de descobrir jogando o jogo, essa seção foi criada.
+
+-Não se esqueça de permitir o jogo a funcionar em rede pelo controle do seu firewall.
+
+-O modo multiplayer online funciona apenas em rede local (LAN).
+ Para que você jogue com jogadores fora de uma rede LAN, é necessário
+ o uso de algum programa que crie esse tipo de rede, como o Hamachi.
+
+- Este modo funciona apenas uma vez por conexão realizada. Isso se deve a Seek Of Peace
+ser o primeiro jogo multiplayer do programador do jogo. Tendo isso em consideração,
+solicitamos que fechem o jogo após a partida multiplayer e abram novamente para uma nova partida.
+
+-O seguinte passo a passo mostra como jogar o jogo modo multiplayer online:
+   
+1 - JOGADOR1 abre o Menu do servidor (Dois Jogadores --> Servidor);
+2 - JOGADOR1 dá um click no botão "Abrir servidor";
+3 - JOGADOR2 abre o Menu do cliente (Dois jogadores --> Cliente);
+4 - JOGADOR2 passa o IP e a porta do servidor*;
+5 - JOGADOR2 conecta-se ao servidor (click em conectar);
+6 - JOGADOR1 dá um click em jogar;
+7 - JOGADOR2 dá um click em jogar.
+
+* Para passar o IP e a porta do servidor, o jogador no modo cliente tem duas opções:
+1 - Alterar o IP e a porta padrão utilizando o modo de conexão Manual;
+2 - Alterar a configuração padrão do IP e da porta no arquivo config.txt, que está dentro da pasta "txt".
+ 
+
+
+================================================================
+
+

@@ -1335,7 +1335,6 @@ EscolhaEmMenu MenuCliente(){
 		// Mostra botões
 		botaoVoltar.Show();
 		botaoJogar.Show();
-		botaoConexao.Show();
 		
 		// Mostra radio buttons
 		radioModoIP.ShowList();
@@ -1361,9 +1360,15 @@ EscolhaEmMenu MenuCliente(){
 		outtextxy(botaoVoltar.x + 4,botaoVoltar.y + 24,linguagem.GetText(19));
 		
 		if(minhaRede.clienteConectado == false)
+		{
+			botaoConexao.Show();
 			outtextxy(botaoConexao.x + 16,botaoConexao.y + 24,linguagem.GetText(24));
+		} 
+		
 		else
-			outtextxy(botaoConexao.x + 16,botaoConexao.y + 24,linguagem.GetText(25));
+		{
+			outtextxy(botaoConexao.x - 32,botaoConexao.y + 24,linguagem.GetText(25));
+		}
 		
 		minhaPg.Visual();
 		
@@ -1599,7 +1604,6 @@ EscolhaEmMenu MenuServidor(){
 		// Mostra os botões 
 		botaoJogar.Show();
 		botaoVoltar.Show();
-		botaoOpcaoServ.Show();
 				
 		// Mostra botões radio
 		radioSpeed.ShowList();
@@ -1612,12 +1616,10 @@ EscolhaEmMenu MenuServidor(){
 		outtextxy(BOTAO_VOLTAR_X + 4,BOTAO_VOLTAR_Y + 24,linguagem.GetText(19));
 		
 		
-		// Alteração da opção de conexão
+		// Botão de conexão
 		if(minhaRede.clienteConectado == false){
+			botaoOpcaoServ.Show();
 			outtextxy(botaoOpcaoServ.x + 24,botaoOpcaoServ.y + 24, linguagem.GetText(35));
-			outtextxy(botaoOpcaoServ.x + 8,botaoOpcaoServ.y + 40,linguagem.GetText(43));
-		} else{
-			outtextxy(botaoOpcaoServ.x + 24,botaoOpcaoServ.y + 24, linguagem.GetText(36));
 			outtextxy(botaoOpcaoServ.x + 8,botaoOpcaoServ.y + 40,linguagem.GetText(43));
 		}
 
@@ -1715,12 +1717,9 @@ EscolhaEmMenu MenuServidor(){
 
 		
 		// ===============Processamento do botão Abrir servidor===============
-		if(botaoOpcaoServ.CheckClick() == true){
-			
-			if(minhaRede.clienteConectado == true)
-				minhaRede.FechaConexaoClient();	
-		
-			else if(minhaRede.clienteConectado == false){
+		if(minhaRede.clienteConectado == false){
+
+			if(botaoOpcaoServ.CheckClick() == true){
 			
 				outtextxy(TILE_W * 20, TILE_H * 14 + 16, linguagem.GetText(41));
 				setcolor(YELLOW);
