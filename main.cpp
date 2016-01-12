@@ -38,6 +38,7 @@ Linguagem linguagem;	// Variável que precisa ser inicializada aqui
 #include "header\barra_vida.h"
 #include "header\rede.h"
 #include "header\cursor.h"
+#include "header\keymap.h"
 
 using namespace std;
 
@@ -106,7 +107,7 @@ Cutscenes cutscenes;
 
 //============================================================================================
 int main(){
-	
+
 	// Inicializa biblioteca de conexões em rede
 	minhaRede.WinSockInit();
 		
@@ -118,6 +119,23 @@ int main(){
 	
 	// Inicializa a janela gráfica
 	initwindow(TELA_W,TELA_H, "Seek Of Peace: Cold WW2");
+	
+	KeyMap myKeyMap("txt/keymap.txt");
+	myKeyMap.ShowKeys();
+	
+	bool flag = true;
+	while(flag)
+	{
+		for(int i = 0; i <myKeyMap.TXT_TOTAL_NUMBER; i++)
+		{
+			if(GetKeyState(myKeyMap.value(i))& 0x80)
+			{
+				cout << myKeyMap.name(i) << endl;
+				flag = false;
+				
+			}
+		}
+	}
 	
 	// A velocidade do jogo ainda não foi definida
 	gameSpeed = NULL;

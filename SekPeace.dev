@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=3
 CompilerSettings=0000000100000000001000000
-UnitCount=23
+UnitCount=25
 
 [VersionInfo]
 Major=1
@@ -271,6 +271,25 @@ BuildCmd=
 
 [Unit23]
 FileName=txt\en.txt
+Folder=
+Compile=0
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit24]
+FileName=header\keymap.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit25]
+FileName=txt\keymap.txt
 Folder=
 Compile=0
 Link=0
