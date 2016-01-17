@@ -39,6 +39,7 @@ Linguagem linguagem;	// Variável que precisa ser inicializada aqui
 #include "header\rede.h"
 #include "header\cursor.h"
 #include "header\keymap.h"
+#include "header\config_split.h"
 
 using namespace std;
 
@@ -121,21 +122,9 @@ int main(){
 	initwindow(TELA_W,TELA_H, "Seek Of Peace: Cold WW2");
 	
 	KeyMap myKeyMap("txt/keymap.txt");
-	myKeyMap.ShowKeys();
-	
-	bool flag = true;
-	while(flag)
-	{
-		for(int i = 0; i <myKeyMap.TXT_TOTAL_NUMBER; i++)
-		{
-			if(GetKeyState(myKeyMap.value(i))& 0x80)
-			{
-				cout << myKeyMap.name(i) << endl;
-				flag = false;
-				
-			}
-		}
-	}
+	ConfigSplitscreen configSplit;
+	configSplit.SetDefaultControls();
+
 	
 	// A velocidade do jogo ainda não foi definida
 	gameSpeed = NULL;
@@ -1972,6 +1961,8 @@ EscolhaEmMenu MenuSplitscreen()
 		outroJog.MostraGUI(MULTIPLAYER_SPLIT);
 		setcolor(YELLOW);
 		outtextxy(TILE_W * 11, TILE_H * 19  + 8,linguagem.GetText(113));
+		setcolor(WHITE);
+		outtextxy(TILE_W * 33, TILE_H * 21, linguagem.GetText(127));
 	
 		
 		for(i = 0; i < 2; i++)
